@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trip Categories</title>
+    <link rel="stylesheet" href="TripsStyle.css">
+</head>
+<body>
+    <header class="main-header">
+    <div class="header-content">
+        <h1>Uncover Ancient Egypt</h1>
+        <p>Expertly curated tours from the Pyramids of Giza to the temples of Luxor.</p>
+    </div>
+</header>
+<div id = "search_container">
+    <input type="text" id="search-input" placeholder="Search for trips...">
+</div>
+
+<div id = "filter-container">
+    <button id = "btn-all">All Trips</button>
+    <button id = "btn-cheap">under $400</button>
+    <button id = "btn-expensive">$400 and up</button>
+</div>
+
+<section class="categories-container"> 
+
+    <article class="card" data-price="cheap">
+        <img src="IMG_3772.JPG" alt="">
+        <div>
+            <h3>single Locations visits</h3>
+            <p>visit specific locations</p>
+            <p class="price"> sample price = $199</p>
+            <button class = "book-btn">Book Now</button>
+        </div>
+    </article>
+
+    <article class="card" data-price="cheap">
+        <img src="IMG_3772.JPG" alt="">
+        <div>
+            <h3>Day Packages</h3>
+            <p>Explore the region in a day</p>
+            <p class="price"> sample price = $299</p>
+            <button class = "book-btn">Book Now</button>
+        </div>
+    </article>
+
+    <article class="card" data-price="expensive">
+        <img src="IMG_3772.JPG" alt="">
+        <div>
+            <h3>Week packages</h3>
+            <p>Complete 7 day itinerary</p>
+            <p class="price"> sample price = $499</p>
+            <button class = "book-btn">Book Now</button>
+        </div>
+    </article>
+
+    <article class="card" data-price="expensive">
+        <img src="IMG_3772.JPG" alt="">
+        <div>
+            <h3>Custom Trip Builder</h3>
+            <p>Design your own unique travel experience</p>
+            <p class="price"> sample price = $599</p>
+            <button class = "book-btn">Book Now</button>
+        </div>
+    </article>
+
+</section>
+<footer>
+<p>&copy; 2026 Uncover Ancient Egypt. All rights reserved.</p>
+<p>contact us at info@uncoverancientegypt.com</p>
+</footer>
+    <script src="TripsScript.js"></script>
+</body>
+</html>
