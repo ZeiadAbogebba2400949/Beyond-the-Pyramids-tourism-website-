@@ -1,0 +1,55 @@
+/* Basic structural CSS */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    line-height: 1.6;
+}
+
+.sidebar {
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+.main-content {
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+.grid-layout {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.left-col {
+    flex: 2;
+    min-width: 300px;
+}
+
+.right-col {
+    flex: 1;
+    min-width: 250px;
+}
+
+ul {
+    list-style: none;
+    padding-left: 10px;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+.card-box, section {
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+}

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Beyond the Pyramids</title>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="grid-layout">
+        <aside class="sidebar left-col" id="sidebar" style="max-width: 250px;">
+            <div>
+                <h2><i class="fa-solid fa-pyramid"></i> Beyond The Pyramids</h2>
+                <button id="closeSidebar"><i class="fa-solid fa-xmark"></i> Close</button>
+            </div>
+
+            <nav>
+                <p><strong>Menu</strong></p>
+                <ul id="mainNav">
+                    <li><i class="fa-solid fa-house"></i> Dashboard</li>
+                    <li><i class="fa-solid fa-location-dot"></i> Single Locations</li>
+                    <li><i class="fa-solid fa-sun"></i> Day Packages</li>
+                    <li><i class="fa-solid fa-calendar-week"></i> Week Packages</li>
+                    <li><i class="fa-solid fa-compass"></i> Custom Trip</li>
+                </ul>
+
+                <p><strong>Personal</strong></p>
+                <ul>
+                    <li><i class="fa-solid fa-ticket"></i> My Bookings</li>
+                    <li><i class="fa-solid fa-star"></i> Reviews</li>
+                    <li><i class="fa-solid fa-heart"></i> Saved</li>
+                </ul>
+
+                <p><strong>Settings</strong></p>
+                <ul>
+                    <li><i class="fa-solid fa-gear"></i> Settings</li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main-content right-col" style="flex: 3;">
+            <header style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                <div>
+                    <button id="hamburgerMenu"><i class="fa-solid fa-bars"></i> Menu</button>
+                    <h1 id="userGreeting">Welcome back!</h1>
+                </div>
+
+                <div style="display: flex; gap: 20px;">
+                    <div>
+                        <button id="notifBtn"><i class="fa-regular fa-bell"></i> Notifications</button>
+                        <div id="notifDropdown"
+                            style="display:none; border: 1px solid #ccc; padding: 10px; position: absolute; background: white;">
+                            <h3>Notifications</h3>
+                            <ul id="notifList">
+                                <li>No new notifications</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div>
+                        <button id="profileBtn"><i class="fa-regular fa-user"></i> Profile</button>
+                        <div id="profileDropdown"
+                            style="display:none; border: 1px solid #ccc; padding: 10px; position: absolute; background: white;">
+                            <h4 id="dropdownName">User</h4>
+                            <p id="dropdownEmail">user@example.com</p>
+                            <ul>
+                                <li><i class="fa-regular fa-address-card"></i> View Profile</li>
+                                <li><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <section class="card-box">
+                <form id="searchForm">
+                    <i class="fa-solid fa-location-crosshairs"></i> <input type="text" id="searchInput" placeholder="Where do you want to go in Egypt?">
+                    <i class="fa-regular fa-calendar"></i> <input type="date" id="checkIn">
+                    <i class="fa-regular fa-calendar-check"></i> <input type="date" id="checkOut">
+                    <i class="fa-solid fa-user-group"></i> 
+                    <select id="travelers">
+                        <option value="1">1 Traveler</option>
+                        <option value="2" selected>2 Travelers</option>
+                        <option value="3">3 Travelers</option>
+                        <option value="4">4+ Travelers</option>
+                    </select>
+                    <button type="submit"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
+                </form>
+            </section>
+
+            <div class="grid-layout">
+                <div class="left-col">
+                    <section class="card-box">
+                        <h2>Explore by Category</h2>
+                        <ul>
+                            <li>Single Location</li>
+                            <li>Day Package</li>
+                            <li>Week Package</li>
+                            <li>Custom Trip</li>
+                        </ul>
+                    </section>
+
+                    <section class="card-box">
+                        <h2>Recommended For You</h2>
+                        <div id="recommendedTripsGrid">
+                            <p>No recommendations available.</p>
+                        </div>
+                    </section>
+
+                    <section class="card-box">
+                        <h2>Popular Destinations</h2>
+                        <div id="destinationsGrid">
+                            <p>No destinations loaded.</p>
+                        </div>
+                    </section>
+                </div>
+
+                <div class="right-col">
+                    <section class="card-box">
+                        <h3>Upcoming Trips</h3>
+                        <div id="activeBookingsList">
+                            <p>No upcoming trips.</p>
+                        </div>
+                    </section>
+
+                    <section class="card-box">
+                        <h3>Community Reviews</h3>
+                        <div id="reviewsList">
+                            <p>No reviews yet.</p>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/dashboard.js"></script>
+</body>
+
+</html>
