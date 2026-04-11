@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings - Beyond the Pyramids</title>
+    <link rel="stylesheet" href="css/myBookings.css">
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        <div class="logo">
+            <span>Beyond the Pyramids</span>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="dayPackages.html">Day Packages</a>
+            <a href="weekPackages.html">Week Packages</a>
+            <a href="customTrip.html">Custom Trip</a>
+            <a href="myBookings.html" class="active">My Bookings</a>
+            <a href="profile.html">Profile</a>
+            <a href="login.html" id="authLink">Login</a>
+        </div>
+    </div>
+
+    <!-- Page Title -->
+    <div class="page-title">
+        <h1>My Bookings</h1>
+        <p>View and manage your trip reservations</p>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+
+        <!-- Filters Section -->
+        <div class="filters-sidebar">
+            <h3>Filter by Date</h3>
+            
+            <div class="filter-group">
+                <label>From Date:</label>
+                <input type="date" id="dateFrom">
+            </div>
+            
+            <div class="filter-group">
+                <label>To Date:</label>
+                <input type="date" id="dateTo">
+            </div>
+            
+            <button id="applyDateFilter">Apply Filter</button>
+            <button id="resetDateFilter">Reset</button>
+        </div>
+
+        <!-- Bookings List Section -->
+        <div class="bookings-container">
+            <div id="bookingsList">
+                <!-- Bookings will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- View Details Modal (popup) -->
+    <div id="detailsModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Trip Details</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div id="modalBody">
+                <!-- Dynamic modal content -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>&copy; 2025 Beyond the Pyramids</p>
+    </div>
+
+    <script src="js/myBookings.js"></script>
+</body>
+
+</html>
