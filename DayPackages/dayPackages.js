@@ -86,11 +86,12 @@ let currentOptions = {
 
 // DOM Elements
 const packagesGrid = document.getElementById('packagesGrid');
+const filtersSidebar = document.getElementById('filtersSidebar');
+const bookingOptions = document.getElementById('bookingOptions');
 const priceFilter = document.getElementById('priceFilter');
 const typeFilter = document.getElementById('typeFilter');
 const applyFiltersBtn = document.getElementById('applyFiltersBtn');
 const resetFiltersBtn = document.getElementById('resetFiltersBtn');
-const bookingOptions = document.getElementById('bookingOptions');
 const overnightCheckbox = document.getElementById('overnightCheckbox');
 const mealCheckbox = document.getElementById('mealCheckbox');
 const peopleCount = document.getElementById('peopleCount');
@@ -148,6 +149,9 @@ function selectPackage(packageId) {
         }
     });
     
+    // HIDE THE FILTERS SIDEBAR COMPLETELY
+    filtersSidebar.style.display = 'none';
+    
     // Reset options
     currentOptions = {
         overnight: false,
@@ -163,8 +167,10 @@ function selectPackage(packageId) {
     peopleCount.value = "1";
     translatorCheckbox.checked = false;
     languageSelect.style.display = "none";
-    document.getElementById('translatorLanguage').value = "";
-    document.querySelector('input[value="small"]').checked = true;
+    const translatorLang = document.getElementById('translatorLanguage');
+    if (translatorLang) translatorLang.value = "";
+    const smallGroupRadio = document.querySelector('input[value="small"]');
+    if (smallGroupRadio) smallGroupRadio.checked = true;
     
     bookingOptions.style.display = "block";
     updatePriceDisplay();
@@ -174,6 +180,9 @@ function selectPackage(packageId) {
 function cancelSelection() {
     selectedPackage = null;
     bookingOptions.style.display = "none";
+    
+    // SHOW THE FILTERS SIDEBAR AGAIN
+    filtersSidebar.style.display = 'block';
     
     // SHOW ALL PACKAGES AGAIN
     const allCards = document.querySelectorAll('.package-card');
@@ -292,10 +301,13 @@ function attachEventListeners() {
         updatePriceDisplay();
     });
     
-    document.getElementById('translatorLanguage').addEventListener('change', function(e) {
-        currentOptions.translatorLang = e.target.value;
-        updatePriceDisplay();
-    });
+    const translatorLang = document.getElementById('translatorLanguage');
+    if (translatorLang) {
+        translatorLang.addEventListener('change', function(e) {
+            currentOptions.translatorLang = e.target.value;
+            updatePriceDisplay();
+        });
+    }
     
     document.querySelectorAll('input[name="groupType"]').forEach(radio => {
         radio.addEventListener('change', function(e) {

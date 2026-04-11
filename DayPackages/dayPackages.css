@@ -45,6 +45,13 @@
     width: 300px;
 }
 
+/* Booking options - same width as filters */
+.booking-options {
+    border: 2px solid black;
+    padding: 10px;
+    width: 300px;
+}
+
 .filter-group {
     margin: 10px 0;
 }
@@ -80,11 +87,7 @@ button {
     width: 100%;
 }
 
-/* Booking options */
-#bookingOptions {
-    display: none;
-}
-
+/* Booking options inner spacing */
 #bookingOptions div {
     margin: 10px 0;
 }
@@ -103,21 +106,13 @@ button {
     margin-top: 20px;
 }
 
-/* No results */
-.no-results {
-    border: 2px solid black;
-    padding: 20px;
-    text-align: center;
-    width: 100%;
-}
-
 /* Responsive */
 @media (max-width: 800px) {
     .main-container {
         flex-direction: column;
     }
     
-    .filters-sidebar {
+    .filters-sidebar, .booking-options {
         width: auto;
     }
     
@@ -134,9 +129,4 @@ button {
     .navbar {
         flex-direction: column;
     }
-}
-
-#languageSelect {
-    display: none;
-    margin-left: 20px;
 }

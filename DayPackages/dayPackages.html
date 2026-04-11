@@ -36,7 +36,7 @@
     <div class="main-container">
 
         <!-- Filters Sidebar -->
-        <div class="filters-sidebar">
+        <div id="filtersSidebar" class="filters-sidebar">
             <h3>Filter Packages</h3>
             
             <div class="filter-group">
@@ -62,68 +62,66 @@
 
             <button id="applyFiltersBtn">Apply Filters</button>
             <button id="resetFiltersBtn">Reset</button>
+        </div>
 
-            <hr>
-
-            <!-- Booking Options -->
-            <div id="bookingOptions" style="display: none;">
-                <h3>Booking Options</h3>
-                
-                <div>
-                    <label><input type="checkbox" id="overnightCheckbox"> Add Overnight Stay</label>
-                </div>
-                
-                <div>
-                    <label><input type="checkbox" id="mealCheckbox"> Add Meal</label>
-                </div>
-                
-                <div>
-                    <label>Number of People:</label>
-                    <select id="peopleCount">
-                        <option value="1">1 person</option>
-                        <option value="2">2 people</option>
-                        <option value="3">3 people</option>
-                        <option value="4">4 people</option>
-                        <option value="5">5 people</option>
-                        <option value="6">6 people</option>
+        <!-- Booking Options (initially hidden) -->
+        <div id="bookingOptions" class="booking-options" style="display: none;">
+            <h3>Booking Options</h3>
+            
+            <div>
+                <label><input type="checkbox" id="overnightCheckbox"> Add Overnight Stay</label>
+            </div>
+            
+            <div>
+                <label><input type="checkbox" id="mealCheckbox"> Add Meal</label>
+            </div>
+            
+            <div>
+                <label>Number of People:</label>
+                <select id="peopleCount">
+                    <option value="1">1 person</option>
+                    <option value="2">2 people</option>
+                    <option value="3">3 people</option>
+                    <option value="4">4 people</option>
+                    <option value="5">5 people</option>
+                    <option value="6">6 people</option>
+                </select>
+            </div>
+            
+            <div>
+                <label><input type="checkbox" id="translatorCheckbox"> Need a Translator</label>
+                <div id="languageSelect" style="display: none; margin-left: 20px;">
+                    <select id="translatorLanguage">
+                        <option value="">Select Language</option>
+                        <option value="English">English</option>
+                        <option value="Spanish">Spanish</option>
+                        <option value="French">French</option>
+                        <option value="German">German</option>
                     </select>
                 </div>
-                
+            </div>
+            
+            <div>
+                <label>Group Type:</label>
                 <div>
-                    <label><input type="checkbox" id="translatorCheckbox"> Need a Translator</label>
-                    <div id="languageSelect" style="display: none; margin-left: 20px;">
-                        <select id="translatorLanguage">
-                            <option value="">Select Language</option>
-                            <option value="English">English</option>
-                            <option value="Spanish">Spanish</option>
-                            <option value="French">French</option>
-                            <option value="German">German</option>
-                        </select>
-                    </div>
+                    <label><input type="radio" name="groupType" value="large"> Large Group</label>
+                    <label><input type="radio" name="groupType" value="small" checked> Small Private Group</label>
                 </div>
-                
-                <div>
-                    <label>Group Type:</label>
-                    <div>
-                        <label><input type="radio" name="groupType" value="large"> Large Group</label>
-                        <label><input type="radio" name="groupType" value="small" checked> Small Private Group</label>
-                    </div>
-                </div>
-                
-                <div class="price-details">
-                    <p>Base Price: $<span id="basePriceDisplay">0</span></p>
-                    <p id="overnightDisplay" style="display: none;">+ Overnight: $<span id="overnightPriceDisplay">0</span></p>
-                    <p id="mealDisplay" style="display: none;">+ Meal: $<span id="mealPriceDisplay">0</span></p>
-                    <p id="translatorDisplay" style="display: none;">+ Translator: $30</p>
-                    <p id="groupDisplay" style="display: none;">+ Private Group: $50</p>
-                    <p><strong>Total for 1 person: $<span id="totalPerPerson">0</span></strong></p>
-                    <p><strong>Total for <span id="peopleCountDisplay">1</span> people: $<span id="totalFinal">0</span></strong></p>
-                </div>
-                
-                <div>
-                    <button id="bookNowBtn">Book Now</button>
-                    <button id="cancelBookingBtn">Cancel</button>
-                </div>
+            </div>
+            
+            <div class="price-details">
+                <p>Base Price: $<span id="basePriceDisplay">0</span></p>
+                <p id="overnightDisplay" style="display: none;">+ Overnight: $<span id="overnightPriceDisplay">0</span></p>
+                <p id="mealDisplay" style="display: none;">+ Meal: $<span id="mealPriceDisplay">0</span></p>
+                <p id="translatorDisplay" style="display: none;">+ Translator: $30</p>
+                <p id="groupDisplay" style="display: none;">+ Private Group: $50</p>
+                <p><strong>Total for 1 person: $<span id="totalPerPerson">0</span></strong></p>
+                <p><strong>Total for <span id="peopleCountDisplay">1</span> people: $<span id="totalFinal">0</span></strong></p>
+            </div>
+            
+            <div>
+                <button id="bookNowBtn">Book Now</button>
+                <button id="cancelBookingBtn">Cancel</button>
             </div>
         </div>
 
