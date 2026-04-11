@@ -48,6 +48,18 @@
                 <label>To Date:</label>
                 <input type="date" id="dateTo">
             </div>
+
+            <!-- Status Filter -->
+            <div class="filter-group">
+                <label>Trip Status:</label>
+                <select id="statusFilter">
+                    <option value="all">All Statuses</option>
+                    <option value="pending approval">Pending Approval</option>
+                    <option value="confirmed">Confirmed</option>
+                    <option value="completed">Completed</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
+            </div>
             
             <button id="applyDateFilter">Apply Filter</button>
             <button id="resetDateFilter">Reset</button>

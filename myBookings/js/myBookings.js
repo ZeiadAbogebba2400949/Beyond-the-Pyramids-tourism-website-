@@ -1,4 +1,4 @@
-// Sample booking data for testing - ALL 6 trips with CORRECT status names
+// Sample booking data for testing (since pages aren't connected yet)
 const sampleBookings = [
     {
         bookingId: "BKG001",
@@ -18,7 +18,7 @@ const sampleBookings = [
         tripName: "Blue Hole Adventure",
         places: ["Blue Hole", "Coral Reefs", "Dahab Beach"],
         bookingDate: "2024-02-20",
-        status: "confirmed",
+        status: "booked",
         peopleCount: 1,
         totalPrice: 45,
         overnight: false,
@@ -54,7 +54,7 @@ const sampleBookings = [
         tripName: "Alexandria Custom Tour",
         places: ["Qayt Bay Castle", "Alexandria Library", "Montaza Palace"],
         bookingDate: "2024-01-28",
-        status: "cancelled",
+        status: "canceled",
         peopleCount: 2,
         totalPrice: 140,
         overnight: true,
@@ -66,7 +66,7 @@ const sampleBookings = [
         tripName: "Nubian Village",
         places: ["Nubian Village", "Nile Boat Ride"],
         bookingDate: "2024-04-01",
-        status: "confirmed",
+        status: "booked",
         peopleCount: 4,
         totalPrice: 220,
         overnight: false,
@@ -82,26 +82,25 @@ let filteredBookings = [];
 const bookingsList = document.getElementById('bookingsList');
 const dateFrom = document.getElementById('dateFrom');
 const dateTo = document.getElementById('dateTo');
+const statusFilter = document.getElementById('statusFilter');
 const applyDateFilter = document.getElementById('applyDateFilter');
 const resetDateFilter = document.getElementById('resetDateFilter');
 const modal = document.getElementById('detailsModal');
 const modalBody = document.getElementById('modalBody');
 const closeModal = document.querySelector('.close-modal');
 
-// Status display configuration - CORRECT STATUS NAMES
+// Status display configuration - covers all possible statuses
 const statusConfig = {
     'pending approval': { text: 'Pending Approval', color: 'orange' },
-    'confirmed': { text: 'Confirmed', color: 'green' },
+    'booked': { text: 'Booked', color: 'green' },
     'completed': { text: 'Completed', color: 'blue' },
-    'cancelled': { text: 'Cancelled', color: 'red' }
+    'canceled': { text: 'Canceled', color: 'red' },
+    'confirmed': { text: 'Confirmed', color: 'green' }
 };
 
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
-    // TEMPORARILY DISABLED: Clear old localStorage data to force using sample data
-    // TODO: Re-enable when pages are connected and real booking data exists
-    // localStorage.removeItem('beyondPyramids_bookings');
-    
+    // Load bookings (use sample data for testing)
     loadBookings();
     attachEventListeners();
     checkLoginStatus();
@@ -110,26 +109,27 @@ document.addEventListener('DOMContentLoaded', function() {
 // Load bookings from localStorage or use sample data
 function loadBookings() {
     // TEMPORARILY DISABLED: Loading from localStorage
-    // TODO: Re-enable when pages are connected and real booking data exists
+    // TODO: Re-enable this when pages are connected and real booking data exists
     /*
-    let storedBookings = JSON.parse(localStorage.getItem('beyondPyramids_bookings'));
+    let stored = localStorage.getItem('beyondPyramids_bookings');
+    let storedBookings = stored ? JSON.parse(stored) : null;
     
     if (storedBookings && storedBookings.length > 0) {
         // Convert stored bookings to match our format
         currentBookings = storedBookings.map(booking => ({
             bookingId: booking.bookingId,
             tripType: booking.tripType || "Day Package",
-            tripName: booking.packageName || booking.tripName,
-            places: booking.places || [booking.location],
+            tripName: booking.packageName,
+            places: [booking.location],
             bookingDate: booking.bookingDate ? booking.bookingDate.split(',')[0] : new Date().toISOString().split('T')[0],
-            status: booking.status || "confirmed",
+            status: booking.status || "booked",
             peopleCount: booking.peopleCount || 1,
             totalPrice: booking.totalPrice,
             overnight: booking.overnight || false,
             meal: booking.meal || false
         }));
     } else {
-        // Use ALL 6 sample bookings
+        // Use sample data for testing
         currentBookings = [...sampleBookings];
     }
     */
@@ -137,13 +137,8 @@ function loadBookings() {
     // TEMPORARILY: Always use sample data
     currentBookings = [...sampleBookings];
     
-    // Show all bookings when no filter is applied
     filteredBookings = [...currentBookings];
     renderBookings();
-    
-    // Debug: Log how many bookings are loaded
-    console.log('Total bookings loaded:', currentBookings.length);
-    console.log('Bookings:', currentBookings);
 }
 
 // Render bookings to the page
@@ -164,9 +159,6 @@ function renderBookings() {
         const card = createBookingCard(booking);
         bookingsList.appendChild(card);
     });
-    
-    // Debug: Log how many bookings are being displayed
-    console.log('Displaying bookings:', filteredBookings.length);
 }
 
 // Create a single booking card
@@ -175,8 +167,9 @@ function createBookingCard(booking) {
     card.className = 'booking-card';
     card.setAttribute('data-id', booking.bookingId);
     
-    // Get status config, default to 'confirmed' if status not recognized
-    const status = statusConfig[booking.status] || { text: 'Confirmed', color: 'green' };
+    const status = statusConfig[booking.status] || { text: booking.status, color: 'gray' };
+    
+    // Format places as comma-separated
     const placesText = Array.isArray(booking.places) ? booking.places.join(', ') : booking.places;
     
     card.innerHTML = `
@@ -195,7 +188,7 @@ function createBookingCard(booking) {
             <p><strong>Total Price:</strong> $${booking.totalPrice}</p>
         </div>
         <div class="booking-footer">
-            <button class="view-details-btn" onclick="showDetails('${booking.bookingId}')">View Trip Details</button>
+            <button class="view-details-btn">View Trip Details</button>
         </div>
     `;
     
@@ -203,16 +196,16 @@ function createBookingCard(booking) {
 }
 
 // Format date for display
-function formatDate(dateString) {
+const formatDate = dateString => {
     if (!dateString) return 'N/A';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-}
+    return new Date(dateString).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+};
 
-// Filter bookings by date range
+// Filter bookings by date range AND status
 function filterByDateRange() {
     const fromDate = dateFrom.value;
     const toDate = dateTo.value;
+    const statusValue = statusFilter.value;
     
     // Start with all bookings
     let filtered = [...currentBookings];
@@ -227,14 +220,25 @@ function filterByDateRange() {
         filtered = filtered.filter(booking => booking.bookingDate <= toDate);
     }
     
+    // Apply status filter if not "all"
+    if (statusValue !== 'all') {
+        filtered = filtered.filter(booking => booking.status === statusValue);
+    }
+    
     filteredBookings = filtered;
     renderBookings();
 }
 
-// Reset date filters - shows ALL bookings
+// Reset all filters - shows ALL bookings
 function resetDateFilters() {
+    // Clear the date input fields
     dateFrom.value = '';
     dateTo.value = '';
+    
+    // Reset status filter to "all"
+    statusFilter.value = 'all';
+    
+    // Reset filtered bookings to show ALL bookings
     filteredBookings = [...currentBookings];
     renderBookings();
 }
@@ -244,7 +248,7 @@ function showDetails(bookingId) {
     const booking = filteredBookings.find(b => b.bookingId === bookingId);
     if (!booking) return;
     
-    const status = statusConfig[booking.status] || { text: 'Confirmed', color: 'green' };
+    const status = statusConfig[booking.status] || { text: booking.status, color: 'gray' };
     const placesText = Array.isArray(booking.places) ? booking.places.join(', ') : booking.places;
     
     modalBody.innerHTML = `
@@ -290,10 +294,21 @@ function closeModalWindow() {
 
 // Attach event listeners
 function attachEventListeners() {
+    // Filter button listeners
     applyDateFilter.addEventListener('click', filterByDateRange);
     resetDateFilter.addEventListener('click', resetDateFilters);
+    statusFilter.addEventListener('change', filterByDateRange);
     closeModal.addEventListener('click', closeModalWindow);
     
+    // Event delegation for "View Trip Details" buttons
+    bookingsList.addEventListener('click', (e) => {
+        if (e.target.classList.contains('view-details-btn')) {
+            const bookingId = e.target.closest('.booking-card').dataset.id;
+            showDetails(bookingId);
+        }
+    });
+    
+    // Close modal when clicking outside of it
     window.addEventListener('click', function(e) {
         if (e.target === modal) {
             closeModalWindow();
@@ -310,7 +325,8 @@ function checkLoginStatus() {
     const authLink = document.getElementById('authLink');
     
     if (isLoggedIn) {
-        const user = JSON.parse(localStorage.getItem('beyondPyramids_currentUser'));
+        let stored = localStorage.getItem('beyondPyramids_currentUser');
+        const user = stored ? JSON.parse(stored) : null;
         authLink.textContent = user ? `Logout (${user.firstName})` : 'Logout';
         authLink.href = '#';
         authLink.onclick = function(e) {
@@ -331,6 +347,3 @@ function checkLoginStatus() {
     authLink.textContent = 'Login';
     authLink.href = 'login.html';
 }
-
-// Make functions global for onclick handlers
-window.showDetails = showDetails;
