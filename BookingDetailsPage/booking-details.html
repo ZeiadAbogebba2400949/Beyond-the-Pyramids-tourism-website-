@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Confirmation - Ancient Egypt Tours</title>
+    <link rel="stylesheet" href="css/BookingDetailsStyle.css">
+</head>
+<body>
+    <header class="main-header">
+        <h1>Your Booking Details</h1>
+        <p>Thank you for booking with Ancient Egypt Tours!</p>
+    </header>
+
+    <main class="booking-container">    
+        
+        <section class="voucher-card">
+            <h2>Booking Confirmed</h2>
+            <p><strong>Confirmation Number:</strong> <span id="voucher-number">EGY-8842-NXL</span></p>
+            <p><strong>Status:</strong> <span id="trip-status" class="status-badge" data-status="cancelled">Cancelled</span></p>
+            <div class="action-buttons">
+                <button id="print-btn">Print Voucher</button>
+                <button id="copy-btn">Copy Number</button>
+            </div>
+        </section>
+
+        <section class="info-section">
+            <h2>Trip Information</h2>
+            <p><strong>Package:</strong> 7-Day Royal Nile Cruise</p>
+            <p><strong>Travel Dates:</strong> October 12, 2026 - October 18, 2026</p>
+            <p><strong>Travelers:</strong> 2 Adults</p>
+        </section>
+
+        <section class="info-section">
+            <h2>Your Itinerary</h2>
+            <ul class="itinerary-list">
+                <li><strong>Day 1:</strong> Arrival in Cairo, Hotel Check-in.</li>
+                <li><strong>Day 2:</strong> Giza Pyramids, Sphinx, and Grand Egyptian Museum.</li>
+                <li><strong>Day 3:</strong> Flight to Luxor, Board Nile Cruise.</li>
+                <li><strong>Day 4-6:</strong> Sailing the Nile (Edfu, Kom Ombo).</li>
+                <li><strong>Day 7:</strong> Aswan disembarkation and departure flight.</li>
+            </ul>
+        </section>
+
+        <section class="info-section payment-breakdown">
+            <h2>Payment Breakdown</h2>
+            <div class="receipt-line">
+                <span>Base Package (2 Adults):</span>
+                <span>$2,100.00</span>
+            </div>
+            <div class="receipt-line">
+                <span>Taxes & Fees (10%):</span>
+                <span>$210.00</span>
+            </div>
+            <div class="receipt-line">
+                <span>Nile Cruise Upgrade:</span>
+                <span>$90.00</span>
+            </div>
+            <hr class="receipt-divider">
+            <div class="receipt-line total-line">
+                <span>Total Paid:</span>
+                <span>$2,400.00</span>
+            </div>
+            <p class="payment-method">Paid via Visa ending in <strong>4242</strong></p>
+        </section>
+
+        <section class="info-section">
+            <button class="accordion-btn">View Cancellation Policy <span>&#9660;</span></button>
+            <div class="accordion-content">
+                <p><strong>Free Cancellation:</strong> You can cancel this booking for a full refund up to 14 days before your travel date.</p>
+                <p><strong>Partial Refund:</strong> Cancellations made between 7 and 13 days prior to departure will incur a 50% cancellation fee.</p>
+                <p><strong>Non-Refundable:</strong> Cancellations made less than 7 days before departure, or no-shows, are strictly non-refundable.</p>
+            </div>
+        </section>
+
+        <section class="info-section contact-info">
+            <h2>Need Help?</h2>
+            <p>Your dedicated travel agent is <strong>Ahmed Hassan</strong>.</p>
+            <p>Email: <a href="mailto:support@ancientegypttours.com">support@ancientegypttours.com</a></p>
+            <p>Phone: +20 100 123 4567</p>
+        </section>
+
+        <section id="review-section" class="info-section" style="display: none;">
+            <h2>How was your trip?</h2>
+            <p>We hope you had an unforgettable experience. Please share your thoughts with us and future travelers!</p>
+            <button class="review-btn">Write a Review</button>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Ancient Egypt Tours. All rights reserved.</p>
+    </footer>
+
+    <script src="js/BookingDetailsScript.js"></script>
+</body>
+</html>
