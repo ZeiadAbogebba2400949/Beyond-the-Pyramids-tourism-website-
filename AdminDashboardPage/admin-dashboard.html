@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Egypt Tours</title>
+    <link rel="stylesheet" href="css/AdminStyle.css">
+</head>
+<body>
+
+    <div class="dashboard-wrapper">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Agency Admin</h2>
+            </div>
+            <ul class="nav-list">
+                <li><a href="#" class="active">Overview</a></li>
+                <li><a href="#">User Management</a></li>
+                <li><a href="#">Package Management</a></li>
+                <li><a href="#">Hotel Management</a></li>
+                <li><a href="#">Transport Management</a></li>
+                <li><a href="#">Guide Management</a></li>
+                <li><a href="#">Reports</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            
+            <header class="top-bar">
+                <div class="welcome-text">
+                    <h1>Dashboard Overview</h1>
+                    <p>Welcome back, <strong>Ali</strong></p>
+                </div>
+                <div class="system-health">
+                    <span class="status-dot"></span> System Status: <strong id="health-text">Excellent</strong>
+                </div>
+            </header>
+
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <h3>Total Users</h3>
+                        <p class="stat-number">1,240</p>
+                    </div>
+                    <span class="trend up">↑ 5.2%</span>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <h3>Total Bookings</h3>
+                        <p class="stat-number">458</p>
+                    </div>
+                    <span class="trend up">↑ 12.1%</span>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <h3>Total Revenue</h3>
+                        <p class="stat-number">$124,500</p>
+                    </div>
+                    <span class="trend up">↑ 8.4%</span>
+                </div>
+            </section>
+
+            <div class="dashboard-row">
+                <section class="card quick-actions">
+                    <h2>Quick Actions</h2>
+                    <div class="action-grid">
+                        <button class="btn-action">Add Package</button>
+                        <button class="btn-action">View Users</button>
+                        <button class="btn-action">Reports</button>
+                        <button class="btn-action">Settings</button>
+                    </div>
+                </section>
+
+                <section class="card analytics">
+                    <h2>Analytics (Revenue)</h2>
+                    <div class="chart-placeholder">
+                        <p>[Chart Visualizing Data Will Load Here]</p>
+                    </div>
+                </section>
+            </div>
+
+            <div class="dashboard-row">
+                <section class="card popular-packages">
+                    <h2>Popular Packages</h2>
+                    <ul class="data-list">
+                        <li><span>Nile Cruise</span> <strong>145</strong></li>
+                        <li><span>Giza Pyramids Tour</span> <strong>98</strong></li>
+                        <li><span>Red Sea Diving</span> <strong>76</strong></li>
+                    </ul>
+                </section>
+
+                <section class="card recent-activity">
+                    <h2>Recent Activities</h2>
+                    <table class="activity-table">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Action</th>
+                                <th>Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Admin Ali</td>
+                                <td>Updated Nile Package</td>
+                                <td>2m ago</td>
+                            </tr>
+                            <tr>
+                                <td>Malak</td>
+                                <td>Added New User</td>
+                                <td>15m ago</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="js/AdminScript.js"></script>
+</body>
+</html>
