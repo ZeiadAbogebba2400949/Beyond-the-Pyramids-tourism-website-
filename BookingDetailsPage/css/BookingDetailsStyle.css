@@ -1,0 +1,187 @@
+/* --- Base Styles --- */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+    background-color: #f9f9f9;
+}
+
+.main-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.booking-container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.voucher-card {
+    background-color: #e8f5e9; 
+    border: 2px dashed #4caf50;
+    padding: 20px;
+    text-align: center;
+    border-radius: 8px;
+    margin-bottom: 25px;
+}
+
+#voucher-number {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #2e7d32;
+    letter-spacing: 2px;
+}
+
+.action-buttons button {
+    margin: 10px 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+    background-color: #0056b3;
+    color: white;
+    border: none;
+    border-radius: 4px;
+}
+
+.action-buttons button:hover {
+    background-color: #004494;
+}
+
+.info-section {
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.itinerary-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.itinerary-list li {
+    margin-bottom: 10px;
+}
+
+.contact-info {
+    background-color: #f1f8ff;
+    padding: 15px;
+    border-radius: 5px;
+    border-bottom: none;
+}
+
+.review-btn {
+    padding: 10px 20px;
+    background-color: #ff9800;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* --- Payment Breakdown Styles --- */
+.receipt-line {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 1.05em;
+}
+
+.receipt-divider {
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 15px 0;
+}
+
+.total-line {
+    font-size: 1.25em;
+    font-weight: bold;
+    color: #333;
+}
+
+.payment-method {
+    font-size: 0.9em;
+    color: #666;
+    text-align: right;
+    margin-top: 5px;
+}
+
+/* --- Accordion Styles --- */
+.accordion-btn {
+    background-color: #f1f8ff;
+    color: #333;
+    cursor: pointer;
+    padding: 15px;
+    width: 100%;
+    text-align: left;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1.1em;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.accordion-btn:hover {
+    background-color: #e2e8f0;
+}
+
+.accordion-content {
+    padding: 0 15px;
+    background-color: white;
+    display: none; 
+    overflow: hidden;
+    border: 1px solid #ddd;
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+}
+
+.accordion-content p {
+    margin: 15px 0;
+}
+
+/* --- Print Styles --- */
+@media print {
+    .action-buttons, .review-btn, header, .accordion-btn {
+        display: none !important;
+    }
+    .booking-container {
+        box-shadow: none;
+        border: none;
+    }
+    .accordion-content {
+        display: block !important; /* Force policy to show when printing */
+        border: none;
+    }
+}
+
+/* --- Dynamic Status Badge Styles --- */
+.status-badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* The 3 different color states */
+.status-completed {
+    background-color: #e0e0e0;
+    color: #616161;
+}
+
+.status-upcoming {
+    background-color: #e3f2fd;
+    color: #1976d2;
+}
+
+.status-cancelled {
+    background-color: #ffebee;
+    color: #d32f2f;
+}
