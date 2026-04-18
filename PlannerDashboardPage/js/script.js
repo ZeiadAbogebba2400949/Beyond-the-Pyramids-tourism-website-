@@ -22,7 +22,7 @@ function displayPackages() {
     }
     
     let html = '<table border="1" cellpadding="8" width="100%">';
-    html += '<tr bgcolor="#f0f0f0"><th>Name</th><th>Type</th><th>Price</th><th>Duration</th><th>Bookings</th><th>Status</th><th>Actions</th></tr>';
+    html += '<tr><th>Name</th><th>Type</th><th>Price</th><th>Duration</th><th>Bookings</th><th>Status</th><th>Actions</th></tr>';
     
     for (let i = 0; i < filtered.length; i++) {
         let p = filtered[i];
@@ -44,7 +44,7 @@ function displayPackages() {
             } else {
                 newPrice = p.price - activeDiscount.value;
             }
-            discountHtml = `<br><small style="color:green;">🔥 $${newPrice.toFixed(2)}</small>`;
+            discountHtml = `<br><small class="discount-price">🔥 $${newPrice.toFixed(2)}</small>`;
         }
         
         let typeText = p.type;

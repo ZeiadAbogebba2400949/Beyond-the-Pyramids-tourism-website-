@@ -23,14 +23,26 @@ function showValues() {
 function showTeam() {
     let container = document.getElementById("team-list");
     if (container) {
-        container.innerHTML = "<div style='border:1px solid #ccc; padding:10px; margin:10px 0;'><strong>Sarah Ahmed</strong><br>Founder & CEO<br>15 years experience</div><div style='border:1px solid #ccc; padding:10px; margin:10px 0;'><strong>Mohamed Ali</strong><br>Head of Operations<br>10 years experience</div><div style='border:1px solid #ccc; padding:10px; margin:10px 0;'><strong>Layla Hassan</strong><br>Customer Experience<br>8 years experience</div><div style='border:1px solid #ccc; padding:10px; margin:10px 0;'><strong>Omar Farouk</strong><br>Tour Director<br>12 years experience</div>";
+        container.innerHTML = `
+            <div class="team-card"><strong>Sarah Ahmed</strong><br>Founder & CEO<br>15 years experience</div>
+            <div class="team-card"><strong>Mohamed Ali</strong><br>Head of Operations<br>10 years experience</div>
+            <div class="team-card"><strong>Layla Hassan</strong><br>Customer Experience<br>8 years experience</div>
+            <div class="team-card"><strong>Omar Farouk</strong><br>Tour Director<br>12 years experience</div>
+        `;
     }
 }
 
 function showStats() {
     let container = document.getElementById("stats-container");
     if (container) {
-        container.innerHTML = "<div style='display:flex; gap:20px; flex-wrap:wrap;'><div style='border:1px solid #ccc; padding:20px; text-align:center; flex:1;'><h3>5000+</h3><p>Happy Travelers</p></div><div style='border:1px solid #ccc; padding:20px; text-align:center; flex:1;'><h3>50+</h3><p>Expert Guides</p></div><div style='border:1px solid #ccc; padding:20px; text-align:center; flex:1;'><h3>100+</h3><p>Destinations</p></div><div style='border:1px solid #ccc; padding:20px; text-align:center; flex:1;'><h3>4.9</h3><p>Customer Rating</p></div></div>";
+        container.innerHTML = `
+            <div class="stats-grid">
+                <div class="stat-item"><h3>5000+</h3><p>Happy Travelers</p></div>
+                <div class="stat-item"><h3>50+</h3><p>Expert Guides</p></div>
+                <div class="stat-item"><h3>100+</h3><p>Destinations</p></div>
+                <div class="stat-item"><h3>4.9</h3><p>Customer Rating</p></div>
+            </div>
+        `;
     }
 }
 

@@ -139,7 +139,7 @@ function showReviews() {
         for (let s = 0; s < 5; s++) {
             stars += s < r.rating ? "★" : "☆";
         }
-        html += `<div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
+        html += `<div class="review-card">
                     ${stars}<br>
                     ${r.comment}<br>
                     <small>${r.date}</small>
