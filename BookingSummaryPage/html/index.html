@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Summary - Egypt Tourism Hub</title>
+</head>
+<body>  
+    <header>
+        <nav>
+            <div class="logo">Egypt Tourism Hub</div>
+            <ul>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="my-bookings.html">My Bookings</a></li>
+                <li><a href="profile.html">Profile</a></li>
+                <li><a href="login.html">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+       
+        <section id="summary-header">
+            <h1>Booking Summary</h1>
+            <p id="booking-status">Status: <span id="status-text">Pending</span></p>
+        </section>
+
+    
+        <section id="reference-section">
+            <h3>Booking Reference</h3>
+            <p id="ref-number">---</p>
+        </section>
+
+       
+        <section id="details-section">
+            <h3>Trip Details</h3>
+            <div id="details-content"></div>
+        </section>
+
+       
+        <section id="price-section">
+            <h3>Price Breakdown</h3>
+            <div id="price-content"></div>
+        </section>
+
+       
+        <section id="policy-section">
+            <h3>Cancellation Policy</h3>
+            <div id="policy-content">
+                <p>Free cancellation up to 24 hours before the trip</p>
+                <p>50% refund for cancellations within 24 hours</p>
+                <p>No refund for no-show</p>
+            </div>
+        </section>
+
+       
+        <section id="action-section">
+            <button id="confirm-booking">Confirm Booking</button>
+            <button id="edit-booking">Edit Booking</button>
+            <button id="payment-booking">Proceed to Payment</button>
+            <button id="cancel-booking">Cancel</button>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Egypt Tourism Hub</p>
+    </footer>
+
+     <script src="../js/script.js"></script>
+</body>
+</html>
