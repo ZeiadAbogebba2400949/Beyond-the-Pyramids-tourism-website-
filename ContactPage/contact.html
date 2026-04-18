@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Agency</title>
+    <link rel="stylesheet" href="css/ContactStyle.css">
+</head>
+<body>
+
+    <header class="public-navbar">
+        <div class="logo">🌍 Travel Agency</div>
+        <nav>
+            <a href="#">Home</a>
+            <a href="#">Tours</a>
+            <a href="#">About Us</a>
+            <a href="#" class="active">Contact</a>
+        </nav>
+    </header>
+
+    <main class="contact-container">
+        <div class="contact-header">
+            <h1>Get in Touch</h1>
+            <p>Have questions about your next adventure? Send us a message and our team will get back to you within 24 hours.</p>
+        </div>
+
+        <div class="contact-content">
+            
+            <section class="contact-info">
+                <h2>Contact Information</h2>
+                <p>Fill up the form and our team will get back to you within 24 hours.</p>
+                
+                <div class="info-items">
+                    <div class="info-item">
+                        <span class="icon">📍</span>
+                        <p>123 Nile Street, Cairo, Egypt</p>
+                    </div>
+                    <div class="info-item">
+                        <span class="icon">📞</span>
+                        <p>+20 123 456 7890</p>
+                    </div>
+                    <div class="info-item">
+                        <span class="icon">✉️</span>
+                        <p>support@travelagency.com</p>
+                    </div>
+                </div>
+
+                <div class="map-container">
+                    <img src="https://via.placeholder.com/400x200?text=Google+Maps+Integration" alt="Map Location">
+                </div>
+            </section>
+
+            <section class="contact-form-section">
+                <form id="contact-form">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" placeholder="John Doe" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" placeholder="john@example.com" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <input type="text" id="subject" placeholder="e.g., Tour Inquiry" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" rows="5" placeholder="How can we help you?" required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-submit">Send Message</button>
+                </form>
+            </section>
+
+        </div>
+    </main>
+
+    <script src="js/ContactScript.js"></script>
+</body>
+</html>

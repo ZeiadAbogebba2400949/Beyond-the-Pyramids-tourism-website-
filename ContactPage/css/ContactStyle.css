@@ -1,0 +1,173 @@
+/* =========================================
+   1. GLOBAL STYLES
+   ========================================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f4f7f6;
+    color: #333;
+}
+
+/* =========================================
+   2. PUBLIC NAVBAR
+   ========================================= */
+.public-navbar {
+    background-color: #fff;
+    padding: 20px 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.public-navbar .logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #0056b3;
+}
+
+.public-navbar nav a {
+    margin-left: 20px;
+    text-decoration: none;
+    color: #555;
+    font-weight: 500;
+}
+
+.public-navbar nav a.active {
+    color: #0056b3;
+    border-bottom: 2px solid #0056b3;
+}
+
+/* =========================================
+   3. MAIN CONTAINER & HEADER
+   ========================================= */
+.contact-container {
+    max-width: 1100px;
+    margin: 50px auto;
+    padding: 0 20px;
+}
+
+.contact-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.contact-header h1 {
+    font-size: 36px;
+    color: #222;
+    margin-bottom: 10px;
+}
+
+.contact-header p {
+    color: #666;
+    font-size: 16px;
+}
+
+/* =========================================
+   4. TWO-COLUMN LAYOUT
+   ========================================= */
+.contact-content {
+    display: flex;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    overflow: hidden;
+}
+
+/* LEFT SIDE: Info */
+.contact-info {
+    flex: 1;
+    background-color: #0056b3;
+    color: #fff;
+    padding: 40px;
+}
+
+.contact-info h2 {
+    margin-bottom: 10px;
+}
+
+.contact-info p {
+    margin-bottom: 30px;
+    color: #d1e2ff;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.info-item .icon {
+    font-size: 20px;
+    margin-right: 15px;
+}
+
+.info-item p {
+    margin: 0; /* Override previous p margin */
+    color: #fff;
+    font-weight: 500;
+}
+
+.map-container {
+    margin-top: 40px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.map-container img {
+    width: 100%;
+    display: block;
+}
+
+/* RIGHT SIDE: Form */
+.contact-form-section {
+    flex: 1.5; /* Makes the form slightly wider than the info side */
+    padding: 40px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #444;
+}
+
+.form-group input, .form-group textarea {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 15px;
+    transition: border-color 0.3s;
+}
+
+.form-group input:focus, .form-group textarea:focus {
+    border-color: #0056b3;
+    outline: none;
+}
+
+.btn-submit {
+    background-color: #0056b3;
+    color: white;
+    padding: 14px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s;
+}
+
+.btn-submit:hover {
+    background-color: #003d82;
+}
