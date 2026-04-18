@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guide Management</title>
+    <link rel="stylesheet" href="css/GuideStyle.css">
+
+</head>
+<body>
+   <div class="dashboard-wrapper">
+
+    <aside class="sidebar">
+        <h2>Agency Admin</h2>
+
+        <ul class="nav-list">
+            <li><a href="#">Overview</a></li>
+            <li><a href="#">User Management</a></li>
+            <li><a href="#">Package Management</a></li>
+            <li><a href="#">Hotel Management</a></li>
+            <li><a href="#">Transport Management</a></li>
+
+            <li><a href="#" class="active">Guide Management</a></li>
+
+            <li><a href="#">Reports</a></li>
+        </ul>
+    </aside>
+    <main class="main-content">
+
+        <header class="top-bar">
+            <div class="page-title">
+                <h1>Guide Management</h1>
+                <p>Manage tour guides, languages, and availability.</p>
+            </div>
+            <button class="btn-primary">+ Add Guide</button>
+        </header>
+
+        <section class="controls-section">
+           <input type="text" class="search-bar" id="search-input" placeholder="Search guides by name...">
+
+           <select id="status-filter" class="filter-dropdown">
+               <option value="all">All Statuses</option>
+               <option value="available">Available</option>
+               <option value="on-tour">On Tour</option>
+               <option value="inactive">Inactive</option>
+           </select>
+        </section>
+
+        <section class="table-container">
+            <table class="data-table" id="guide-table">
+                    
+                    <thead>
+                        <tr>
+                            <th>Guide Name</th>
+                            <th>Languages</th>
+                            <th>Rating</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    
+                    <tbody>
+                        
+                        <tr class="guide-row" data-status="available">
+                            <td><strong>Ahmed Hassan</strong></td>
+                            <td>English, Arabic</td>
+                            <td>⭐ 4.9</td>
+                            <td><span class="badge">Available</span></td>
+                            <td>
+                                <button class="btn-edit">Edit</button>
+                                <button class="btn-delete">Delete</button>
+                            </td>
+                        </tr>
+                        
+                        <tr class="guide-row" data-status="on-tour">
+                            <td><strong>Sara Mahmoud</strong></td>
+                            <td>Spanish, English</td>
+                            <td>⭐ 4.8</td>
+                            <td><span class="badge">On Tour</span></td>
+                            <td>
+                                <button class="btn-edit">Edit</button>
+                                <button class="btn-delete">Delete</button>
+                            </td>
+                        </tr>
+
+                        <tr class="guide-row" data-status="inactive">
+                            <td><strong>Youssef Ali</strong></td>
+                            <td>French, Arabic</td>
+                            <td>⭐ 4.5</td>
+                            <td><span class="badge">Inactive</span></td>
+                            <td>
+                                <button class="btn-edit">Edit</button>
+                                <button class="btn-delete">Delete</button>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+        </section>
+
+    </main>
+    
+   </div>
+
+   <div id="add-guide-modal" class="modal-overlay">
+        
+        <div class="modal-content">
+            <h2>Add New Guide</h2>
+            
+            <form id="add-guide-form">
+                
+                <div class="form-group">
+                    <label for="new-name">Guide Name:</label>
+                    <input type="text" id="new-name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="new-lang">Languages:</label>
+                    <input type="text" id="new-lang" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="new-status">Status:</label>
+                    <select id="new-status">
+                        <option value="available">Available</option>
+                        <option value="on-tour">On Tour</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" id="btn-cancel">Cancel</button>
+                    <button type="submit" id="btn-save">Save Guide</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</body>
+<script src="js/GuideScript.js"></script>
+</html>
