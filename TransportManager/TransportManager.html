@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Transportation Manager - Beyond the Pyramids</title>
+    <link rel="stylesheet" href="css/TransportManager.css">
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        <div class="logo">Beyond the Pyramids</div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="transportManager.html" class="active">Dashboard</a>
+            <a href="profile.html">Profile</a>
+            <a href="login.html" id="authLink">Login</a>
+        </div>
+    </div>
+
+    <!-- Page Title -->
+    <div class="page-title">
+        <h1>Transportation Manager Dashboard</h1>
+        <p>Manage vehicles, drivers, and transport bookings</p>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="stats-container">
+        <div class="stat-card">
+            <h3>Total Vehicles</h3>
+            <p id="totalVehicles">0</p>
+        </div>
+        <div class="stat-card">
+            <h3>Available Vehicles</h3>
+            <p id="availableVehicles">0</p>
+        </div>
+        <div class="stat-card">
+            <h3>Total Drivers</h3>
+            <p id="totalDrivers">0</p>
+        </div>
+        <div class="stat-card">
+            <h3>Active Drivers</h3>
+            <p id="activeDrivers">0</p>
+        </div>
+        <div class="stat-card">
+            <h3>Pending Bookings</h3>
+            <p id="pendingBookings">0</p>
+        </div>
+        <div class="stat-card">
+            <h3>Trips This Month</h3>
+            <p id="tripsThisMonth">0</p>
+        </div>
+    </div>
+
+    <!-- SECTION 1: VEHICLES MANAGEMENT -->
+    <div class="report-section">
+        <h2>🚗 Vehicles Management</h2>
+        <div class="section-filters">
+            <select id="vehicleStatusFilter">
+                <option value="all">All Status</option>
+                <option value="available">Available</option>
+                <option value="in-use">In Use</option>
+                <option value="maintenance">Maintenance</option>
+            </select>
+            <select id="vehicleTypeFilter">
+                <option value="all">All Types</option>
+                <option value="Bus">Bus</option>
+                <option value="Van">Van</option>
+                <option value="Car">Car</option>
+                <option value="Minibus">Minibus</option>
+            </select>
+            <button id="applyVehicleFilter">Apply Filter</button>
+            <button id="addVehicleBtn" class="add-btn">+ Add Vehicle</button>
+        </div>
+        <div class="table-container">
+            <table id="vehiclesTable">
+                <thead>
+                    <tr><th>ID</th><th>Type</th><th>License Plate</th><th>Capacity</th><th>Driver</th><th>Status</th><th>Actions</th></tr>
+                </thead>
+                <tbody id="vehiclesTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- SECTION 2: DRIVERS MANAGEMENT -->
+    <div class="report-section">
+        <h2>👨‍✈️ Drivers Management</h2>
+        <div class="section-filters">
+            <select id="driverStatusFilter">
+                <option value="all">All Status</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+                <option value="on-trip">On Trip</option>
+            </select>
+            <button id="applyDriverFilter">Apply Filter</button>
+            <button id="addDriverBtn" class="add-btn">+ Add Driver</button>
+        </div>
+        <div class="table-container">
+            <table id="driversTable">
+                <thead>
+                    <tr><th>Name</th><th>Phone</th><th>License</th><th>Vehicle</th><th>Status</th><th>Trips</th><th>Actions</th></tr>
+                </thead>
+                <tbody id="driversTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- SECTION 3: TRANSPORT BOOKINGS -->
+    <div class="report-section">
+        <h2>📋 Transport Bookings</h2>
+        <div class="section-filters">
+            <select id="bookingStatusFilter">
+                <option value="all">All Status</option>
+                <option value="pending">Pending</option>
+                <option value="confirmed">Confirmed</option>
+                <option value="completed">Completed</option>
+                <option value="cancelled">Cancelled</option>
+            </select>
+            <label>From:</label>
+            <input type="date" id="bookingStartDate">
+            <label>To:</label>
+            <input type="date" id="bookingEndDate">
+            <button id="applyBookingFilter">Apply Filter</button>
+        </div>
+        <div class="table-container">
+            <table id="bookingsTable">
+                <thead>
+                    <tr><th>ID</th><th>Trip</th><th>Date</th><th>Pickup</th><th>Dropoff</th><th>Pax</th><th>Status</th><th>Actions</th></tr>
+                </thead>
+                <tbody id="bookingsTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- SECTION 4: VEHICLE AVAILABILITY -->
+    <div class="report-section">
+        <h2>📅 Vehicle Availability</h2>
+        <div class="section-filters">
+            <label>Check Date:</label>
+            <input type="date" id="availabilityDate">
+            <button id="checkAvailabilityBtn">Check Availability</button>
+        </div>
+        <div id="availabilityResult" class="availability-result"></div>
+    </div>
+
+    <!-- MODAL: Add/Edit Vehicle -->
+    <div id="vehicleModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <div class="modal-header"><h2 id="vehicleModalTitle">Add Vehicle</h2><span class="close-modal">&times;</span></div>
+            <div class="modal-body">
+                <input type="hidden" id="vehicleId">
+                <input type="text" id="vehicleType" placeholder="Type (Bus/Van/Car/Minibus)" required>
+                <input type="text" id="vehiclePlate" placeholder="License Plate" required>
+                <input type="number" id="vehicleCapacity" placeholder="Capacity" required>
+                <select id="vehicleStatusSelect"><option value="available">Available</option><option value="in-use">In Use</option><option value="maintenance">Maintenance</option></select>
+                <div class="form-buttons"><button id="saveVehicleBtn">Save</button><button id="cancelVehicleBtn">Cancel</button></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Add/Edit Driver -->
+    <div id="driverModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <div class="modal-header"><h2 id="driverModalTitle">Add Driver</h2><span class="close-driver-modal">&times;</span></div>
+            <div class="modal-body">
+                <input type="hidden" id="driverId">
+                <input type="text" id="driverName" placeholder="Full Name" required>
+                <input type="text" id="driverPhone" placeholder="Phone Number" required>
+                <input type="text" id="driverLicense" placeholder="License Number" required>
+                <select id="driverStatusSelect"><option value="active">Active</option><option value="inactive">Inactive</option><option value="on-trip">On Trip</option></select>
+                <select id="driverVehicleAssign"><option value="">Assign to Vehicle (Optional)</option></select>
+                <div class="form-buttons"><button id="saveDriverBtn">Save</button><button id="cancelDriverBtn">Cancel</button></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Confirm Booking -->
+    <div id="confirmModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <div class="modal-header"><h2>Confirm Booking</h2><span class="close-confirm-modal">&times;</span></div>
+            <div class="modal-body">
+                <p id="confirmBookingDetails"></p>
+                <label>Select Vehicle:</label>
+                <select id="confirmVehicleSelect"></select>
+                <label>Select Driver:</label>
+                <select id="confirmDriverSelect"></select>
+                <div class="form-buttons"><button id="confirmBookingBtn">Confirm</button><button id="cancelConfirmBtn">Cancel</button></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Reject Booking -->
+    <div id="rejectModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <div class="modal-header"><h2>Reject Booking</h2><span class="close-reject-modal">&times;</span></div>
+            <div class="modal-body">
+                <p>Are you sure you want to reject this booking?</p>
+                <label>Reason:</label>
+                <input type="text" id="rejectReason" placeholder="Reason for rejection">
+                <div class="form-buttons"><button id="confirmRejectBtn">Reject</button><button id="cancelRejectBtn">Cancel</button></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>&copy; 2025 Beyond the Pyramids</p>
+    </div>
+
+    <script src="js/TransportManager.js"></script>
+</body>
+
+</html>
