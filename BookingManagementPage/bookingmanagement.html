@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Management </title>
+    <link rel="stylesheet" href="bookingmanagement.css">
+</head>
+
+<body>
+
+    <aside>
+        <h3>Egypt Tourism Hub</h3>
+        <nav>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="packages.html">Package Management</a>
+            <a href="hotels.html">Hotel Management</a>
+            <a href="transport.html">Transportation Management</a>
+            <a href="guides.html">Guide Management</a>
+            <a href="users.html">User Management</a>
+            <a href="bookings.html" class="active">Booking Management</a>
+            <a href="reports.html">Reports & Analytics</a>
+        </nav>
+    </aside>
+
+    <main>
+
+        <header>
+            <h1>Booking Management</h1>
+            <div>
+                <span id="pendingCount" class="badge">Pending: 0</span>
+                <span id="confirmedCount" class="badge">Confirmed: 0</span>
+            </div>
+        </header>
+
+        <section class="stats">
+            <article>
+                <h3>Total Bookings</h3>
+                <p id="totalBookings">0</p>
+            </article>
+            <article>
+                <h3>Total Revenue</h3>
+                <p id="totalRevenue">0 EGP</p>
+            </article>
+            <article>
+                <h3>Completed Trips</h3>
+                <p id="completedCount">0</p>
+            </article>
+        </section>
+
+        <section class="filters">
+            <input type="text" id="searchInput" placeholder="Search...">
+            <select id="statusFilter">
+                <option value="all">All Status</option>
+                <option value="pending">Pending</option>
+                <option value="confirmed">Confirmed</option>
+                <option value="completed">Completed</option>
+                <option value="cancelled">Cancelled</option>
+            </select>
+            <select id="typeFilter">
+                <option value="all">All Types</option>
+                <option value="single">Single Location</option>
+                <option value="day">Day Package</option>
+                <option value="week">Week Package</option>
+                <option value="custom">Custom Trip</option>
+            </select>
+        </section>
+
+        <section id="bookingsContainer">
+            <!-- Bookings will load here -->
+        </section>
+
+    </main>
+
+    <!-- View Booking Details Modal -->
+    <dialog id="viewModal">
+        <header>
+            <h3>Booking Details</h3>
+            <button class="close">&times;</button>
+        </header>
+        <section id="viewDetails">
+            <!-- Dynamic content -->
+        </section>
+        <footer>
+            <button id="closeViewBtn" class="btn-secondary">Close</button>
+        </footer>
+    </dialog>
+
+    <!-- Approve/Confirm Booking Modal -->
+    <dialog id="approveModal">
+        <header>
+            <h3>Confirm Booking</h3>
+            <button class="close">&times;</button>
+        </header>
+        <section>
+            <p>Confirm booking for <strong id="approveBookingName"></strong>?</p>
+            <label>Add notes (optional):</label>
+            <textarea id="approveNotes" rows="3" placeholder="Any special instructions..."></textarea>
+        </section>
+        <footer>
+            <button id="cancelApproveBtn" class="btn-secondary">Cancel</button>
+            <button id="confirmApproveBtn" class="btn-success">Confirm Booking</button>
+        </footer>
+    </dialog>
+
+    <!-- Reject/Cancel Booking Modal -->
+    <dialog id="rejectModal">
+        <header>
+            <h3>Cancel Booking</h3>
+            <button class="close">&times;</button>
+        </header>
+        <section>
+            <p>Cancel booking for <strong id="rejectBookingName"></strong>?</p>
+            <label>Reason for cancellation *</label>
+            <textarea id="rejectReason" rows="3" required placeholder="Please provide a reason..."></textarea>
+        </section>
+        <footer>
+            <button id="cancelRejectBtn" class="btn-secondary">Go Back</button>
+            <button id="confirmRejectBtn" class="btn-danger">Cancel Booking</button>
+        </footer>
+    </dialog>
+
+    <!-- Complete Booking Modal -->
+    <dialog id="completeModal">
+        <header>
+            <h3>Mark as Completed</h3>
+            <button class="close">&times;</button>
+        </header>
+        <section>
+            <p>Mark <strong id="completeBookingName"></strong> as completed?</p>
+            <label>Customer feedback (optional):</label>
+            <textarea id="completeFeedback" rows="3" placeholder="Any feedback from the customer..."></textarea>
+        </section>
+        <footer>
+            <button id="cancelCompleteBtn" class="btn-secondary">Cancel</button>
+            <button id="confirmCompleteBtn" class="btn-success">Mark Completed</button>
+        </footer>
+    </dialog>
+
+    <!-- Template for booking card -->
+    <template id="bookingCardTemplate">
+        <article class="booking-card">
+            <div class="booking-header">
+                <span class="booking-number"></span>
+                <span class="booking-status"></span>
+            </div>
+            <div class="booking-body">
+                <h4 class="booking-package"></h4>
+                <p class="booking-customer"></p>
+                <p class="booking-dates"></p>
+                <p class="booking-price"></p>
+                <p class="booking-travelers"></p>
+            </div>
+            <footer class="booking-actions">
+                <button class="view-btn">View Details</button>
+                <button class="approve-btn">Approve</button>
+                <button class="reject-btn">Cancel</button>
+                <button class="complete-btn">Complete</button>
+            </footer>
+        </article>
+    </template>
+
+    <script src="bookingmanagement.js"></script>
+
+</body>
+
+</html>
