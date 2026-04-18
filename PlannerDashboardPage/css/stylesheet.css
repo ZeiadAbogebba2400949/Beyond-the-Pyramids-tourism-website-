@@ -1,0 +1,86 @@
+body {
+    margin: 0;
+    font-family: sans-serif;
+    line-height: 1.6;
+}
+
+header {
+    border-bottom: 2px solid black;
+    padding: 10px 20px;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+    gap: 20px;
+}
+
+main {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+section {
+    border: 1px solid black;
+    margin-bottom: 20px;
+    padding: 20px;
+}
+
+h3 {
+    margin-top: 0;
+    border-bottom: 1px solid black;
+    padding-bottom: 5px;
+}
+
+form div {
+    margin-bottom: 10px;
+}
+
+form label {
+    display: inline-block;
+    width: 120px;
+}
+
+input, select {
+    padding: 5px;
+    border: 1px solid black;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    border: 1px solid black;
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: #f0f0f0;
+}
+
+.discount-price {
+    font-weight: bold;
+    color: green;
+}
+
+#stats p {
+    border: 1px solid #ccc;
+    padding: 10px;
+    background-color: #fafafa;
+}
+
+footer {
+    border-top: 2px solid black;
+    padding: 20px;
+    text-align: center;
+}
