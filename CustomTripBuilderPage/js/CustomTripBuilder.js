@@ -1,4 +1,4 @@
-//Data
+
 
 var DESTINATIONS = [
     { id: "giza", name: "Giza Pyramids", price: 45 },
@@ -40,14 +40,14 @@ var GUIDES = [
 var LANGUAGES = ["English", "Arabic", "French", "German", "Spanish", "Italian", "Japanese", "Chinese", "Russian"];
 var SPECS = ["Ancient History", "Islamic Architecture", "Marine Biology", "Photography Tours", "Adventure", "Food & Culture"];
 
-//States
+
 
 var currentStep = 0;
 var selectedDests = [];
 var selectedTransport = "";
 var selectedGuide = "";
 
-//Init
+
 
 document.addEventListener("DOMContentLoaded", function () {
     buildStep1();
@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", function () {
     showStep(0);
 });
 
-//Navigation
+
 
 function showStep(n) {
     currentStep = n;
@@ -96,7 +96,7 @@ function prevStep() {
     if (currentStep > 0) showStep(currentStep - 1);
 }
 
-//Validation (only destinations, dates, and terms are required) the rest is optional
+
 
 function validateStep(step) {
     hideAllErrors();
@@ -130,7 +130,7 @@ function hideAllErrors() {
     for (var i = 0; i < errs.length; i++) { errs[i].classList.remove("show"); errs[i].textContent = ""; }
 }
 
-//Step 1: Destinations
+
 
 function buildStep1() {
     var grid = document.getElementById("dest-grid");
@@ -138,7 +138,7 @@ function buildStep1() {
         var card = document.createElement("div");
         card.className = "dest-card";
         card.dataset.id = DESTINATIONS[i].id;
-        card.innerHTML = "<strong>" + DESTINATIONS[i].name + "</strong><br>$" + DESTINATIONS[i].price;
+        card.innerHTML = "<strong>" + DESTINATIONS[i].name + "</strong><br>EGP " + DESTINATIONS[i].price;
         card.addEventListener("click", (function (id) {
             return function () { toggleDest(id); };
         })(DESTINATIONS[i].id));
@@ -160,7 +160,7 @@ function toggleDest(id) {
     recalcPrice();
 }
 
-//Step 2: Dates
+
 
 function onDateChange() {
     var startVal = document.getElementById("trip-start").value;
@@ -184,13 +184,13 @@ function getDuration() {
     return diff > 0 ? diff : 0;
 }
 
-//Step 3: Accommodation
+
 
 function buildStep3() {
     var sel1 = document.getElementById("acc-type");
     sel1.innerHTML = '<option value="">-- Select Type --</option>';
     for (var i = 0; i < ACC_TYPES.length; i++) {
-        sel1.innerHTML += '<option value="' + ACC_TYPES[i].id + '">' + ACC_TYPES[i].name + ' - $' + ACC_TYPES[i].price + '/night</option>';
+        sel1.innerHTML += '<option value="' + ACC_TYPES[i].id + '">' + ACC_TYPES[i].name + ' - EGP ' + ACC_TYPES[i].price + '/night</option>';
     }
     var sel2 = document.getElementById("acc-room");
     sel2.innerHTML = '<option value="">-- Select Room --</option>';
@@ -199,7 +199,7 @@ function buildStep3() {
     }
 }
 
-//Step 4: Transportation
+
 
 function buildStep4() {
     var c = document.getElementById("transport-cards");
@@ -207,7 +207,7 @@ function buildStep4() {
         var card = document.createElement("div");
         card.className = "option-card";
         card.dataset.id = TRANSPORT[i].id;
-        card.innerHTML = "<strong>" + TRANSPORT[i].name + "</strong><br>$" + TRANSPORT[i].price + "/day";
+        card.innerHTML = "<strong>" + TRANSPORT[i].name + "</strong><br>EGP " + TRANSPORT[i].price + "/day";
         card.addEventListener("click", (function (id) {
             return function () {
                 selectedTransport = id;
@@ -220,7 +220,7 @@ function buildStep4() {
     }
 }
 
-//Step 5: Guide
+
 
 function buildStep5() {
     var c = document.getElementById("guide-cards");
@@ -228,7 +228,7 @@ function buildStep5() {
         var card = document.createElement("div");
         card.className = "option-card";
         card.dataset.id = GUIDES[i].id;
-        card.innerHTML = "<strong>" + GUIDES[i].name + "</strong><br>$" + GUIDES[i].price + "/day";
+        card.innerHTML = "<strong>" + GUIDES[i].name + "</strong><br>EGP " + GUIDES[i].price + "/day";
         card.addEventListener("click", (function (id) {
             return function () {
                 selectedGuide = id;
@@ -249,7 +249,7 @@ function buildStep5() {
     for (var i = 0; i < SPECS.length; i++) { spec.innerHTML += '<option value="' + SPECS[i] + '">' + SPECS[i] + '</option>'; }
 }
 
-//Price
+
 
 function recalcPrice() {
     var days = getDuration();
@@ -284,14 +284,14 @@ function recalcPrice() {
         for (var i = 0; i < GUIDES.length; i++) { if (GUIDES[i].id === selectedGuide) guideTotal = GUIDES[i].price * days; }
     }
 
-    document.getElementById("price-dest").textContent = "$" + destTotal;
-    document.getElementById("price-acc").textContent = "$" + Math.round(accTotal);
-    document.getElementById("price-trans").textContent = "$" + transTotal;
-    document.getElementById("price-guide").textContent = "$" + guideTotal;
-    document.getElementById("price-total").textContent = "$" + (destTotal + Math.round(accTotal) + transTotal + guideTotal);
+    document.getElementById("price-dest").textContent = "EGP " + destTotal;
+    document.getElementById("price-acc").textContent = "EGP " + Math.round(accTotal);
+    document.getElementById("price-trans").textContent = "EGP " + transTotal;
+    document.getElementById("price-guide").textContent = "EGP " + guideTotal;
+    document.getElementById("price-total").textContent = "EGP " + (destTotal + Math.round(accTotal) + transTotal + guideTotal);
 }
 
-//Review
+
 
 function buildReview() {
     var h = "";
@@ -299,7 +299,7 @@ function buildReview() {
     h += "<h3>Destinations</h3>";
     for (var i = 0; i < selectedDests.length; i++) {
         for (var j = 0; j < DESTINATIONS.length; j++) {
-            if (DESTINATIONS[j].id === selectedDests[i]) h += "<p>" + DESTINATIONS[j].name + " - $" + DESTINATIONS[j].price + "</p>";
+            if (DESTINATIONS[j].id === selectedDests[i]) h += "<p>" + DESTINATIONS[j].name + " - EGP " + DESTINATIONS[j].price + "</p>";
         }
     }
 
@@ -331,10 +331,43 @@ function buildReview() {
     document.getElementById("review-body").innerHTML = h;
 }
 
-//Submit
+
 
 function submitTrip() {
     if (!validateStep(5)) return;
-    localStorage.removeItem("btp_draft");
-    alert("Trip submitted successfully!");
+
+    // Construct the booking object for the purchase flow
+    const totalDisplay = document.getElementById("price-total").textContent;
+    const total = parseInt(totalDisplay.replace("EGP ", "").replace(/,/g, "")) || 0;
+    const start = document.getElementById("trip-start").value;
+    const end = document.getElementById("trip-end").value;
+    
+    // Get destination names for the summary
+    const destNames = selectedDests.map(id => {
+        const d = DESTINATIONS.find(dest => dest.id === id);
+        return d ? d.name : id;
+    }).join(", ");
+
+    const currentBooking = {
+        packageName: "Custom Architect Journey",
+        location: destNames,
+        image: "../imagesUsed/custom-trip-hero.jpg", // Placeholder for custom architecture
+        date: start + " to " + end,
+        travelers: 1, 
+        tier: "Architect Custom",
+        totalPrice: total,
+        basePrice: total,
+        timestamp: new Date().toISOString(),
+        isCustom: true
+    };
+
+    // Save to localStorage so Booking Summary can pick it up
+    localStorage.setItem('currentBooking', JSON.stringify(currentBooking));
+
+    if (window.AppStorage) {
+        AppStorage.removeItem("btp_draft");
+    }
+    
+    // Redirect to Summary
+    window.location.href = "../BookingSummaryPage/BookingSummary.html";
 }

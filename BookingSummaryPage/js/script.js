@@ -1,261 +1,156 @@
-const mockBookingData = {
-    bookingId: "BK" + Date.now(),
-    location: {
-        id: 1,
-        name: "The Great Pyramids of Giza"
-    },
-    visitDate: "2024-05-15",
-    timeSlot: {
-        id: 1,
-        time: "10:00 AM"
-    },
-    quantity: 2,
-    guide: {
-        id: 101,
-        name: "John Sturgis",
-        fee: 50
-    },
-    basePricePerPerson: 25,
-    status: "pending",
-    bookingDate: new Date().toISOString()
-};
-
-function calculateTotals() {
-    const baseTotal = mockBookingData.basePricePerPerson * mockBookingData.quantity;
-    const guideFee = mockBookingData.guide ? mockBookingData.guide.fee : 0;
-    const grandTotal = baseTotal + guideFee;
-    
-    return {
-        baseTotal: baseTotal,
-        guideFee: guideFee,
-        grandTotal: grandTotal
-    };
-}
-
-function displayReference() {
-    const refElement = document.getElementById("ref-number");
-    if (refElement) {
-        refElement.textContent = mockBookingData.bookingId;
-    }
-}
-
-function displayTripDetails() {
-    const container = document.getElementById("details-content");
-    if (!container) return;
-    
-    const guideText = mockBookingData.guide 
-        ? `${mockBookingData.guide.name} ($${mockBookingData.guide.fee})`
-        : "No guide selected";
-    
-    const detailsHTML = `
-        <p><strong>Location:</strong> ${mockBookingData.location.name}</p>
-        <p><strong>Date:</strong> ${mockBookingData.visitDate}</p>
-        <p><strong>Time:</strong> ${mockBookingData.timeSlot.time}</p>
-        <p><strong>Number of People:</strong> ${mockBookingData.quantity}</p>
-        <p><strong>Tourist Guide:</strong> ${guideText}</p>
-        <p><strong>Booking Date:</strong> ${new Date(mockBookingData.bookingDate).toLocaleDateString()}</p>
-    `;
-    
-    container.innerHTML = detailsHTML;
-}
-
-function displayPriceBreakdown() {
-    const container = document.getElementById("price-content");
-    if (!container) return;
-    
-    const totals = calculateTotals();
-    
-    const priceHTML = `
-        <p><strong>Base Price:</strong> $${mockBookingData.basePricePerPerson} × ${mockBookingData.quantity} = $${totals.baseTotal}</p>
-        <p><strong>Guide Fee:</strong> $${totals.guideFee}</p>
-        <p><strong>Taxes & Fees:</strong> $0 (included)</p>
-        <hr>
-        <p><strong>Total Amount:</strong> $${totals.grandTotal}</p>
-    `;
-    
-    container.innerHTML = priceHTML;
-}
-
-function displayStatus() {
-    const statusElement = document.getElementById("status-text");
-    if (statusElement) {
-        const status = mockBookingData.status;
-        const statusText = status === "pending" ? "Pending Confirmation" : "Confirmed";
-        statusElement.textContent = statusText;
-    }
-}
 
 
-function handleConfirmBooking() {
-    const confirmResult = confirm("Are you sure you want to confirm this booking?");
-    
-    if (confirmResult) {
-       
-        mockBookingData.status = "confirmed";
-      
-        displayStatus();
-        const totals = calculateTotals();
+let activeBooking = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadBookingFromStorage();
+    setupEventListeners();
+});
+
+function loadBookingFromStorage() {
+    const raw = localStorage.getItem('currentBooking');
+    if (!raw) {
         
-        alert("✅ Booking Confirmed!\n\n" +
-              "Reference: " + mockBookingData.bookingId + "\n" +
-              "Total: $" + totals.grandTotal + "\n\n" +
-              "A confirmation email has been sent (demo mode).");
-        
-        const confirmBtn = document.getElementById("confirm-booking");
-        if (confirmBtn) {
-            confirmBtn.disabled = true;
-            confirmBtn.textContent = "Confirmed ✓";
-        }
-        
-        const paymentBtn = document.getElementById("payment-booking");
-        if (paymentBtn) {
-            paymentBtn.disabled = false;
-        }
-    }
-}
-
-function handleEditBooking() {
-    const editConfirm = confirm("Go back to edit your booking? Any changes will not be saved.");
-    
-    if (editConfirm) {
-        
-        window.location.href = "single-location.html";
-    }
-}
-
-
-function handlePayment() {
-    
-    if (mockBookingData.status !== "confirmed") {
-        alert("Please confirm your booking before proceeding to payment.");
+        console.warn("No active booking session found.");
         return;
     }
-    
-    const totals = calculateTotals();
-    
-    
-    alert("💳 Payment Gateway (Demo Mode)\n\n" +
-          "Booking: " + mockBookingData.bookingId + "\n" +
-          "Amount: $" + totals.grandTotal + "\n\n" +
-          "This is a demo. No actual payment will be processed.");
-    
-    
-    const paymentConfirm = confirm("Simulate successful payment?");
-    if (paymentConfirm) {
-        alert("✅ Payment successful!\n\n" +
-              "Your booking is now complete.\n" +
-              "Thank you for choosing Egypt Tourism Hub!");
-        
-       
+
+    try {
+        activeBooking = JSON.parse(raw);
+        renderSummaryUI();
+    } catch (e) {
+        console.error("Error parsing booking data", e);
     }
 }
 
-function handleCancelBooking() {
-    const cancelConfirm = confirm("Are you sure you want to cancel this booking?");
+function renderSummaryUI() {
+    if (!activeBooking) return;
+
+    // Display booking reference
+    const refElement = document.getElementById("ref-number");
+    if (refElement) refElement.textContent = activeBooking.id;
+
+    const statusElement = document.getElementById("status-text");
+    if (statusElement) {
+        statusElement.textContent = "Confirmed";
+        statusElement.className = "status-badge confirmed";
+    }
+
+    // Booking details
+    const detailsContainer = document.getElementById("details-content");
+    if (detailsContainer) {
+        detailsContainer.innerHTML = `
+            <div class="grid-item"><span class="grid-label">Package</span><span class="grid-value">${activeBooking.packageName}</span></div>
+            <div class="grid-item"><span class="grid-label">Location</span><span class="grid-value">${activeBooking.location}</span></div>
+            <div class="grid-item"><span class="grid-label">Date</span><span class="grid-value">${activeBooking.date}</span></div>
+            <div class="grid-item"><span class="grid-label">Tier</span><span class="grid-value">${activeBooking.tier === 'full' ? 'Complete Luxury' : 'Tour Only'}</span></div>
+            <div class="grid-item"><span class="grid-label">Travelers</span><span class="grid-value">${activeBooking.travelers}</span></div>
+        `;
+    }
+
     
-    if (cancelConfirm) {
-        alert("❌ Booking " + mockBookingData.bookingId + " has been cancelled.\n\n" +
-              "No charges were made.");
-        
-        window.location.href = "dashboard.html";
+    const priceContainer = document.getElementById("price-content");
+    if (priceContainer) {
+        const perPerson = activeBooking.totalPrice / activeBooking.travelers;
+        priceContainer.innerHTML = `
+            <div class="price-line">
+                <span>Base (${activeBooking.tier})</span>
+                <span>EGP ${perPerson.toLocaleString()} &times; ${activeBooking.travelers}</span>
+            </div>
+            <div class="price-line">
+                <span>Taxes & Fees</span>
+                <span>Included</span>
+            </div>
+            <div class="price-line total">
+                <span>Total Amount</span>
+                <span>EGP ${activeBooking.totalPrice.toLocaleString()}</span>
+            </div>
+        `;
     }
 }
+
 function setupEventListeners() {
-    
     const confirmBtn = document.getElementById("confirm-booking");
-    const editBtn = document.getElementById("edit-booking");
     const paymentBtn = document.getElementById("payment-booking");
     const cancelBtn = document.getElementById("cancel-booking");
-    
+
+    // Hide the manual confirm button — booking is already confirmed automatically
     if (confirmBtn) {
-        confirmBtn.addEventListener("click", handleConfirmBooking);
+        confirmBtn.style.display = 'none';
     }
-    
-    if (editBtn) {
-        editBtn.addEventListener("click", handleEditBooking);
-    }
-    
+
+    // Payment button is immediately active
     if (paymentBtn) {
-        paymentBtn.addEventListener("click", handlePayment);
+        paymentBtn.disabled = false;
+        paymentBtn.addEventListener("click", () => {
+            paymentBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            
+            setTimeout(() => {
+                // Show custom modal instead of alert
+                showPaymentSuccessModal(activeBooking.location, () => {
+                    let history = JSON.parse(localStorage.getItem('beyondPyramids_bookings') || '[]');
+                    history.push({
+                        ...activeBooking,
+                        status: 'Confirmed',
+                        paymentStatus: 'Paid'
+                    });
+                    localStorage.setItem('beyondPyramids_bookings', JSON.stringify(history));
+
+                    window.location.href = "../BookingDetailsPage/booking-details.html";
+                });
+            }, 1500);
+        });
     }
-    
+
     if (cancelBtn) {
-        cancelBtn.addEventListener("click", handleCancelBooking);
+        cancelBtn.addEventListener("click", () => {
+            if (confirm("Are you sure you want to cancel this selection?")) {
+                localStorage.removeItem('currentBooking');
+                window.location.href = "../LandingPage/LandingPage.html";
+            }
+        });
     }
 }
 
-function initializeButtons() {
-    const paymentBtn = document.getElementById("payment-booking");
-    if (paymentBtn) {
-        
-        paymentBtn.disabled = true;
-    }
-    
-    const confirmBtn = document.getElementById("confirm-booking");
-    if (confirmBtn) {
-        
-        if (mockBookingData.status === "confirmed") {
-            confirmBtn.disabled = true;
-            confirmBtn.textContent = "Confirmed ✓";
-            paymentBtn.disabled = false;
-        }
-    }
+function showPaymentSuccessModal(location, callback) {
+    const overlay = document.createElement('div');
+    overlay.style.position = 'fixed';
+    overlay.style.top = '0';
+    overlay.style.left = '0';
+    overlay.style.width = '100vw';
+    overlay.style.height = '100vh';
+    overlay.style.backgroundColor = 'rgba(0,0,0,0.6)';
+    overlay.style.zIndex = '9999';
+    overlay.style.display = 'flex';
+    overlay.style.alignItems = 'center';
+    overlay.style.justifyContent = 'center';
+    overlay.style.backdropFilter = 'blur(5px)';
+
+    const modal = document.createElement('div');
+    modal.style.background = 'var(--color-surface, #fff)';
+    modal.style.color = 'var(--color-text, #000)';
+    modal.style.padding = '3rem 2rem';
+    modal.style.borderRadius = '8px';
+    modal.style.textAlign = 'center';
+    modal.style.boxShadow = '0 20px 50px rgba(0,0,0,0.3)';
+    modal.style.maxWidth = '400px';
+    modal.style.width = '90%';
+    modal.style.animation = 'revealUp 0.4s ease forwards';
+
+    modal.innerHTML = `
+        <div style="font-size: 3.5rem; color: var(--color-gold, #d4af37); margin-bottom: 1rem;">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <h2 style="font-family: var(--font-heading, serif); font-size: 1.8rem; margin-bottom: 0.5rem;">Payment Successful</h2>
+        <p style="color: var(--color-text-secondary); margin-bottom: 2rem; line-height: 1.5;">Your luxury journey to <strong>${location}</strong> is now secured.</p>
+        <button id="modal-continue-btn" class="btn btn--primary" style="width: 100%;">View Booking Receipt</button>
+    `;
+
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+
+    document.getElementById('modal-continue-btn').addEventListener('click', () => {
+        document.body.removeChild(overlay);
+        callback();
+    });
 }
-
-function loadBookingSummary() {
-    displayReference();
-    displayTripDetails();
-    displayPriceBreakdown();
-    displayStatus();
-}
-
-function getDataFromURL() {
-    const urlParams = new URLSearchParams(window.location.search);
-    
-    if (urlParams.has('location')) {
-        mockBookingData.location.name = urlParams.get('location');
-    }
-    
-    if (urlParams.has('date')) {
-        mockBookingData.visitDate = urlParams.get('date');
-    }
-    
-    if (urlParams.has('people')) {
-        mockBookingData.quantity = parseInt(urlParams.get('people'));
-    }
-    
-    if (urlParams.has('time')) {
-        mockBookingData.timeSlot.time = urlParams.get('time');
-    }
-}
-
-function getDataFromStorage() {
-    const savedBooking = localStorage.getItem("currentBooking");
-    if (savedBooking) {
-        try {
-            const parsed = JSON.parse(savedBooking);
-            Object.assign(mockBookingData, parsed);
-            console.log("Loaded booking from storage");
-        } catch(e) {
-            console.log("Error loading from storage");
-        }
-    }
-}
-
-function initPage() {
-    
-    getDataFromURL();
-    
-    loadBookingSummary();
-    
-    initializeButtons();
-    
-    setupEventListeners();
-    
-    console.log("✅ Booking summary page loaded");
-    console.log("Booking ID:", mockBookingData.bookingId);
-    console.log("Total:", calculateTotals().grandTotal);
-}
-
-window.addEventListener("DOMContentLoaded", initPage);
-

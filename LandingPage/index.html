@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Discover Egypt's timeless wonders with Beyond the Pyramids. Book premium tours, Nile cruises, and custom Egyptian adventures.">
+    <meta name="keywords" content="Egypt tourism, Pyramids, Nile Cruise, Luxor, Alexandria, Cairo tours">
+    <title>Beyond the Pyramids | Premium Egyptian Adventures</title>
+
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Montserrat:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="LandingPage/css/style.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body class="luxury-aesthetic">
+
+    <div id="scroll-progress" class="scroll-progress"></div>
+    <div id="custom-cursor" class="custom-cursor">
+        <div class="cursor-pyramid"></div>
+    </div>
+    <div class="noise-overlay"></div>
+
+    <nav class="navbar" id="main-nav">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="index.html">
+                    <img src="WebsiteBanner.png" alt="Beyond the Pyramids Logo">
+                </a>
+            </div>
+
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="DayPackages/dayPackages.html" class="nav-link">Day Packages</a></li>
+                <li><a href="WeeklyPackagePage/week-packages.html" class="nav-link">Week Packages</a></li>
+                <li><a href="SingleLocationPage/SingleLocation.html" class="nav-link">Single Locations</a></li>
+                <li><a href="CustomTripBuilderPage/CustomTripBuilderPage.html" class="nav-link">Custom Trip</a></li>
+                <li id="nav-dashboard-link"><a href="UserDashboardPage/dashboard.html" class="nav-link">Dashboard</a>
+                </li>
+            </ul>
+
+            <div class="nav-actions">
+                <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+                    <i class="fas fa-sun sun-icon"></i>
+                    <i class="fas fa-moon moon-icon"></i>
+                </button>
+                <div class="nav-buttons">
+                    <a href="LoginPage/login.html" class="btn btn--outline">Log In</a>
+                    <a href="RegistrationPage/registration_form.html" class="btn btn--primary">Sign Up</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="hero-section">
+            <div class="hero-background">
+                <video class="hero-video" autoplay muted loop playsinline>
+                    <source src="LandingPage/videosUsed/LandingPageVideo1 (1).mp4" type="video/mp4">
+                    Your browser does not support video tags.
+                </video>
+                <div class="hero-video-overlay"></div>
+            </div>
+            <div class="hero-content container">
+                <h1 class="hero-title reveal-up">Uncover Egypt’s <span class="text-gold">Timeless</span> Wonders</h1>
+                <p class="hero-description reveal-up">Experience the cradle of civilization with unparalleled luxury and
+                    expert guidance.</p>
+                <span class="hero-subtitle reveal-up">Exclusive Egyptian Travel</span>
+
+                <div class="hero-cta reveal-up">
+                    <a href="RegistrationPage/registration_form.html" class="btn btn--primary btn--large">Start Your
+                        Journey</a>
+                    <a href="#destinations" class="btn btn--glass btn--large">Explore Destinations</a>
+                </div>
+
+                <div class="trust-indicators reveal-up">
+                    <div class="trust-item">
+                        <span class="trust-value">10,000+</span>
+                        <span class="trust-label">Travelers</span>
+                    </div>
+                    <div class="trust-item">
+                        <span class="trust-value">4.8/5</span>
+                        <span class="trust-label">Avg Rating</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <section id="destinations" class="section section--destinations">
+            <div class="container">
+                <div class="section-header align-center">
+                    <h2 class="section-title">Iconic Destinations</h2>
+                    <p class="section-subtitle">A curated selection of Egypt's most magnificent locations.</p>
+                </div>
+
+                <div class="grid grid--destinations" id="dynamicDestinationsGrid">
+                    <!-- Dynamic Single Locations will be injected here -->
+                </div>
+
+                <div class="section-footer align-center">
+                    <a href="SingleLocationPage/SingleLocation.html" class="btn btn--outline btn--large">View All
+                        Destinations</a>
+                </div>
+            </div>
+        </section>
+
+
+        <section id="packages" class="section section--packages bg-alt">
+            <div class="container">
+                <div class="section-header align-center">
+                    <h2 class="section-title">Signature Packages</h2>
+                    <p class="section-subtitle">Expertly crafted itineraries for an effortless journey.</p>
+                </div>
+
+                <div class="grid grid--packages" id="dynamicPackagesGrid">
+                    <!-- Dynamic Packages will be injected here -->
+                </div>
+            </div>
+        </section>
+
+
+        <section class="section section--steps">
+            <div class="container">
+                <div class="section-header align-center">
+                    <h2 class="section-title">Your Path to Egypt</h2>
+                    <p class="section-subtitle">Four simple steps to an unforgettable adventure.</p>
+                </div>
+                <div class="steps-container">
+                    <div class="step-item">
+                        <div class="step-icon">01</div>
+                        <h3 class="step-label">Select</h3>
+                        <p class="step-description">Choose from our curated tours or build your custom package.</p>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-icon">02</div>
+                        <h3 class="step-label">Book</h3>
+                        <p class="step-description">Secure your dates with our effortless, secure online booking.</p>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-icon">03</div>
+                        <h3 class="step-label">Confirm</h3>
+                        <p class="step-description">Receive your luxury itinerary and travel confirmation instantly.</p>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-icon">04</div>
+                        <h3 class="step-label">Experience</h3>
+                        <p class="step-description">Relax as we handle every detail of your Egyptian journey.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <section class="section section--testimonials bg-alt">
+            <div class="container">
+                <div class="section-header align-center">
+                    <h2 class="section-title">Traveler Stories</h2>
+                    <p class="section-subtitle">Real experiences from those who ventured Beyond the Pyramids.</p>
+                </div>
+                <div id="testimonialsContainer" class="testimonials-wrapper">
+
+                    <div class="loader">Loading stories...</div>
+                </div>
+            </div>
+        </section>
+
+
+        <section id="about" class="about-section">
+            <div class="container about-grid">
+                <div class="about-visual">
+                    <div class="pyramid-graphic"></div>
+                    <div class="about-image-stack">
+
+                    </div>
+                </div>
+                <div class="about-content">
+                    <h2 class="section-title">The Legacy of <span class="text-gold">Beyond the Pyramids</span></h2>
+                    <p class="lead">We are more than a travel agency; we are guardians of the Egyptian experience.</p>
+                    <p>Founded by historians and travel enthusiasts, our mission is to reveal the soul of Egypt through
+                        authentic encounters, expert storytelling, and uncompromising quality.</p>
+
+                    <div class="about-stats">
+                        <div class="stat-box">
+                            <span class="stat-value">10k+</span>
+                            <span class="stat-tag">Travelers</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-value">50+</span>
+                            <span class="stat-tag">Cities</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-value">100+</span>
+                            <span class="stat-tag">Historians</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+
+    <footer class="main-footer">
+        <div class="container footer-grid">
+            <div class="footer-brand">
+                <h3 class="footer-logo">Beyond the Pyramids</h3>
+                <p>Curating the eternal legacy of Egypt since 2012.</p>
+            </div>
+
+            <nav class="footer-nav">
+                <div class="footer-group">
+                    <h4>Explore</h4>
+                    <ul>
+                        <li><a href="#destinations">Destinations</a></li>
+                        <li><a href="#packages">Tour Packages</a></li>
+                        <li><a href="CustomTripBuilderPage/CustomTripBuilderPage.html">Custom Trips</a></li>
+                    </ul>
+                </div>
+                <div class="footer-group">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="AboutUsPage/AboutUs.html">Our Story</a></li>
+                        <li><a href="FAQpage/FAQpage.html">Common Questions</a></li>
+                    </ul>
+                </div>
+                <div class="footer-group">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="TermsAndConditionsPage/TermsAndConditionsPage.html">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </nav>
+
+            <div class="footer-newsletter">
+                <h4>Join the Inner Circle</h4>
+                <p>Receive exclusive travel insights and early access to new tours.</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Your email address" required>
+                    <button type="submit" class="btn btn--primary">Join</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="footer-bottom container">
+            <p>&copy; 2026 Beyond the Pyramids. All rights reserved.</p>
+            <div class="credit">Designed for the modern explorer.</div>
+        </div>
+    </footer>
+
+    <script src="mockData.js"></script>
+    <script src="storage.js"></script>
+    <script src="global.js"></script>
+    <script src="LandingPage/js/script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Summary - Beyond the Pyramids</title>
+
+    <link rel="stylesheet" href="../global.css">
+    <link rel="stylesheet" href="../UserDashboardPage/css/style.css">
+    <link rel="stylesheet" href="css/stylesheet.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="noise-overlay"></div>
+
+    <div class="dashboard-shell">
+        <aside class="dashboard-sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <a href="../LandingPage/LandingPage.html">
+                    <img src="../WebsiteBanner.png" alt="Beyond the Pyramids">
+                </a>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-group">
+                    <span class="group-label">Discovery</span>
+                    <ul>
+                        <li><a href="../LandingPage/LandingPage.html"><i class="fas fa-home"></i> Home Sanctuary</a></li>
+                        <li><a href="../DayPackages/dayPackages.html"><i class="fas fa-sun"></i> Day Packages</a></li>
+                        <li><a href="../WeeklyPackagePage/week-packages.html"><i class="fas fa-calendar-week"></i> Week Packages</a></li>
+                        <li><a href="../SingleLocationPage/SingleLocation.html"><i class="fas fa-location-dot"></i> Single Locations</a></li>
+                        <li><a href="../CustomTripBuilderPage/CustomTripBuilderPage.html"><i class="fas fa-compass"></i> Trip Architect</a></li>
+                    </ul>
+                </div>
+
+                <div class="nav-group">
+                    <span class="group-label">Personal Desk</span>
+                    <ul>
+                        <li><a href="../UserDashboardPage/dashboard.html"><i class="fas fa-columns"></i> Dashboard</a></li>
+                        <li><a href="../myBookings/myBookings.html"><i class="fas fa-suitcase-rolling"></i> My Journeys</a></li>
+                        <li><a href="../UserProfilePage/UserProfile.html"><i class="fas fa-user-circle"></i> Profile Settings</a></li>
+                    </ul>
+                </div>
+
+                <div class="nav-group">
+                    <span class="group-label">Concierge</span>
+                    <ul>
+                        <li><a href="../FAQpage/FAQpage.html"><i class="fas fa-question-circle"></i> Help & FAQ</a></li>
+                        <li><a href="../CustomerReviews/writing-reviews.html"><i class="fas fa-star"></i> Reviews</a></li>
+                    </ul>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button id="theme-toggle" class="theme-toggle-btn">
+                    <i class="fas fa-moon"></i> <span>Dark Mode</span>
+                </button>
+                <a href="../LoginPage/login.html" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+        </aside>
+
+        <main class="dashboard-main">
+            <header class="dash-topbar" id="dash-topbar">
+                <div class="topbar-left">
+                    <div class="greeting-stack">
+                        <span class="greeting-label">Review Your Journey</span>
+                        <h1 class="greeting-name">Booking Summary</h1>
+                    </div>
+                </div>
+                <div class="topbar-right">
+                    <div class="topbar-avatar" id="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+            </header>
+
+            <div class="page-content editorial-page">
+                <div class="itinerary-document reveal-up">
+                    <div class="itinerary-header">
+                        <h2>Your Journey Itinerary</h2>
+                        <div class="itinerary-meta">
+                            <span class="meta-label">Booking Reference</span>
+                            <span id="ref-number" class="ref-value">---</span>
+                            <span id="status-text" class="status-badge pending">Pending</span>
+                        </div>
+                    </div>
+                    
+                    <div class="itinerary-body">
+                        <div class="itinerary-main">
+                            <div class="editorial-section">
+                                <h3>Trip Specifications</h3>
+                                <div id="details-content" class="editorial-grid">
+                                    <!-- Injected by JS -->
+                                </div>
+                            </div>
+
+                            <div class="editorial-section">
+                                <h3>Cancellation Policy</h3>
+                                <ul id="policy-content" class="editorial-list">
+                                    <li><i class="fas fa-check"></i> Free cancellation up to 24 hours before the trip</li>
+                                    <li><i class="fas fa-exclamation"></i> 50% refund for cancellations within 24 hours</li>
+                                    <li><i class="fas fa-xmark"></i> No refund for no-show</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <aside class="itinerary-sidebar">
+                            <div class="editorial-section">
+                                <h3>Investment</h3>
+                                <div id="price-content" class="editorial-price">
+                                    <!-- Injected by JS -->
+                                </div>
+                            </div>
+
+                            <div class="concierge-action">
+                                <button id="confirm-booking" class="btn-editorial" style="display: none;">Confirm Booking</button>
+                                <button id="payment-booking" class="btn-editorial primary">Proceed to Payment</button>
+                                <button id="cancel-booking" class="btn-editorial secondary">Cancel Request</button>
+                            </div>
+                        </aside>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="main-footer reveal-up">
+                <div class="container footer-grid">
+                    <div class="footer-brand">
+                        <h3 class="footer-logo">Beyond the Pyramids</h3>
+                        <p>Curating the eternal legacy of Egypt since 2012.</p>
+                    </div>
+
+                    <nav class="footer-nav">
+                        <div class="footer-group">
+                            <h4>Explore</h4>
+                            <ul>
+                                <li><a href="../LandingPage/LandingPage.html#destinations">Destinations</a></li>
+                                <li><a href="../LandingPage/LandingPage.html#packages">Tour Packages</a></li>
+                                <li><a href="../CustomTripBuilderPage/CustomTripBuilderPage.html">Custom Trips</a></li>
+                            </ul>
+                        </div>
+                        <div class="footer-group">
+                            <h4>Company</h4>
+                            <ul>
+                                <li><a href="../AboutUsPage/AboutUs.html">Our Story</a></li>
+                                <li><a href="../FAQpage/FAQpage.html">Common Questions</a></li>
+                            </ul>
+                        </div>
+                        <div class="footer-group">
+                            <h4>Legal</h4>
+                            <ul>
+                                <li><a href="../TermsAndConditionsPage/TermsAndConditionsPage.html">Terms of Service</a></li>
+                            </ul>
+                        </div>
+                    </nav>
+
+                    <div class="footer-newsletter">
+                        <h4>Join the Inner Circle</h4>
+                        <p>Receive exclusive travel insights and early access to new tours.</p>
+                        <form class="newsletter-form">
+                            <input type="email" placeholder="Your email address" required>
+                            <button type="submit" class="btn btn--primary">Join</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="footer-bottom container">
+                    <p>&copy; 2026 Beyond the Pyramids. All rights reserved.</p>
+                    <div class="credit">Designed for the modern explorer.</div>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <script src="js/script.js"></script>
+    <script src="../mockData.js"></script>
+    <script src="../storage.js"></script>
+    <script src="../global.js"></script>
+</body>
+
+</html>
+

@@ -1,6 +1,6 @@
-// FAQ Data
+
 const faqData = [
-    // General Questions
+    
     {
         id: 1,
         category: "general",
@@ -32,7 +32,7 @@ const faqData = [
         answer: "We offer authentic Egyptian experiences with local experts, flexible customization options, and 24/7 customer support to ensure you have the best possible journey."
     },
     
-    // Booking & Payment
+    
     {
         id: 6,
         category: "booking",
@@ -58,7 +58,7 @@ const faqData = [
         answer: "Yes, you can book trips for friends and family. Just provide their details during the booking process or add them as accompanying travelers."
     },
     
-    // Trips & Packages
+    
     {
         id: 10,
         category: "trips",
@@ -84,7 +84,7 @@ const faqData = [
         answer: "Yes, you can request specific guides during booking. We'll do our best to accommodate your request based on availability."
     },
     
-    // Account & Profile
+    
     {
         id: 14,
         category: "account",
@@ -104,7 +104,7 @@ const faqData = [
         answer: "Yes, contact our customer support team to request account deletion. Please note that this action is permanent."
     },
     
-    // Cancellation & Refunds
+    
     {
         id: 17,
         category: "cancel",
@@ -124,7 +124,7 @@ const faqData = [
         answer: "If we need to cancel your trip, you will receive a full refund and we'll help you find an alternative experience."
     },
     
-    // Support & Contact
+    
     {
         id: 20,
         category: "support",
@@ -145,25 +145,25 @@ const faqData = [
     }
 ];
 
-// Current selected category (null means show all)
+
 let selectedCategory = null;
 
-// DOM Elements
+
 const faqContainer = document.getElementById('faqContainer');
 const tabBtns = document.querySelectorAll('.tab-btn');
 
-// Initialize
+
 document.addEventListener('DOMContentLoaded', function() {
     renderFAQs();
     attachEventListeners();
     checkLoginStatus();
 });
 
-// Render FAQs based on selected category
+
 function renderFAQs() {
     let filteredFAQs = faqData;
     
-    // If a category is selected, filter by that category
+    
     if (selectedCategory !== null) {
         filteredFAQs = faqData.filter(faq => faq.category === selectedCategory);
     }
@@ -181,7 +181,7 @@ function renderFAQs() {
     });
 }
 
-// Create a single FAQ item
+
 function createFAQItem(faq) {
     const item = document.createElement('div');
     item.className = 'faq-item';
@@ -190,41 +190,49 @@ function createFAQItem(faq) {
     item.innerHTML = `
         <div class="faq-question">
             <span>${faq.question}</span>
-            <span class="faq-icon">▶</span>
+            <i class="fas fa-chevron-right faq-icon"></i>
         </div>
         <div class="faq-answer">
             ${faq.answer}
         </div>
     `;
     
-    // Add click event to toggle answer
+    
     const questionDiv = item.querySelector('.faq-question');
-    const answerDiv = item.querySelector('.faq-answer');
-    const icon = item.querySelector('.faq-icon');
     
     questionDiv.addEventListener('click', function() {
-        if (answerDiv.classList.contains('show')) {
-            answerDiv.classList.remove('show');
-            icon.textContent = '▶';
+        const isOpening = !item.classList.contains('active');
+        
+        
+        document.querySelectorAll('.faq-item.active').forEach(activeItem => {
+            if (activeItem !== item) {
+                activeItem.classList.remove('active');
+                activeItem.querySelector('.faq-answer').classList.remove('show');
+            }
+        });
+
+        if (isOpening) {
+            item.classList.add('active');
+            item.querySelector('.faq-answer').classList.add('show');
         } else {
-            answerDiv.classList.add('show');
-            icon.textContent = '▼';
+            item.classList.remove('active');
+            item.querySelector('.faq-answer').classList.remove('show');
         }
     });
     
     return item;
 }
 
-// Handle tab click (select/deselect)
+
 function handleTabClick(clickedBtn, category) {
     const isCurrentlySelected = clickedBtn.classList.contains('active');
     
     if (isCurrentlySelected) {
-        // DESELECT: Remove active class and show all FAQs
+        
         clickedBtn.classList.remove('active');
         selectedCategory = null;
     } else {
-        // SELECT: Remove active from all tabs, then add to clicked one
+        
         tabBtns.forEach(btn => btn.classList.remove('active'));
         clickedBtn.classList.add('active');
         selectedCategory = category;
@@ -233,7 +241,7 @@ function handleTabClick(clickedBtn, category) {
     renderFAQs();
 }
 
-// Attach event listeners
+
 function attachEventListeners() {
     tabBtns.forEach(btn => {
         btn.addEventListener('click', function() {
@@ -243,19 +251,20 @@ function attachEventListeners() {
     });
 }
 
-// Check login status for header
+
 function checkLoginStatus() {
-    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    const isLoggedIn = AppStorage.isLoggedIn();
     const authLink = document.getElementById('authLink');
+    if (!authLink) return; 
     
     if (isLoggedIn) {
-        const user = JSON.parse(localStorage.getItem('beyondPyramids_currentUser'));
+        const user = AppStorage.getCurrentUser();
         authLink.innerText = user ? `Logout (${user.firstName})` : 'Logout';
         authLink.href = '#';
         authLink.onclick = function(e) {
             e.preventDefault();
-            localStorage.removeItem('isLoggedIn');
-            localStorage.removeItem('beyondPyramids_currentUser');
+            
+            AppStorage.clearCurrentUser();
             alert('Logged out successfully!');
             window.location.href = 'index.html';
         };

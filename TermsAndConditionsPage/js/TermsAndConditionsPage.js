@@ -9,41 +9,78 @@ document.addEventListener('DOMContentLoaded', () => {
     const navLinks = document.querySelectorAll('.toc-link');
     const sections = document.querySelectorAll('.legal-section');
 
-    // Toggle accept button
+    
     function validate() {
-        acceptBtn.disabled = !(termsCheck.checked && privacyCheck.checked);
+        if (acceptBtn) {
+            acceptBtn.disabled = !(termsCheck.checked && privacyCheck.checked);
+        }
     }
-    termsCheck.onchange = validate;
-    privacyCheck.onchange = validate;
+    
+    if (termsCheck) termsCheck.onchange = validate;
+    if (privacyCheck) privacyCheck.onchange = validate;
 
-    // Handle acceptance
-    acceptBtn.onclick = () => {
-        termsCheck.disabled = privacyCheck.disabled = acceptBtn.disabled = true;
-        successMsg.style.display = 'block';
-    };
-
-    // Scroll handlers
-    window.onscroll = () => {
-        const top = window.scrollY;
-        const height = document.documentElement.scrollHeight - window.innerHeight;
+    
+    if (acceptBtn) {
         
-        // Update progress
-        const percent = Math.min(Math.max(Math.round((top / height) * 100), 0), 100);
-        progressBar.style.width = percent + '%';
-        progressText.innerText = percent + '%';
+        if (AppStorage.getItem('termsAccepted') === 'true') {
+            showSuccessState();
+        }
 
-        // Scroll to top button
-        scrollToTopBtn.style.display = top > 300 ? 'block' : 'none';
+        acceptBtn.onclick = () => {
+            AppStorage.setItem('termsAccepted', 'true');
+            showSuccessState();
+        };
+    }
 
-        // TOC active highlight
+    function showSuccessState() {
+        if (termsCheck) termsCheck.checked = true;
+        if (privacyCheck) privacyCheck.checked = true;
+        if (termsCheck) termsCheck.disabled = true;
+        if (privacyCheck) privacyCheck.disabled = true;
+        if (acceptBtn) {
+            acceptBtn.disabled = true;
+            acceptBtn.textContent = "Terms Accepted";
+        }
+        if (successMsg) successMsg.style.display = 'block';
+    }
+
+    
+    window.addEventListener('scroll', () => {
+        const top = window.scrollY;
+        const bodyHeight = document.documentElement.scrollHeight - window.innerHeight;
+        
+        
+        if (progressBar && progressText) {
+            const percent = Math.min(Math.max(Math.round((top / bodyHeight) * 100), 0), 100);
+            progressBar.style.width = percent + '%';
+            progressText.innerText = percent + '%';
+        }
+
+        
+        if (scrollToTopBtn) {
+            scrollToTopBtn.style.display = top > 500 ? 'flex' : 'none';
+        }
+
+        
+        let currentSectionId = "";
         sections.forEach(s => {
-            if (top >= s.offsetTop - 120) {
-                navLinks.forEach(l => l.classList.remove('active'));
-                const link = document.querySelector(`.toc-link[href="#${s.id}"]`);
-                if (link) link.classList.add('active');
+            const sectionTop = s.offsetTop;
+            if (top >= sectionTop - 200) {
+                currentSectionId = s.getAttribute('id');
             }
         });
-    };
 
-    scrollToTopBtn.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (currentSectionId) {
+            navLinks.forEach(l => {
+                l.classList.remove('active');
+                if (l.getAttribute('href') === `#${currentSectionId}`) {
+                    l.classList.add('active');
+                }
+            });
+        }
+    });
+
+    if (scrollToTopBtn) {
+        scrollToTopBtn.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 });

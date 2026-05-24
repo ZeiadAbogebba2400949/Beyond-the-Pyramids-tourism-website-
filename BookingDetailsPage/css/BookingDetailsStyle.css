@@ -1,187 +1,379 @@
-/* --- Base Styles --- */
-body {
-    font-family: Arial, sans-serif;
-    line-height: 1.6;
-    margin: 0;
-    padding: 20px;
-    background-color: #f9f9f9;
-}
+/* ─────────────────────────────────────────────────────────
+   BookingDetailsStyle.css
+   Aesthetic: Luxury Editorial / Minimalist
+   Anchors: Ticket-style receipt, asymmetrical grid, sharp type
+───────────────────────────────────────────────────────── */
 
-.main-header {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-.booking-container {
-    max-width: 800px;
+/* ─── Grid Layout ─── */
+.editorial-booking-container {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 3rem;
+    padding: 2rem;
+    max-width: 1400px;
     margin: 0 auto;
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    align-items: start;
 }
 
-.voucher-card {
-    background-color: #e8f5e9; 
-    border: 2px dashed #4caf50;
-    padding: 20px;
-    text-align: center;
-    border-radius: 8px;
-    margin-bottom: 25px;
+@media (max-width: 1024px) {
+    .editorial-booking-container {
+        grid-template-columns: 1fr;
+    }
 }
 
-#voucher-number {
-    font-size: 1.5em;
-    font-weight: bold;
-    color: #2e7d32;
-    letter-spacing: 2px;
+/* ─── Main Column (Left) ─── */
+.editorial-booking-main {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
 }
 
-.action-buttons button {
-    margin: 10px 5px;
-    padding: 10px 15px;
-    cursor: pointer;
-    background-color: #0056b3;
-    color: white;
+.booking-header {
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.editorial-title {
+    font-family: var(--font-heading, "Playfair Display", serif);
+    font-size: 3rem;
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+    color: var(--color-text);
+}
+
+.editorial-subtitle {
+    font-size: 1rem;
+    color: var(--color-text-secondary);
+    font-weight: 300;
+}
+
+/* ─── Editorial Sections ─── */
+.editorial-card {
+    background: transparent;
     border: none;
-    border-radius: 4px;
-}
-
-.action-buttons button:hover {
-    background-color: #004494;
-}
-
-.info-section {
-    margin-bottom: 25px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid #eee;
-}
-
-.itinerary-list {
-    list-style-type: none;
     padding: 0;
 }
 
+.card-title {
+    font-family: var(--font-heading, serif);
+    font-size: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.75rem;
+    margin-bottom: 1.5rem;
+    color: var(--color-text);
+}
+
+.info-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.info-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.info-row .label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-gold, #d4af37);
+    font-weight: 600;
+}
+
+.info-row .value {
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: var(--color-text);
+}
+
+/* ─── Itinerary List ─── */
+.itinerary-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-left: 1px solid var(--border-color, rgba(255,255,255,0.1));
+}
+
 .itinerary-list li {
-    margin-bottom: 10px;
+    position: relative;
+    padding-left: 2rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+    color: var(--color-text-secondary);
 }
 
-.contact-info {
-    background-color: #f1f8ff;
-    padding: 15px;
-    border-radius: 5px;
-    border-bottom: none;
+.itinerary-list li::before {
+    content: "";
+    position: absolute;
+    left: -4px;
+    top: 6px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: var(--color-gold, #d4af37);
 }
 
-.review-btn {
-    padding: 10px 20px;
-    background-color: #ff9800;
-    color: white;
+.itinerary-list li strong {
+    color: var(--color-text);
+    display: block;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.2rem;
+}
+
+/* ─── Accordion ─── */
+.accordion-btn {
+    width: 100%;
+    background: none;
     border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-/* --- Payment Breakdown Styles --- */
-.receipt-line {
+    border-bottom: 1px solid var(--border-color);
+    color: var(--color-text);
+    font-family: var(--font-heading, serif);
+    font-size: 1.25rem;
     display: flex;
     justify-content: space-between;
-    margin-bottom: 8px;
-    font-size: 1.05em;
-}
-
-.receipt-divider {
-    border: 0;
-    border-top: 1px solid #ccc;
-    margin: 15px 0;
-}
-
-.total-line {
-    font-size: 1.25em;
-    font-weight: bold;
-    color: #333;
-}
-
-.payment-method {
-    font-size: 0.9em;
-    color: #666;
-    text-align: right;
-    margin-top: 5px;
-}
-
-/* --- Accordion Styles --- */
-.accordion-btn {
-    background-color: #f1f8ff;
-    color: #333;
+    align-items: center;
+    padding: 1rem 0;
     cursor: pointer;
-    padding: 15px;
-    width: 100%;
-    text-align: left;
-    border: 1px solid #ddd;
+    transition: color 0.3s ease;
+}
+
+.accordion-btn:hover {
+    color: var(--color-gold, #d4af37);
+}
+
+.accordion-content {
+    display: none;
+    padding: 1.5rem 0;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+}
+
+.accordion-content p {
+    margin-bottom: 1rem;
+}
+
+.accordion-content strong {
+    color: var(--color-gold, #d4af37);
+}
+
+/* ─── The Physical Ticket / Voucher (Right Column) ─── */
+.editorial-booking-sidebar {
+    position: sticky;
+    top: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.voucher-ticket {
+    background-color: #fcfcfc; /* Stark contrast to dark mode, or slightly off-white */
+    color: #111; /* Dark text for ticket */
     border-radius: 4px;
-    font-size: 1.1em;
-    font-weight: bold;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    /* Noise texture for paper feel */
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+}
+
+/* If the dashboard is dark, the ticket stands out as physical light paper. */
+[data-theme="light"] .voucher-ticket {
+    background-color: #fff;
+    border: 1px solid #eaeaea;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+.ticket-header {
+    background: #111;
+    color: #fff;
+    padding: 1.5rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.accordion-btn:hover {
-    background-color: #e2e8f0;
+[data-theme="light"] .ticket-header {
+    background: #000;
 }
 
-.accordion-content {
-    padding: 0 15px;
-    background-color: white;
-    display: none; 
-    overflow: hidden;
-    border: 1px solid #ddd;
-    border-top: none;
-    border-radius: 0 0 4px 4px;
+.ticket-logo {
+    font-family: var(--font-heading, serif);
+    font-size: 1.1rem;
+    letter-spacing: 0.05em;
+    color: var(--color-gold, #d4af37);
 }
 
-.accordion-content p {
-    margin: 15px 0;
-}
-
-/* --- Print Styles --- */
-@media print {
-    .action-buttons, .review-btn, header, .accordion-btn {
-        display: none !important;
-    }
-    .booking-container {
-        box-shadow: none;
-        border: none;
-    }
-    .accordion-content {
-        display: block !important; /* Force policy to show when printing */
-        border: none;
-    }
-}
-
-/* --- Dynamic Status Badge Styles --- */
-.status-badge {
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-size: 0.9em;
-    font-weight: bold;
+.ticket-status {
+    font-size: 0.7rem;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.15em;
+    border: 1px solid rgba(255,255,255,0.3);
+    padding: 0.3rem 0.6rem;
+    border-radius: 20px;
 }
 
-/* The 3 different color states */
-.status-completed {
-    background-color: #e0e0e0;
-    color: #616161;
+.ticket-body {
+    padding: 2rem 1.5rem;
 }
 
-.status-upcoming {
-    background-color: #e3f2fd;
-    color: #1976d2;
+.ticket-ref {
+    text-align: center;
+    margin-bottom: 2.5rem;
 }
 
-.status-cancelled {
-    background-color: #ffebee;
-    color: #d32f2f;
+.ref-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: #666;
+    margin-bottom: 0.5rem;
+}
+
+.ref-code {
+    font-family: monospace;
+    font-size: 1.8rem;
+    letter-spacing: 0.05em;
+    font-weight: 400;
+    margin: 0;
+    color: #000;
+}
+
+.receipt-body {
+    font-family: monospace;
+    font-size: 0.9rem;
+    color: #333;
+}
+
+.receipt-line {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.8rem;
+}
+
+.receipt-divider {
+    border: 0;
+    border-top: 1px dashed #ccc;
+    margin: 1rem 0;
+}
+
+.total-line {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #000;
+}
+
+.payment-method {
+    font-size: 0.75rem;
+    color: #777;
+    margin-top: 1.5rem;
+    text-align: right;
+    font-family: sans-serif;
+}
+
+/* Fake Barcode */
+.ticket-barcode {
+    padding: 1.5rem;
+    text-align: center;
+    border-top: 1px dashed #ddd;
+    background: #f9f9f9;
+}
+
+.barcode-lines {
+    height: 40px;
+    background: repeating-linear-gradient(
+        90deg,
+        #000,
+        #000 2px,
+        transparent 2px,
+        transparent 4px,
+        #000 4px,
+        #000 5px,
+        transparent 5px,
+        transparent 8px
+    );
+    margin: 0 auto 0.5rem auto;
+    width: 80%;
+    opacity: 0.8;
+}
+
+.barcode-number {
+    font-family: monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    color: #555;
+}
+
+.ticket-actions {
+    display: flex;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: #f1f1f1;
+}
+
+.ticket-actions .btn {
+    flex: 1;
+    justify-content: center;
+    font-size: 0.8rem;
+    padding: 0.8rem;
+}
+
+/* Overriding global btn styles slightly for the light background of the ticket */
+.ticket-actions .btn--outline {
+    border-color: #ccc;
+    color: #333;
+}
+
+.ticket-actions .btn--outline:hover {
+    background: #ddd;
+    color: #000;
+}
+
+.ticket-actions .btn--primary {
+    background: #000;
+    color: #fff;
+    border: 1px solid #000;
+}
+
+.ticket-actions .btn--primary:hover {
+    background: var(--color-gold, #d4af37);
+    border-color: var(--color-gold, #d4af37);
+}
+
+/* ─── Concierge Box ─── */
+.concierge-box {
+    background: var(--glass-bg, rgba(255,255,255,0.03));
+    border: 1px solid var(--border-color, rgba(255,255,255,0.05));
+    border-radius: 4px;
+    padding: 1.5rem;
+}
+
+.concierge-box h4 {
+    font-family: var(--font-heading, serif);
+    font-size: 1.1rem;
+    color: var(--color-gold, #d4af37);
+    margin-bottom: 0.5rem;
+}
+
+.concierge-box p {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 1rem;
+}
+
+.concierge-link {
+    font-size: 0.85rem;
+    color: var(--color-text);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+}
+
+.concierge-link:hover {
+    color: var(--color-gold, #d4af37);
 }

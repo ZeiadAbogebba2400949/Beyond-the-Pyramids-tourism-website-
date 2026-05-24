@@ -4,139 +4,236 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Profile | Beyond the Pyramids</title>
-    <!-- FontAwesome -->
+    <title>Personal Sanctuary | Beyond the Pyramids</title>
+
+    <link rel="stylesheet" href="../global.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/UserProfilestyles.css">
 </head>
 
 <body>
     <div id="alertContainer" class="hidden"></div>
+    <div class="noise-overlay"></div>
 
-    <div class="grid-layout">
-        <aside class="sidebar left-col" id="sidebar">
-            <div class="card-box center-text">
-                <img id="userAvatar" class="avatar" src="https://via.placeholder.com/100" alt="User Avatar">
-                <input type="file" id="photoUploadInput" accept="image/*" class="hidden">
-                <br>
-                <button id="changePhotoBtn"><i class="fa-solid fa-camera"></i> Change Photo</button>
-                <h2>Zeiad Abogebba</h2>
-                <p>user@example.com</p>
-                <p>Membership: <strong>Explorer</strong></p>
-                <button id="globalSaveBtn" class="save-btn"><i class="fa-solid fa-save"></i> Save All Changes</button>
+    <div class="dashboard-shell">
+        
+        <aside class="dashboard-sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <a href="../LandingPage/LandingPage.html">
+                    <img src="../WebsiteLogo.png" alt="Beyond the Pyramids">
+                </a>
             </div>
 
-            <nav class="card-box">
-                <p><strong>Quick Links</strong></p>
-                <ul>
-                    <li><a href="../UserDashboardPage/dashboard.html">Dashboard</a></li>
-                    <li><a href="../TripsOverviewPage/trips.html">Browse Trips</a></li>
-                    <li><a href="../CustomTripBuilderPage/customTrip.html">Custom Trip</a></li>
-                    <li><a href="../LandingPage/ssharta.html">Home</a></li>
-                </ul>
+            <nav class="sidebar-nav">
+                <div class="nav-group">
+                    <span class="group-label">Discovery</span>
+                    <ul>
+                        <li><a href="../LandingPage/LandingPage.html"><i class="fas fa-home"></i> Home Sanctuary</a></li>
+                        <li><a href="../DayPackages/dayPackages.html"><i class="fas fa-sun"></i> Day Packages</a></li>
+                        <li><a href="../WeeklyPackagePage/week-packages.html"><i class="fas fa-calendar-week"></i> Week Packages</a></li>
+                        <li><a href="../SingleLocationPage/SingleLocation.html"><i class="fas fa-location-dot"></i> Single Locations</a></li>
+                    </ul>
+                </div>
+
+                <div class="nav-group">
+                    <span class="group-label">Personal Desk</span>
+                    <ul>
+                        <li><a href="../UserDashboardPage/dashboard.html"><i class="fas fa-columns"></i> Dashboard</a></li>
+                        <li><a href="../CustomTripBuilderPage/CustomTripBuilderPage.html"><i class="fas fa-compass"></i> Trip Architect</a></li>
+                        <li><a href="../myBookings/myBookings.html"><i class="fas fa-suitcase-rolling"></i> My Journeys</a></li>
+                        <li class="active"><a href="#"><i class="fas fa-user-circle"></i> Profile Settings</a></li>
+                    </ul>
+                </div>
+
+                <div class="nav-group">
+                    <span class="group-label">Concierge</span>
+                    <ul>
+                        <li><a href="../FAQpage/FAQpage.html"><i class="fas fa-question-circle"></i> Help & FAQ</a></li>
+                    </ul>
+                </div>
             </nav>
+
+            <div class="sidebar-footer">
+                <button id="theme-toggle" class="theme-toggle-btn">
+                    <i class="fas fa-moon"></i> <span>Dark Mode</span>
+                </button>
+                <a href="../LoginPage/login.html" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
         </aside>
 
-        <main class="main-content right-col">
-            <header>
-                <button id="mobileSidebarToggle"><i class="fa-solid fa-bars"></i> Menu</button>
-                <h1>My Profile</h1>
+        
+        <main class="dashboard-main">
+            <header class="profile-header reveal-up" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                <div>
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+                        <button id="mobileSidebarToggle" class="btn btn--outline btn--small" style="display: none;"><i class="fa-solid fa-bars"></i></button>
+                        <h1>Profile Settings</h1>
+                    </div>
+                    <p class="text-secondary">Manage your personal information and security preferences.</p>
+                </div>
+                <button id="globalSaveBtn" class="btn btn--primary"><i class="fa-solid fa-save"></i> Save All Changes</button>
             </header>
 
-            <!-- Tab Navigation -->
-            <nav class="tab-nav">
-                <button class="tab-btn active" data-tab="personal">Personal Info</button>
-                <button class="tab-btn" data-tab="security">Security</button>
-                <button class="tab-btn" data-tab="preferences">Preferences</button>
-                <button class="tab-btn" data-tab="history">Travel History</button>
-            </nav>
+            <div class="profile-grid">
+                
+                <div class="profile-workspace-pane reveal-up">
+                    <nav class="tab-nav">
+                        <button class="tab-btn active" data-tab="personal">Personal Info</button>
+                        <button class="tab-btn" data-tab="security">Security</button>
+                        <button class="tab-btn" data-tab="preferences">Preferences</button>
+                        <button class="tab-btn" data-tab="history">Travel History</button>
+                    </nav>
 
-            <!-- Personal Info Tab -->
-            <section class="card-box tab-panel active" id="tab-personal">
-                <div class="flex-between">
-                    <h2>Personal Information</h2>
-                    <div>
-                        <button id="editPersonalBtn"><i class="fa-solid fa-pen"></i> Edit</button>
-                        <button id="savePersonalBtn" class="hidden"><i class="fa-solid fa-check"></i> Save</button>
-                        <button id="cancelPersonalBtn" class="hidden"><i class="fa-solid fa-xmark"></i> Cancel</button>
-                    </div>
+                    
+                    <section class="glass-card workspace-card tab-panel" id="tab-personal">
+                        <div class="section-title-row">
+                            <h2>Identity Details</h2>
+                            <div class="action-buttons">
+                                <button id="editPersonalBtn" class="btn btn--outline btn--small"><i class="fa-solid fa-pen"></i> Edit</button>
+                                <button id="savePersonalBtn" class="btn btn--primary btn--small hidden"><i class="fa-solid fa-check"></i> Save</button>
+                                <button id="cancelPersonalBtn" class="btn btn--outline btn--small hidden"><i class="fa-solid fa-xmark"></i> Cancel</button>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 2rem; align-items: start; margin-bottom: 2rem; flex-wrap: wrap;">
+                            <div id="profileAvatarWrap" style="position: relative; width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; border: 2px solid var(--gold-primary); border-radius: 50%; background: rgba(197, 160, 89, 0.1); overflow:hidden;">
+                                <i id="profileAvatarIcon" class="fas fa-user-circle" style="font-size: 5rem; color: var(--gold-primary);"></i>
+                                <img id="profileAvatarImg" src="" alt="" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:50%;">
+                            </div>
+                            <div style="flex: 1; min-width: 200px;">
+                                <h3 id="userNameDisplay" style="margin-bottom: 0.5rem;">—</h3>
+                                <p id="userEmailDisplay" class="text-secondary" style="font-size: var(--text-sm); margin-bottom: 1rem;">—</p>
+                            </div>
+                        </div>
+
+                        <form id="personalInfoForm" novalidate>
+                            <label>Full Name 
+                                <input type="text" id="fullName" value="" disabled required minlength="2">
+                                <small class="error-msg"></small>
+                            </label>
+                            <label>Email Address 
+                                <input type="email" id="email" value="" disabled required>
+                                <small class="error-msg"></small>
+                            </label>
+                            <label>Contact Number 
+                                <input type="tel" id="phoneNumber" value="" disabled required pattern="^\+?[0-9\s\-]{10,20}$">
+                                <small class="error-msg"></small>
+                            </label>
+                            <label>Date of Birth 
+                                <input type="date" id="dob" value="" disabled>
+                                <small class="error-msg"></small>
+                            </label>
+                            <label>Nationality 
+                                <input type="text" id="nationality" value="" disabled>
+                                <small class="error-msg"></small>
+                            </label>
+                            <label>Primary Mailing Address 
+                                <textarea id="address" disabled rows="3"></textarea>
+                                <small class="error-msg"></small>
+                            </label>
+                        </form>
+                    </section>
+
+                    
+                    <section class="glass-card workspace-card tab-panel hidden" id="tab-security">
+                        <div class="section-title-row">
+                            <h2>Security & Verification</h2>
+                        </div>
+                        <form id="securityForm" novalidate>
+                            <label>Current Password 
+                                <input type="password" id="currPassword" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" required>
+                                <small class="error-msg"></small>
+                            </label>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <label>New Password 
+                                    <input type="password" id="newPassword" required minlength="8">
+                                    <small class="error-msg"></small>
+                                </label>
+                                <label>Confirm Password 
+                                    <input type="password" id="confirmPassword" required>
+                                    <small class="error-msg"></small>
+                                </label>
+                            </div>
+                            <button type="button" id="updatePasswordBtn" class="btn btn--primary" style="margin-top: 1rem;">Update Password</button>
+                        </form>
+                        <hr style="margin: 2rem 0; opacity: 0.1;">
+                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                            <input type="checkbox" style="width: auto; margin: 0;"> 
+                            <span>Enable Two-Factor Authentication (2FA)</span>
+                        </label>
+                        <hr style="margin: 2rem 0; opacity: 0.1;">
+                        <div class="danger-zone">
+                            <h3 style="color: var(--color-danger); font-size: var(--text-sm); margin-bottom: 0.5rem;">Danger Zone</h3>
+                            <p class="text-secondary" style="font-size: var(--text-xs); margin-bottom: 1rem;">Once you delete your account, there is no going back. Please be certain.</p>
+                            <button id="deleteAccountBtn" class="btn btn--outline btn--small" style="color: var(--color-danger); border-color: var(--color-danger);">Delete Account</button>
+                        </div>
+                    </section>
+
+                    
+                    <section class="glass-card workspace-card tab-panel hidden" id="tab-preferences">
+                        <div class="section-title-row">
+                            <h2>Travel Preferences</h2>
+                        </div>
+                        <form>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <label>Accommodation Preference
+                                    <select>
+                                        <option>Luxury Hotel</option>
+                                        <option>Boutique Guest House</option>
+                                        <option>Dahabiya Nile Boat</option>
+                                    </select>
+                                </label>
+                                <label>Local Transport
+                                    <select>
+                                        <option>Private Chauffeured Car</option>
+                                        <option>First Class Rail</option>
+                                        <option>Domestic Air</option>
+                                    </select>
+                                </label>
+                            </div>
+                            <h3 style="font-size: var(--text-sm); margin: 2rem 0 1rem;">Communication</h3>
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; margin-bottom: 0.5rem;">
+                                <input type="checkbox" checked style="width: auto; margin: 0;"> 
+                                <span>Receive travel itineraries via Email</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                <input type="checkbox" style="width: auto; margin: 0;"> 
+                                <span>Receive urgent updates via SMS</span>
+                            </label>
+                        </form>
+                    </section>
+
+                    
+                    <section class="glass-card workspace-card tab-panel hidden" id="tab-history">
+                        <div class="section-title-row">
+                            <h2>Journal of Journeys</h2>
+                        </div>
+                        <div id="historyList" class="history-list">
+                            <p class="text-secondary" style="text-align:center;padding:2rem 0;">Loading your travel history…</p>
+                        </div>
+                    </section>
                 </div>
-                <form id="personalInfoForm">
-                    <label>Full Name: <input type="text" value="Zeiad Abogebba" disabled></label>
-                    <label>Email: <input type="email" id="email" value="user@example.com" disabled></label>
-                    <label>Phone: <input type="tel" value="+20 100 123 4567" disabled></label>
-                    <label>DOB: <input type="date" value="1995-05-15" disabled></label>
-                    <label>Address: <textarea disabled>123 Nile View St, Cairo, Egypt</textarea></label>
-                </form>
-            </section>
-
-            <!-- Security Tab -->
-            <section class="card-box tab-panel hidden" id="tab-security">
-                <h2>Security</h2>
-                <form>
-                    <label>Current Password: <input type="password"></label>
-                    <label>New Password: <input type="password"></label>
-                    <label>Confirm Password: <input type="password"></label>
-                    <button type="button">Update Password</button>
-                </form>
-                <hr>
-                <label><input type="checkbox"> Enable Two-Factor Authentication</label>
-                <hr>
-                <p><strong>Danger Zone</strong></p>
-                <button id="deleteAccountBtn" class="danger-btn">Delete Account</button>
-            </section>
-
-            <!-- Preferences Tab -->
-            <section class="card-box tab-panel hidden" id="tab-preferences">
-                <h2>Preferences</h2>
-                <form>
-                    <label>Accommodation: 
-                        <select>
-                            <option>Luxury Hotel</option>
-                            <option>Standard Hotel</option>
-                        </select>
-                    </label>
-                    <label>Transport: 
-                        <select>
-                            <option>Private Car</option>
-                            <option>Tour Bus</option>
-                        </select>
-                    </label>
-                    <br><br>
-                    <label><input type="checkbox" checked> Email Notifications</label><br>
-                    <label><input type="checkbox"> SMS Notifications</label><br>
-                </form>
-            </section>
-
-            <!-- Travel History Tab -->
-            <section class="card-box tab-panel hidden" id="tab-history">
-                <h2>Travel History & Reviews</h2>
-                <div class="card-box">
-                    <h4>Nile Cruise Experience</h4>
-                    <p>Status: Completed | Date: 2024-02-10</p>
-                    <button>Leave a Review</button>
-                </div>
-                <div class="card-box">
-                    <h4>Pyramids & Sphinx Half-Day</h4>
-                    <p>Status: Upcoming | Date: 2024-05-20</p>
-                    <button>Cancel Trip</button>
-                </div>
-            </section>
-
+            </div>
         </main>
     </div>
 
-    <!-- Modals -->
+    
     <div class="modal-overlay hidden" id="deleteModal">
-        <div class="card-box modal-box">
-            <h3>Delete Account</h3>
-            <p>Are you sure? This cannot be undone.</p>
-            <button id="confirmDeleteBtn" class="danger-btn">Yes, Delete</button>
-            <button id="cancelDeleteBtn">Cancel</button>
+        <div class="glass-card modal-box">
+            <h3>Relinquish Account?</h3>
+            <p class="text-secondary" style="margin-bottom: 2rem;">Are you certain you wish to remove your presence from our sanctuary? This action is permanent.</p>
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <button id="confirmDeleteBtn" class="btn btn--primary" style="background: var(--color-danger);">Yes, Delete Forever</button>
+                <button id="cancelDeleteBtn" class="btn btn--outline">Reclaim My Sanctuary</button>
+            </div>
         </div>
     </div>
 
+    <script src="../mockData.js"></script>
+    <script src="../storage.js"></script>
+    <script src="../global.js"></script>
     <script src="js/UserProfile.js"></script>
 </body>
 
 </html>
+

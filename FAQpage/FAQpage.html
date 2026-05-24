@@ -1,39 +1,60 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FAQ - Beyond the Pyramids</title>
+    
+    <link rel="stylesheet" href="../global.css">
     <link rel="stylesheet" href="css/FAQpage.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 
 <body>
+    <div class="noise-overlay"></div>
 
-    <!-- Navigation Bar -->
-    <div class="navbar">
-        <div class="logo">Beyond the Pyramids</div>
-        <div class="nav-links">
-            <a href="index.html">Home</a>
-            <a href="dayPackages.html">Day Packages</a>
-            <a href="weekPackages.html">Week Packages</a>
-            <a href="customTrip.html">Custom Trip</a>
-            <a href="myBookings.html">My Bookings</a>
-            <a href="profile.html">Profile</a>
-            <a href="login.html" id="authLink">Login</a>
+    
+    <nav class="navbar" id="main-nav">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="../LandingPage/LandingPage.html">
+                    <img src="../WebsiteBanner.png" alt="Beyond the Pyramids Logo">
+                </a>
+            </div>
+
+            <ul class="nav-menu">
+                <li><a href="../LandingPage/LandingPage.html" class="nav-link">Home</a></li>
+                <li><a href="../DayPackages/dayPackages.html" class="nav-link">Day Packages</a></li>
+                <li><a href="../WeeklyPackagePage/week-packages.html" class="nav-link">Week Packages</a></li>
+                <li><a href="../SingleLocationPage/SingleLocation.html" class="nav-link">Single Locations</a></li>
+                <li><a href="../CustomTripBuilderPage/CustomTripBuilderPage.html" class="nav-link">Custom Trip</a></li>
+                <li><a href="../UserProfilePage/UserProfile.html" class="nav-link">Profile</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+                    <i class="fas fa-sun sun-icon"></i>
+                    <i class="fas fa-moon moon-icon"></i>
+                </button>
+                <div class="nav-buttons">
+                    <a href="../LoginPage/login.html" id="authLink" class="btn btn--primary">Login</a>
+                </div>
+            </div>
         </div>
+    </nav>
+
+    
+    <div class="page-title reveal-up">
+        <h1 class="hero-title">Common <span class="text-gold">Questions</span></h1>
+        <p class="hero-description">Detailed guidance for the modern explorer in Egypt</p>
     </div>
 
-    <!-- Page Title -->
-    <div class="page-title">
-        <h1>FAQ</h1>
-        <p>Find answers to common questions about our services</p>
-    </div>
-
-    <!-- Main Container -->
+    
     <div class="main-container">
 
-        <!-- Category Tabs (No "All" button) -->
-        <div class="category-tabs">
+        
+        <div class="category-tabs reveal-up">
             <button class="tab-btn" data-category="general">General</button>
             <button class="tab-btn" data-category="booking">Booking & Payment</button>
             <button class="tab-btn" data-category="trips">Trips & Packages</button>
@@ -42,25 +63,75 @@
             <button class="tab-btn" data-category="support">Support & Contact</button>
         </div>
 
-        <!-- FAQ Container -->
-        <div id="faqContainer" class="faq-container">
-            <!-- FAQs will be loaded here by JavaScript -->
+        
+        <div id="faqContainer" class="faq-container reveal-up">
+            
         </div>
 
-        <!-- Contact Support Box -->
-        <div class="contact-box">
-            <p>💬 Still have questions? Contact our support team</p>
-            <a href="contact.html" class="contact-btn">Contact Us</a>
+        
+        <div class="contact-box glass-card reveal-up">
+            <div class="contact-box-content">
+                <h3>Still have questions?</h3>
+                <p>Our concierge team is available 24/7 to assist with your journey.</p>
+            </div>
+            <a href="../ContactPage/contact.html" class="btn btn--gold">Contact Concierge</a>
         </div>
 
     </div>
 
-    <!-- Footer -->
-    <div class="footer">
-        <p>&copy; 2025 Beyond the Pyramids</p>
-    </div>
+    
+    <footer class="main-footer reveal-up">
+        <div class="container footer-grid">
+            <div class="footer-brand">
+                <h3 class="footer-logo">Beyond the Pyramids</h3>
+                <p>Curating the eternal legacy of Egypt since 2012.</p>
+            </div>
+
+            <nav class="footer-nav">
+                <div class="footer-group">
+                    <h4>Explore</h4>
+                    <ul>
+                        <li><a href="../LandingPage/LandingPage.html#destinations">Destinations</a></li>
+                        <li><a href="../LandingPage/LandingPage.html#packages">Tour Packages</a></li>
+                        <li><a href="../CustomTripBuilderPage/CustomTripBuilderPage.html">Custom Trips</a></li>
+                    </ul>
+                </div>
+                <div class="footer-group">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="../AboutUsPage/AboutUs.html">Our Story</a></li>
+                        <li><a href="../FAQpage/FAQpage.html">Common Questions</a></li>
+                    </ul>
+                </div>
+                <div class="footer-group">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="../TermsAndConditionsPage/TermsAndConditionsPage.html">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </nav>
+
+            <div class="footer-newsletter">
+                <h4>Join the Inner Circle</h4>
+                <p>Receive exclusive travel insights and early access to new tours.</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Your email address" required>
+                    <button type="submit" class="btn btn--primary">Join</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="footer-bottom container">
+            <p>&copy; 2026 Beyond the Pyramids. All rights reserved.</p>
+            <div class="credit">Designed for the modern explorer.</div>
+        </div>
+    </footer>
 
     <script src="js/FAQpage.js"></script>
+    <script src="../mockData.js"></script>
+    <script src="../storage.js"></script>
+    <script src="../global.js"></script>
 </body>
 
 </html>
+

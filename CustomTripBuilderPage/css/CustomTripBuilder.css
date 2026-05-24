@@ -1,8 +1,15 @@
-/* Basic structural CSS */
+
+
+
+/* Sidebar shell layout helpers */
+.page-title { padding: 40px 48px 0; }
 
 .builder-layout {
     display: flex;
-    gap: 20px;
+    gap: var(--space-xl);
+    max-width: var(--max-content-width);
+    margin: 0 auto;
+    padding: var(--space-xl);
 }
 
 .wizard-panel {
@@ -11,30 +18,102 @@
 
 .price-panel {
     flex: 1;
+    position: sticky;
+    top: var(--space-xl);
+    height: fit-content;
 }
+
 
 .stepper {
     display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-xl);
+    overflow-x: auto;
+    padding-bottom: var(--space-sm);
 }
 
 .stepper-step {
-    padding: 8px 15px;
-    border: 1px solid #ccc;
+    padding: 10px 20px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
     cursor: pointer;
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-text-muted);
+    background: var(--color-surface);
+    white-space: nowrap;
+    transition: var(--transition-base);
+    position: relative;
 }
+
+.stepper-step:hover {
+    border-color: var(--gold-primary);
+    color: var(--gold-primary);
+}
+
+.stepper-step.active {
+    background: linear-gradient(135deg, var(--gold-primary), var(--color-primary-dark));
+    color: white;
+    border-color: var(--gold-primary);
+    box-shadow: 0 4px 14px rgba(197, 160, 89, 0.3);
+}
+
+.stepper-step.completed {
+    background: var(--color-success-light);
+    color: var(--color-success);
+    border-color: var(--color-success);
+}
+
+.stepper-step.completed::after {
+    content: '✓';
+    margin-left: var(--space-xs);
+    font-weight: 700;
+}
+
 
 .step-card {
-    padding: 15px;
-    border: 1px solid #ccc;
-    margin-bottom: 15px;
+    background: var(--color-surface);
+    padding: var(--space-xl);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--space-lg);
+    box-shadow: var(--shadow-sm);
 }
 
-.price-card {
-    padding: 15px;
-    border: 1px solid #ccc;
+.step-card h3 {
+    margin-bottom: var(--space-md);
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
 }
+
+
+.price-card {
+    background: var(--color-surface);
+    padding: var(--space-lg);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    position: relative;
+    overflow: hidden;
+}
+
+.price-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--gold-primary), var(--color-primary-dark));
+}
+
+.price-card h3 {
+    font-size: var(--text-lg);
+    margin-bottom: var(--space-md);
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--color-border-light);
+}
+
 
 .wizard-step {
     display: none;
@@ -42,52 +121,96 @@
 
 .wizard-step.active {
     display: block;
+    animation: fadeIn 0.3s ease;
 }
 
+
 .dest-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 10px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: var(--space-md);
+    margin-bottom: var(--space-md);
 }
 
 .dest-card {
-    border: 1px solid #ccc;
-    padding: 10px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
     text-align: center;
     cursor: pointer;
-    width: 150px;
+    transition: var(--transition-base);
+    background: var(--color-surface);
+    font-size: var(--text-sm);
+}
+
+.dest-card:hover {
+    border-color: var(--gold-primary);
+    background: var(--color-primary-lighter);
+    transform: translateY(-2px);
 }
 
 .dest-card.selected {
-    border: 2px solid black;
+    border: 2px solid var(--gold-primary);
+    background: var(--color-primary-lighter);
+    box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.15);
+    transform: scale(1.02);
 }
 
+
 .option-cards {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin-bottom: 10px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: var(--space-md);
+    margin-bottom: var(--space-md);
 }
 
 .option-card {
-    border: 1px solid #ccc;
-    padding: 10px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
     text-align: center;
     cursor: pointer;
     flex: 1;
     min-width: 120px;
+    transition: var(--transition-base);
+    background: var(--color-surface);
+    font-size: var(--text-sm);
+}
+
+.option-card:hover {
+    border-color: var(--gold-primary);
+    background: var(--color-primary-lighter);
+    transform: translateY(-2px);
 }
 
 .option-card.selected {
-    border: 2px solid black;
+    border: 2px solid var(--gold-primary);
+    background: var(--color-primary-lighter);
+    box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.15);
+    transform: scale(1.02);
 }
 
+
 .error-msg {
-    color: red;
+    color: var(--color-danger);
+    font-size: var(--text-sm);
     display: none;
+    padding: var(--space-sm) var(--space-md);
+    background: var(--color-danger-light);
+    border-radius: var(--radius-sm);
+    margin-top: var(--space-sm);
 }
 
 .error-msg.show {
     display: block;
+}
+
+
+@media (max-width: 768px) {
+    .builder-layout {
+        flex-direction: column;
+    }
+    .price-panel {
+        position: static;
+    }
 }

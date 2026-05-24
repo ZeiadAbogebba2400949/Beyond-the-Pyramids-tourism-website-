@@ -4,149 +4,187 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer Review</title>
-    <link rel="stylesheet" href="writing-reviews.css">
+    <title>Customer Reviews | Beyond the Pyramids</title>
+
+    <link rel="stylesheet" href="../global.css">
+    <link rel="stylesheet" href="../UserDashboardPage/css/style.css">
+    <link rel="stylesheet" href="css/writing-reviews.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
-    <header>
-        <nav>
-            <a href=""> <i class="fas fa-home"></i> Home</a>
-            <a href=""> <i class="fas fa-bookmark"> </i> My Bookings</a>
+    <div class="noise-overlay"></div>
 
-            | <span class="user-menu">
-                <i class="fas fa-user-circle"></i> <span id="user-name">Maryam Ayman</span>
-            </span>
-        </nav>
-    </header>
+    <div class="dashboard-shell">
+        
+        <aside class="dashboard-sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <a href="../LandingPage/LandingPage.html">
+                    <img src="../WebsiteLogo.png" alt="Beyond the Pyramids">
+                </a>
+            </div>
 
+            <nav class="sidebar-nav">
+                <div class="nav-group">
+                    <span class="group-label">Discovery</span>
+                    <ul>
+                        <li><a href="../LandingPage/LandingPage.html"><i class="fas fa-home"></i> Home Sanctuary</a></li>
+                        <li><a href="../DayPackages/dayPackages.html"><i class="fas fa-sun"></i> Day Packages</a></li>
+                        <li><a href="../WeeklyPackagePage/week-packages.html"><i class="fas fa-calendar-week"></i> Week Packages</a></li>
+                        <li><a href="../SingleLocationPage/SingleLocation.html"><i class="fas fa-location-dot"></i> Single Locations</a></li>
+                    </ul>
+                </div>
 
-    <section class="review-header">
-        <h1> <i class="fas fa-star"></i> Write a Review</h1>
-        <p>Share your experience with other tourists</p>
-    </section>
+                <div class="nav-group">
+                    <span class="group-label">Personal Desk</span>
+                    <ul>
+                        <li><a href="../UserDashboardPage/dashboard.html"><i class="fas fa-columns"></i> Dashboard</a></li>
+                        <li><a href="../CustomTripBuilderPage/CustomTripBuilderPage.html"><i class="fas fa-compass"></i> Trip Architect</a></li>
+                        <li><a href="../myBookings/myBookings.html"><i class="fas fa-suitcase-rolling"></i> My Journeys</a></li>
+                        <li><a href="../UserProfilePage/UserProfile.html"><i class="fas fa-user-circle"></i> Profile Settings</a></li>
+                    </ul>
+                </div>
 
+                <div class="nav-group">
+                    <span class="group-label">Concierge</span>
+                    <ul>
+                        <li><a href="../FAQpage/FAQpage.html"><i class="fas fa-question-circle"></i> Help & FAQ</a></li>
 
-    <section class="review-type">
-        <h3>What would you like to review?</h3>
-        <div class="review-options">
-            <label for="type" class="type-review" id="guide-review">
-                <input type="radio" id="type" name="reviewType" value="guide">
-                <i class="fas fa-chalkboard-teacher "></i> <span>Tourist Guide</span>
-            </label>
+                        <li><a href="../CustomerReviews/writing-reviews.html" class="active"><i class="fas fa-star"></i> Reviews</a></li>
+                    </ul>
+                </div>
+            </nav>
 
-            <label for="type" class="type-review" id="hotel-review">
-                <input type="radio" id="type" name="reviewType" value="hotel">
-                <i class="fas fa-hotel "></i> <span>Hotel</span>
-            </label>
+            <div class="sidebar-footer">
+                <button id="theme-toggle" class="theme-toggle-btn">
+                    <i class="fas fa-moon"></i> <span>Dark Mode</span>
+                </button>
+                <a href="../LandingPage/LandingPage.html" class="logout-link">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
+        </aside>
 
-            <label for="type" class="type-review" id="transport-review">
-                <input type="radio" id="type" name="reviewType" value="transport">
-                <i class="fas fa-bus "></i> <span>Transportation</span>
-            </label>
+        
+        <main class="dashboard-main">
+            <header class="dashboard-header reveal-up">
+                <div class="header-welcome">
+                    <h1>Share Your <span class="text-gold">Legacy</span></h1>
+                    <p class="header-subtitle">Your insights preserve the integrity of Egypt's travel heritage.</p>
+                </div>
+
+                <div class="header-actions">
+                    <div class="user-profile-mini">
+                        <img src="https://ui-avatars.com/api/?name=Maryam+Ayman&background=C5A059&color=fff" alt="User Avatar">
+                        <span id="user-name" style="display: none;">Maryam Ayman</span>
+                    </div>
+                </div>
+            </header>
+
+            
+            <div class="review-workflow-container">
+                
+                
+                <section class="review-type-section glass-card reveal-up">
+                    <div class="section-header">
+                        <h2>Select <span class="text-gold">Category</span></h2>
+                    </div>
+                    <div class="review-options-grid">
+                        <label class="selection-tile">
+                            <input type="radio" name="reviewType" value="guide">
+                            <div class="tile-content">
+                                <i class="fas fa-user-tie"></i>
+                                <span>Tourist Guide</span>
+                            </div>
+                        </label>
+
+                        <label class="selection-tile">
+                            <input type="radio" name="reviewType" value="hotel">
+                            <div class="tile-content">
+                                <i class="fas fa-hotel"></i>
+                                <span>Luxury Hotel</span>
+                            </div>
+                        </label>
+
+                        <label class="selection-tile">
+                            <input type="radio" name="reviewType" value="transport">
+                            <div class="tile-content">
+                                <i class="fas fa-ship"></i>
+                                <span>Transportation</span>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="select-dropdown-container reveal-up">
+                        <h3>Assign to: <span id="item-label" class="text-gold">Guide</span></h3>
+                        <div class="premium-select-wrapper">
+                            <select id="item-select">
+                                <option value="">-- Choose from our Elite Roster --</option>
+                                <option value="guide1">Ahmed Hassan - English, French, German</option>
+                                <option value="guide2">Fatima Farouk - English, Spanish, Russian, Chinese</option>
+                                <option value="guide3">Mohamed Ali - English, Italian, German</option>
+                            </select>
+                        </div>
+                    </div>
+                </section>
+
+                
+                <section class="review-content-section glass-card reveal-up">
+                    <div class="rating-architecture">
+                        <h3>Overall <span class="text-gold">Rating</span></h3>
+                        <div class="stars-glamour">
+                            <i class="far fa-star" data-rating="1"></i>
+                            <i class="far fa-star" data-rating="2"></i>
+                            <i class="far fa-star" data-rating="3"></i>
+                            <i class="far fa-star" data-rating="4"></i>
+                            <i class="far fa-star" data-rating="5"></i>
+                        </div>
+                    </div>
+
+                    <div class="text-review-area">
+                        <h3>Detailed <span class="text-gold">Testimonial</span></h3>
+                        <textarea id="review-text" rows="6"
+                            placeholder="Describe your journey..."></textarea>
+                    </div>
+                </section>
+
+                
+                <section class="photo-upload-section glass-card reveal-up">
+                    <div class="section-header">
+                        <h2>Visual <span class="text-gold">Gallery</span></h2>
+                    </div>
+                    <div class="upload-area-glamour" id="upload-area">
+                        <i class="fas fa-camera-retro"></i>
+                        <p>Upload Cinematic Captures</p>
+                        <input type="file" id="photo-input" accept="image/jpeg, image/png" style="display: none;" multiple>
+                    </div>
+                    <div class="photo-preview-grid" id="photo-preview"></div>
+                </section>
+
+                
+                <div class="submit-actions reveal-up">
+                    <button id="submit-review" class="btn btn--primary btn--large">Record My Legacy</button>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    
+    <div id="success-modal" class="modal-glamour">
+        <div class="modal-content glass-card reveal-up">
+            <div class="success-icon"><i class="fas fa-check-circle"></i></div>
+            <h2>Legacy <span class="text-gold">Recorded</span></h2>
+            <p>Your insights have been added to our archive.</p>
+            <button class="btn btn--primary" onclick="closeModal()">Return to Sanctuary</button>
         </div>
-    </section>
+    </div>
 
-
-    <section class="select-item">
-        <h3>Select <span id="item-label">Guide</span></h3>
-        <select id="item-select">
-            <option value="">-- Select --</option>
-            <option value="guide1">Ahmed Hassan - English, French, German</option>
-            <option value="guide2">Fatima Farouk - English, Spanish, Russian, Chinese</option>
-            <option value="guide3">Mohamed Ali - English, Italian, German</option>
-        </select>
-    </section>
-
-    <br>
-    <hr>
-
-
-    <section class="rating-sections">
-        <h3>Your Rating</h3>
-        <div class="stars">
-            <i class="fas fa-star" data-rating="1"></i>
-            <i class="fas fa-star" data-rating="2"></i>
-            <i class="fas fa-star" data-rating="3"></i>
-            <i class="fas fa-star" data-rating="4"></i>
-            <i class="fas fa-star" data-rating="5"></i>
-        </div>
-    </section>
-
-
-    <section class="text-review-section">
-        <h3>Your Review</h3>
-        <textarea id="review-text" rows="12" cols="50"
-            placeholder="What did you like?...What could be improved?"></textarea>
-    </section>
-
-
-    <br>
-    <hr>
-
-    <section class="photo-upload">
-        <h3><i class="fas fa-camera"></i> Add Photos (optional)</h3>
-        <div class="upload-area" id="upload-area">
-            <i class="fas fa-cloud-upload-alt"></i>
-            <p>Click or drag photos here</p>
-            <small>Upload up to 5 photos (JPG, PNG, max 5MB each) </small> <br> <br>
-            <input type="file" id="photo-input" accept="image/jpeg, image/png" style="display: none;" multiple>
-        </div>
-        <div class="photo-preview" id="photo-preview"></div>
-    </section>
-
-
-    <section class="submit-section">
-        <button id="submit-review">Submit Review</button>
-        <a href="" class="cancel-link">Cancel</a> <!--go back to home page-->
-    </section>
-
-
-    <section id="success-modal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <i class="fas fa-check-circle"></i>
-            <h2>Review Submitted!</h2>
-            <p>Thank you for sharing your experience</p>
-            <button onclick="closeModal()">Continue</button>
-        </div>
-    </section>
-
-    <br>
-    <br>
-    <br>
-    <hr>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-
-
-
-    <footer>
-        <section>
-            <i class="fas fa-pyramid"></i>
-            <a href="#"><i class="fab fa-facebook"></i></a>
-            <a href="#"><i class="fab fa-instagram"></i></a>
-            <a href="#"><i class="fab fa-twitter"></i></a>
-        </section>
-        <section>
-            <h4>Quick Links</h4>
-            <a href="about.html">About Us</a>
-            <a href="packages.html">All Packages</a>
-            <a href="custom-trip.html">Custom Trip Builder</a>
-        </section>
-        <section>
-            <h4>Support</h4>
-            <a href="faq.html">FAQs</a>
-            <a href="contact.html">Contact Us</a>
-            <a href="privacy.html">Privacy Policy</a>
-        </section>
-        <p>© 2026 Beyond the Pyramids. All rights reserved.</p>
-    </footer>
-
-    <script src="writing-reviews.js"></script>
+    <script src="js/writing-reviews.js"></script>
+    <script src="../mockData.js"></script>
+    <script src="../storage.js"></script>
+    <script src="../global.js"></script>
 </body>
+
+</html>
+

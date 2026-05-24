@@ -1,98 +1,94 @@
-// Booking Management - Simple & Minimal
+/* ═══════════════════════════════════════════════════════════
+   BookingManagement.js
+   Dynamic version reading from AppStorage & MockData
+═══════════════════════════════════════════════════════════ */
+
+'use strict';
 
 let bookings = [];
 let currentBookingId = null;
-let currentAction = null;
-
-// Demo Data
-const demoBookings = [
-    {
-        id: 'b1',
-        bookingNumber: 'EG-2026-0001',
-        userName: 'John Smith',
-        userEmail: 'john@email.com',
-        packageName: 'Pyramids of Giza',
-        packageType: 'single',
-        startDate: '2026-05-15',
-        endDate: '2026-05-15',
-        travelers: 2,
-        totalPrice: 1000,
-        status: 'pending',
-        specialRequests: 'Need wheelchair access',
-        createdAt: '2026-04-10'
-    },
-    {
-        id: 'b2',
-        bookingNumber: 'EG-2026-0002',
-        userName: 'Sarah Ahmed',
-        userEmail: 'sarah@email.com',
-        packageName: 'Cairo Highlights Tour',
-        packageType: 'day',
-        startDate: '2026-06-01',
-        endDate: '2026-06-01',
-        travelers: 4,
-        totalPrice: 3996,
-        status: 'confirmed',
-        specialRequests: '',
-        createdAt: '2026-04-12'
-    },
-    {
-        id: 'b3',
-        bookingNumber: 'EG-2026-0003',
-        userName: 'Michael Brown',
-        userEmail: 'michael@email.com',
-        packageName: 'Nile Cruise Luxor to Aswan',
-        packageType: 'week',
-        startDate: '2026-07-10',
-        endDate: '2026-07-17',
-        travelers: 2,
-        totalPrice: 15000,
-        status: 'pending',
-        specialRequests: 'Vegetarian meals',
-        createdAt: '2026-04-15'
-    },
-    {
-        id: 'b4',
-        bookingNumber: 'EG-2026-0004',
-        userName: 'Emily Davis',
-        userEmail: 'emily@email.com',
-        packageName: 'Custom Egypt Tour',
-        packageType: 'custom',
-        startDate: '2026-08-05',
-        endDate: '2026-08-12',
-        travelers: 3,
-        totalPrice: 12500,
-        status: 'completed',
-        specialRequests: '',
-        createdAt: '2026-03-20'
-    }
-];
 
 function loadData() {
-    bookings = [...demoBookings];
+    let combined = [];
+
+    // 1. AppStorage bookings (real user bookings)
+    if (window.AppStorage && window.AppStorage.getBookings) {
+        combined = [...window.AppStorage.getBookings()];
+    }
+
+    // 2. MockData bookings
+    if (window.MockData && window.MockData.bookings) {
+        window.MockData.bookings.forEach(mb => {
+            if (!combined.some(b => b.id === mb.id)) {
+                combined.push(mb);
+            }
+        });
+    }
+
+    // Map old field names to new standardized ones
+    bookings = combined.map(b => {
+        return {
+            id: b.id || b.bookingId,
+            bookingNumber: b.bookingNumber || b.id || b.bookingId || 'BKG-000',
+            userName: b.userName || b.userEmail?.split('@')[0] || 'Guest',
+            userEmail: b.userEmail || 'unknown@email.com',
+            packageName: b.packageName || b.title || b.tripName || 'Package Tour',
+            packageType: b.packageType || b.tripType || 'Package',
+            startDate: b.date || b.startDate || b.bookingDate || b.timestamp?.substring(0,10) || '',
+            endDate: b.endDate || b.date || b.startDate || b.bookingDate || b.timestamp?.substring(0,10) || '',
+            travelers: b.travelers || b.peopleCount || 1,
+            totalPrice: Number(b.totalPrice) || 0,
+            status: b.status || 'confirmed',
+            specialRequests: b.specialRequests || '',
+            createdAt: b.createdAt || b.timestamp?.substring(0,10) || ''
+        };
+    });
+
     updateStats();
     renderBookings();
 }
 
+function getComputedStatus(startDate, endDate, baseStatus) {
+    if (baseStatus === 'cancelled' || baseStatus === 'canceled') return 'cancelled';
+    if (!startDate) return baseStatus || 'confirmed';
+    
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const start = new Date(startDate);
+    start.setHours(0, 0, 0, 0);
+    const end = new Date(endDate || startDate);
+    end.setHours(0, 0, 0, 0);
+    
+    if (today < start) return 'confirmed';
+    if (today >= start && today <= end) return 'checked-in';
+    return 'checked-out';
+}
+
 function updateStats() {
     document.getElementById('totalBookings').textContent = bookings.length;
-    document.getElementById('pendingCount').textContent = `Pending: ${bookings.filter(b => b.status === 'pending').length}`;
-    document.getElementById('confirmedCount').textContent = `Confirmed: ${bookings.filter(b => b.status === 'confirmed').length}`;
-    document.getElementById('completedCount').textContent = bookings.filter(b => b.status === 'completed').length;
 
-    let revenue = bookings.reduce((sum, b) => {
-        if (b.status === 'confirmed' || b.status === 'completed') {
+    const confirmedCount = bookings.filter(b => getComputedStatus(b.startDate, b.endDate, b.status) === 'confirmed').length;
+    document.getElementById('activeCount').textContent = `Confirmed: ${confirmedCount}`;
+
+    const cancelledCount = bookings.filter(b => getComputedStatus(b.startDate, b.endDate, b.status) === 'cancelled').length;
+    document.getElementById('cancelledCount').textContent = `Cancelled: ${cancelledCount}`;
+
+    document.getElementById('completedCount').textContent = bookings.filter(b => getComputedStatus(b.startDate, b.endDate, b.status) === 'checked-out').length;
+
+    const revenue = bookings.reduce((sum, b) => {
+        const computed = getComputedStatus(b.startDate, b.endDate, b.status);
+        if (computed !== 'cancelled') {
             return sum + b.totalPrice;
         }
         return sum;
     }, 0);
-    document.getElementById('totalRevenue').textContent = revenue + ' EGP';
+    document.getElementById('totalRevenue').textContent = revenue.toLocaleString() + ' EGP';
 }
 
 function renderBookings() {
     let filtered = [...bookings];
 
-    let search = document.getElementById('searchInput').value.toLowerCase();
+    const search = document.getElementById('searchInput').value.toLowerCase();
     if (search) {
         filtered = filtered.filter(b =>
             b.bookingNumber.toLowerCase().includes(search) ||
@@ -101,61 +97,51 @@ function renderBookings() {
         );
     }
 
-    let status = document.getElementById('statusFilter').value;
+    const status = document.getElementById('statusFilter').value;
     if (status !== 'all') {
-        filtered = filtered.filter(b => b.status === status);
+        filtered = filtered.filter(b => getComputedStatus(b.startDate, b.endDate, b.status) === status);
     }
 
-    let type = document.getElementById('typeFilter').value;
+    const type = document.getElementById('typeFilter').value;
     if (type !== 'all') {
-        filtered = filtered.filter(b => b.packageType === type);
+        // Simple type matching heuristic
+        filtered = filtered.filter(b => b.packageType.toLowerCase().includes(type.toLowerCase()));
     }
 
-    let container = document.getElementById('bookingsContainer');
+    const container = document.getElementById('bookingsContainer');
     container.innerHTML = '';
 
     if (filtered.length === 0) {
-        container.innerHTML = '<p style="text-align:center;padding:40px;">No bookings found</p>';
+        container.innerHTML = '<p style="text-align:center;padding:40px;color:var(--color-text-muted);">No bookings found</p>';
         return;
     }
 
     filtered.forEach(b => {
-        let template = document.getElementById('bookingCardTemplate');
-        let card = template.content.cloneNode(true);
+        const template = document.getElementById('bookingCardTemplate');
+        if (!template) return;
+        const card = template.content.cloneNode(true);
 
         card.querySelector('.booking-number').textContent = b.bookingNumber;
-        let statusSpan = card.querySelector('.booking-status');
-        statusSpan.textContent = b.status.toUpperCase();
-        statusSpan.classList.add(b.status);
+        const statusSpan = card.querySelector('.booking-status');
+        const computedStatus = getComputedStatus(b.startDate, b.endDate, b.status);
+        statusSpan.textContent = computedStatus.replace('-', ' ').toUpperCase();
+        statusSpan.classList.add(computedStatus);
         card.querySelector('.booking-package').textContent = b.packageName;
-        card.querySelector('.booking-customer').textContent = `${b.userName} (${b.userEmail})`;
-        card.querySelector('.booking-dates').textContent = `${b.startDate} to ${b.endDate}`;
-        card.querySelector('.booking-price').textContent = `${b.totalPrice} EGP`;
-        card.querySelector('.booking-travelers').textContent = `${b.travelers} traveler(s)`;
+        card.querySelector('.booking-customer span').textContent = `${b.userName} (${b.userEmail})`;
+        card.querySelector('.booking-dates span').textContent = `${b.startDate} to ${b.endDate}`;
+        card.querySelector('.booking-price span').textContent = `${b.totalPrice.toLocaleString()} EGP`;
+        card.querySelector('.booking-travelers span').textContent = `${b.travelers} traveler(s)`;
 
-        let viewBtn = card.querySelector('.view-btn');
-        let approveBtn = card.querySelector('.approve-btn');
-        let rejectBtn = card.querySelector('.reject-btn');
-        let completeBtn = card.querySelector('.complete-btn');
+        const viewBtn = card.querySelector('.view-btn');
+        const cancelBtn = card.querySelector('.cancel-btn');
 
         viewBtn.onclick = () => viewBooking(b.id);
 
-        if (b.status === 'pending') {
-            approveBtn.style.display = 'inline-block';
-            rejectBtn.style.display = 'inline-block';
-            completeBtn.style.display = 'none';
-            approveBtn.onclick = () => openApproveModal(b.id);
-            rejectBtn.onclick = () => openRejectModal(b.id);
-        } else if (b.status === 'confirmed') {
-            approveBtn.style.display = 'none';
-            rejectBtn.style.display = 'inline-block';
-            completeBtn.style.display = 'inline-block';
-            rejectBtn.onclick = () => openRejectModal(b.id);
-            completeBtn.onclick = () => openCompleteModal(b.id);
+        if (computedStatus === 'confirmed') {
+            cancelBtn.style.display = 'inline-block';
+            cancelBtn.onclick = () => openCancelModal(b.id);
         } else {
-            approveBtn.style.display = 'none';
-            rejectBtn.style.display = 'none';
-            completeBtn.style.display = 'none';
+            cancelBtn.style.display = 'none';
         }
 
         container.appendChild(card);
@@ -163,8 +149,9 @@ function renderBookings() {
 }
 
 function viewBooking(id) {
-    let b = bookings.find(b => b.id === id);
-    let details = document.getElementById('viewDetails');
+    const b = bookings.find(b => b.id === id);
+    const details = document.getElementById('viewDetails');
+    if (!details) return;
     details.innerHTML = `
         <p><strong>Booking #:</strong> ${b.bookingNumber}</p>
         <p><strong>Customer:</strong> ${b.userName}</p>
@@ -173,101 +160,80 @@ function viewBooking(id) {
         <p><strong>Type:</strong> ${b.packageType.toUpperCase()}</p>
         <p><strong>Dates:</strong> ${b.startDate} to ${b.endDate}</p>
         <p><strong>Travelers:</strong> ${b.travelers}</p>
-        <p><strong>Total Price:</strong> ${b.totalPrice} EGP</p>
-        <p><strong>Status:</strong> ${b.status.toUpperCase()}</p>
-        <p><strong>Booked on:</strong> ${b.createdAt}</p>
+        <p><strong>Total Price:</strong> ${b.totalPrice.toLocaleString()} EGP</p>
+        <p><strong>Status:</strong> <span class="booking-status ${getComputedStatus(b.startDate, b.endDate, b.status)}">${getComputedStatus(b.startDate, b.endDate, b.status).replace('-', ' ').toUpperCase()}</span></p>
+        <p><strong>Booked on:</strong> ${b.createdAt || b.startDate}</p>
         <p><strong>Special Requests:</strong> ${b.specialRequests || 'None'}</p>
     `;
-    document.getElementById('viewModal').showModal();
+    document.getElementById('viewModal')?.showModal();
 }
 
-function openApproveModal(id) {
+function openCancelModal(id) {
     currentBookingId = id;
-    let b = bookings.find(b => b.id === id);
-    document.getElementById('approveBookingName').textContent = b.packageName;
-    document.getElementById('approveNotes').value = '';
-    document.getElementById('approveModal').showModal();
+    const b = bookings.find(b => b.id === id);
+    const nameEl = document.getElementById('cancelBookingName');
+    if (nameEl) nameEl.textContent = b.packageName;
+    const reasonEl = document.getElementById('cancelReason');
+    if (reasonEl) reasonEl.value = '';
+    document.getElementById('cancelModal')?.showModal();
 }
 
-function openRejectModal(id) {
-    currentBookingId = id;
-    let b = bookings.find(b => b.id === id);
-    document.getElementById('rejectBookingName').textContent = b.packageName;
-    document.getElementById('rejectReason').value = '';
-    document.getElementById('rejectModal').showModal();
-}
-
-function openCompleteModal(id) {
-    currentBookingId = id;
-    let b = bookings.find(b => b.id === id);
-    document.getElementById('completeBookingName').textContent = b.packageName;
-    document.getElementById('completeFeedback').value = '';
-    document.getElementById('completeModal').showModal();
-}
-
-function approveBooking() {
-    let b = bookings.find(b => b.id === currentBookingId);
-    if (b) {
-        b.status = 'confirmed';
-        updateStats();
-        renderBookings();
-    }
-    document.getElementById('approveModal').close();
-}
-
-function rejectBooking() {
-    let reason = document.getElementById('rejectReason').value;
-    if (!reason) {
-        alert('Please provide a reason for cancellation');
+function cancelBooking() {
+    const reason = document.getElementById('cancelReason')?.value || '';
+    if (!reason.trim()) {
+        alert('Please provide a reason for cancellation.');
         return;
     }
-    let b = bookings.find(b => b.id === currentBookingId);
+    const b = bookings.find(b => b.id === currentBookingId);
     if (b) {
         b.status = 'cancelled';
-        updateStats();
-        renderBookings();
-    }
-    document.getElementById('rejectModal').close();
-}
+        
+        // Update in global storage if present
+        if (window.AppStorage) {
+            let allBookings = window.AppStorage.getBookings();
+            const idx = allBookings.findIndex(ab => ab.id === b.id);
+            if (idx !== -1) {
+                allBookings[idx].status = 'cancelled';
+                window.AppStorage.setBookings(allBookings);
+            }
+            // Also try to update user specific history
+            if (window.AppStorage.updateUserBooking) {
+                window.AppStorage.updateUserBooking(b.userEmail, b.id, { status: 'cancelled' });
+            }
+        }
 
-function completeBooking() {
-    let b = bookings.find(b => b.id === currentBookingId);
-    if (b) {
-        b.status = 'completed';
         updateStats();
         renderBookings();
     }
-    document.getElementById('completeModal').close();
+    document.getElementById('cancelModal')?.close();
 }
 
 function closeAllModals() {
-    let modals = ['viewModal', 'approveModal', 'rejectModal', 'completeModal'];
-    modals.forEach(m => {
-        let modal = document.getElementById(m);
+    ['viewModal', 'cancelModal'].forEach(m => {
+        const modal = document.getElementById(m);
         if (modal && modal.open) modal.close();
     });
 }
 
 function setupFilters() {
-    document.getElementById('searchInput').addEventListener('input', () => renderBookings());
-    document.getElementById('statusFilter').addEventListener('change', () => renderBookings());
-    document.getElementById('typeFilter').addEventListener('change', () => renderBookings());
+    document.getElementById('searchInput')?.addEventListener('input', () => renderBookings());
+    document.getElementById('statusFilter')?.addEventListener('change', () => renderBookings());
+    document.getElementById('typeFilter')?.addEventListener('change', () => renderBookings());
 }
 
 function setupEventListeners() {
-    document.getElementById('confirmApproveBtn').onclick = approveBooking;
-    document.getElementById('confirmRejectBtn').onclick = rejectBooking;
-    document.getElementById('confirmCompleteBtn').onclick = completeBooking;
+    const confirmBtn = document.getElementById('confirmCancelBtn');
+    if (confirmBtn) confirmBtn.onclick = cancelBooking;
 
-    let closeBtns = document.querySelectorAll('.close');
-    closeBtns.forEach(btn => {
+    document.querySelectorAll('.close').forEach(btn => {
         btn.onclick = closeAllModals;
     });
 
-    document.getElementById('cancelApproveBtn').onclick = () => document.getElementById('approveModal').close();
-    document.getElementById('cancelRejectBtn').onclick = () => document.getElementById('rejectModal').close();
-    document.getElementById('cancelCompleteBtn').onclick = () => document.getElementById('completeModal').close();
-    document.getElementById('closeViewBtn').onclick = () => document.getElementById('viewModal').close();
+    const cancelCancel = document.getElementById('cancelCancelBtn');
+    if (cancelCancel) cancelCancel.onclick = () => document.getElementById('cancelModal').close();
+    
+    const closeView = document.getElementById('closeViewBtn');
+    if (closeView) closeView.onclick = () => document.getElementById('viewModal').close();
 }
 
 function init() {

@@ -1,62 +1,11 @@
 
 
-const DEMO_ACCOUNTS = {
-    admin: {
-        email: 'admin@egypt.com',
-        password: 'admin123',
-        role: 'Admin',
-        dashboard: 'admin-dashboard.html'
-    },
-    planner: {
-        email: 'planner@egypt.com',
-        password: 'planner123',
-        role: 'Planner',
-        dashboard: 'planner-dashboard.html'
-    },
-    booking: {
-        email: 'booking@egypt.com',
-        password: 'booking123',
-        role: 'Booking Manager',
-        dashboard: 'booking-dashboard.html'
-    },
-    guide: {
-        email: 'guide@egypt.com',
-        password: 'guide123',
-        role: 'Tour Guide',
-        dashboard: 'guide-dashboard.html'
-    },
-    support: {
-        email: 'support@egypt.com',
-        password: 'support123',
-        role: 'Customer Support',
-        dashboard: 'support-dashboard.html'
-    },
-    hotel: {
-        email: 'hotel@egypt.com',
-        password: 'hotel123',
-        role: 'Hotel Manager',
-        dashboard: 'hotel-dashboard.html'
-    },
-    transport: {
-        email: 'transport@egypt.com',
-        password: 'transport123',
-        role: 'Transportation',
-        dashboard: 'transport-dashboard.html'
-    },
-    user: {
-        email: 'user@egypt.com',
-        password: 'user123',
-        role: 'Tourist',
-        dashboard: 'user-dashboard.html'
-    }
-};
+const DEMO_ACCOUNTS = window.MockData.accounts;
 
 document.addEventListener('DOMContentLoaded', function () {
     console.log('DOM for Login page loaded');
 
     passwordToggle();
-    forgotPasswordLink();
-    demoButtons();
     loginForm();
     rememberMe();
     checkExistingSession();
@@ -89,57 +38,7 @@ function passwordToggle() {
     });
 }
 
-function forgotPasswordLink() {
-    const forgotLink = document.getElementById('forgot-link');
 
-    if (!forgotLink) {
-        console.warn('Forgot password link not found');
-        return;
-    }
-
-    forgotLink.addEventListener('click', function (e) {
-        e.preventDefault();
-        showNotification(
-            'This is Demo Mode: For password reset, please use the demo credentials below.',
-            'info'
-        );
-    });
-}
-
-
-function demoButtons() {
-    const roleButtons = document.querySelectorAll('.role-item');
-    const usernameInput = document.getElementById('username');
-    const passwordInput = document.getElementById('password');
-
-    if (!roleButtons.length) {
-        console.warn('No role buttons found');
-        return;
-    }
-
-    if (!usernameInput || !passwordInput) {
-        console.warn('Username or password not found');
-        return;
-    }
-
-    roleButtons.forEach(button => {
-        button.addEventListener('click', function () {
-            const role = this.getAttribute('data-role');
-            const account = DEMO_ACCOUNTS[role];
-
-            if (account) {
-                usernameInput.value = account.email;
-                passwordInput.value = account.password;
-
-                roleButtons.forEach(btn => btn.classList.remove('selected'));
-
-                this.classList.add('selected');
-
-                showNotification(`${account.role} credentials loaded. Click Sign in to continue.`, 'success');
-            }
-        });
-    });
-}
 
 
 function loginForm() {
@@ -196,32 +95,39 @@ function loginForm() {
 function attemptLogin(username, password) {
     const usernameLower = username.toLowerCase();
 
+    // ── 1. Check MockData accounts (pre-seeded admin/staff/demo accounts) ──
     for (const [key, account] of Object.entries(DEMO_ACCOUNTS)) {
         if ((usernameLower === account.email.toLowerCase() || usernameLower === key) &&
             password === account.password) {
             return {
                 success: true,
                 role: account.role,
+                name: account.name,
                 email: account.email,
                 dashboard: account.dashboard
             };
         }
     }
 
-    for (const [key, account] of Object.entries(DEMO_ACCOUNTS)) {
-        if (password === account.password) {
-            return {
-                success: true,
-                role: account.role,
-                email: username,
-                dashboard: account.dashboard
-            };
+    // ── 2. Check localStorage-persisted registered users ───────────────────
+    if (window.AppStorage && window.AppStorage.getRegisteredUsers) {
+        const registeredUsers = window.AppStorage.getRegisteredUsers();
+        for (const user of registeredUsers) {
+            if (user.email.toLowerCase() === usernameLower && user.password === password) {
+                return {
+                    success: true,
+                    role: user.role || 'Tourist',
+                    name: user.name,
+                    email: user.email,
+                    dashboard: user.dashboard || '../UserDashboardPage/dashboard.html'
+                };
+            }
         }
     }
 
     return {
         success: false,
-        message: 'Invalid credentials. Please use the demo accounts below.'
+        message: 'Invalid credentials. Please check your email and password.'
     };
 }
 
@@ -235,19 +141,19 @@ function storeUserSession(userData, rememberMe) {
     };
 
     if (rememberMe) {
-        localStorage.setItem('userSession', JSON.stringify(sessionData));
-        sessionStorage.removeItem('userSession');
+        AppStorage.setUserSessionLocal(sessionData);
+        AppStorage.removeSessionItem('userSession');
         console.log('Session remembered');
     } else {
-        sessionStorage.setItem('userSession', JSON.stringify(sessionData));
-        localStorage.removeItem('userSession');
+        AppStorage.setUserSessionSession(sessionData);
+        AppStorage.removeItem('userSession');
         console.log('Session saved temporarily');
     }
 }
 
 function checkExistingSession() {
-    const localSession = localStorage.getItem('userSession');
-    const sessionSession = sessionStorage.getItem('userSession');
+    const localSession = AppStorage.getItem('userSession');
+    const sessionSession = AppStorage.getSessionItem('userSession');
 
     const sessionData = localSession || sessionSession;
 
@@ -260,13 +166,13 @@ function checkExistingSession() {
             if (stayLoggedIn) {
                 window.location.href = userData.dashboard || 'main.html';
             } else {
-                localStorage.removeItem('userSession');
-                sessionStorage.removeItem('userSession');
+                AppStorage.removeItem('userSession');
+                AppStorage.removeSessionItem('userSession');
                 showNotification('Session cleared. You can log in again.', 'info');
             }
         } catch (e) {
-            localStorage.removeItem('userSession');
-            sessionStorage.removeItem('userSession');
+            AppStorage.removeItem('userSession');
+            AppStorage.removeSessionItem('userSession');
         }
     }
 }
@@ -353,7 +259,7 @@ function showNotification(message, type = 'info') {
 function getNotificationColor(type) {
     switch (type) {
         case 'success': return '#4CAF50';
-        case 'error': return '#F44336';
+        case 'error': return '#ff4d4d';
         case 'warning': return '#FF9800';
         default: return '#2196F3';
     }
@@ -369,7 +275,7 @@ function clearForm() {
     if (passwordInput) passwordInput.value = '';
     if (rememberMe) rememberMe.checked = false;
 
-    document.querySelectorAll('.role-item').forEach(btn => {
+    document.querySelectorAll('.role-chip').forEach(btn => {
         btn.classList.remove('selected');
     });
 
@@ -377,7 +283,7 @@ function clearForm() {
 }
 
 function getCurrentRole() {
-    const sessionData = localStorage.getItem('userSession') || sessionStorage.getItem('userSession');
+    const sessionData = AppStorage.getItem('userSession') || AppStorage.getSessionItem('userSession');
     if (sessionData) {
         try {
             return JSON.parse(sessionData).role;
@@ -389,8 +295,8 @@ function getCurrentRole() {
 }
 
 function logout() {
-    localStorage.removeItem('userSession');
-    sessionStorage.removeItem('userSession');
+    AppStorage.removeItem('userSession');
+    AppStorage.removeSessionItem('userSession');
     showNotification('Log out successful', 'success');
 
     setTimeout(() => {
@@ -425,9 +331,9 @@ function addAnimationStyles() {
                 }
             }
             
-            .role-item.selected {
-                background-color: #e6f0ff;
-                border: 2px solid #007bff;
+            .role-chip.selected {
+                background: rgba(197, 160, 89, 0.2);
+                border: 1px solid var(--gold-primary);
                 transform: scale(1.05);
                 transition: all 0.2s ease;
             }

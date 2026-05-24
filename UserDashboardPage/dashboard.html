@@ -4,133 +4,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | Beyond the Pyramids</title>
-    <!-- FontAwesome -->
+    <title>Your Sanctuary | Beyond the Pyramids</title>
+
+    <link rel="stylesheet" href="../global.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
-    <div class="grid-layout">
-        <aside class="sidebar left-col" id="sidebar" style="max-width: 250px;">
-            <div>
-                <h2><i class="fa-solid fa-pyramid"></i> Beyond The Pyramids</h2>
-                <button id="closeSidebar"><i class="fa-solid fa-xmark"></i> Close</button>
+    <div class="noise-overlay"></div>
+
+    <div class="dashboard-shell">
+
+        <aside class="dashboard-sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <a href="../LandingPage/LandingPage.html">
+                    <img src="../WebsiteBanner.png" alt="Beyond the Pyramids">
+                </a>
             </div>
 
-            <nav>
-                <p><strong>Menu</strong></p>
-                <ul id="mainNav">
-                    <li><i class="fa-solid fa-house"></i> Dashboard</li>
-                    <li><i class="fa-solid fa-location-dot"></i> Single Locations</li>
-                    <li><i class="fa-solid fa-sun"></i> Day Packages</li>
-                    <li><i class="fa-solid fa-calendar-week"></i> Week Packages</li>
-                    <li><i class="fa-solid fa-compass"></i> Custom Trip</li>
-                </ul>
-
-                <p><strong>Personal</strong></p>
-                <ul>
-                    <li><i class="fa-solid fa-ticket"></i> My Bookings</li>
-                    <li><i class="fa-solid fa-star"></i> Reviews</li>
-                    <li><i class="fa-solid fa-heart"></i> Saved</li>
-                </ul>
-
-                <p><strong>Settings</strong></p>
-                <ul>
-                    <li><i class="fa-solid fa-gear"></i> Settings</li>
-                </ul>
-            </nav>
-        </aside>
-
-        <main class="main-content right-col" style="flex: 3;">
-            <header style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-                <div>
-                    <button id="hamburgerMenu"><i class="fa-solid fa-bars"></i> Menu</button>
-                    <h1 id="userGreeting">Welcome back!</h1>
+            <nav class="sidebar-nav">
+                <div class="nav-group">
+                    <span class="group-label">Discovery</span>
+                    <ul>
+                        <li><a href="../LandingPage/LandingPage.html"><i class="fas fa-home"></i> Home Sanctuary</a>
+                        </li>
+                        <li><a href="../DayPackages/dayPackages.html"><i class="fas fa-sun"></i> Day Packages</a></li>
+                        <li><a href="../WeeklyPackagePage/week-packages.html"><i class="fas fa-calendar-week"></i> Week
+                                Packages</a></li>
+                        <li><a href="../SingleLocationPage/SingleLocation.html"><i class="fas fa-location-dot"></i>
+                                Single Locations</a></li>
+                        <li><a href="../CustomTripBuilderPage/CustomTripBuilderPage.html"><i class="fas fa-compass"></i>
+                                Trip Architect</a></li>
+                    </ul>
                 </div>
 
-                <div style="display: flex; gap: 20px;">
-                    <div>
-                        <button id="notifBtn"><i class="fa-regular fa-bell"></i> Notifications</button>
-                        <div id="notifDropdown"
-                            style="display:none; border: 1px solid #ccc; padding: 10px; position: absolute; background: white;">
-                            <h3>Notifications</h3>
-                            <ul id="notifList">
-                                <li>No new notifications</li>
-                            </ul>
-                        </div>
-                    </div>
+                <div class="nav-group">
+                    <span class="group-label">Personal Desk</span>
+                    <ul>
+                        <li class="active"><a href="#"><i class="fas fa-columns"></i> Dashboard</a></li>
+                        <li><a href="../myBookings/myBookings.html"><i class="fas fa-suitcase-rolling"></i> My
+                                Journeys</a></li>
+                        <li><a href="../UserProfilePage/UserProfile.html"><i class="fas fa-user-circle"></i> Profile
+                                Settings</a></li>
+                    </ul>
+                </div>
 
-                    <div>
-                        <button id="profileBtn"><i class="fa-regular fa-user"></i> Profile</button>
-                        <div id="profileDropdown"
-                            style="display:none; border: 1px solid #ccc; padding: 10px; position: absolute; background: white;">
-                            <h4 id="dropdownName">User</h4>
-                            <p id="dropdownEmail">user@example.com</p>
-                            <ul>
-                                <li><i class="fa-regular fa-address-card"></i> View Profile</li>
-                                <li><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</li>
-                            </ul>
-                        </div>
+                <div class="nav-group">
+                    <span class="group-label">Concierge</span>
+                    <ul>
+                        <li><a href="../FAQpage/FAQpage.html"><i class="fas fa-question-circle"></i> Help & FAQ</a></li>
+
+                        <li><a href="../CustomerReviews/writing-reviews.html"><i class="fas fa-star"></i> Reviews</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button id="theme-toggle" class="theme-toggle-btn">
+                    <i class="fas fa-moon"></i> <span>Dark Mode</span>
+                </button>
+                <a href="../LoginPage/login.html" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+        </aside>
+
+
+        <main class="dashboard-main">
+            <!-- Top Bar -->
+            <header class="dash-topbar" id="dash-topbar">
+                <div class="topbar-left">
+                    <div class="greeting-stack">
+                        <span class="greeting-label" id="timeGreeting">Good evening</span>
+                        <h1 class="greeting-name" id="userGreeting">Traveler</h1>
                     </div>
+                </div>
+                <div class="topbar-right">
+                    <div class="topbar-search">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search journeys, places..." id="dash-search">
+                    </div>
+                    <div id="admin-user-display"></div>
                 </div>
             </header>
 
-            <section class="card-box">
-                <form id="searchForm">
-                    <i class="fa-solid fa-location-crosshairs"></i> <input type="text" id="searchInput" placeholder="Where do you want to go in Egypt?">
-                    <i class="fa-regular fa-calendar"></i> <input type="date" id="checkIn">
-                    <i class="fa-regular fa-calendar-check"></i> <input type="date" id="checkOut">
-                    <i class="fa-solid fa-user-group"></i> 
-                    <select id="travelers">
-                        <option value="1">1 Traveler</option>
-                        <option value="2" selected>2 Travelers</option>
-                        <option value="3">3 Travelers</option>
-                        <option value="4">4+ Travelers</option>
-                    </select>
-                    <button type="submit"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
-                </form>
-            </section>
-
-            <div class="grid-layout">
-                <div class="left-col">
-                    <section class="card-box">
-                        <h2>Explore by Category</h2>
-                        <ul>
-                            <li>Single Location</li>
-                            <li>Day Package</li>
-                            <li>Week Package</li>
-                            <li>Custom Trip</li>
-                        </ul>
-                    </section>
-
-                    <section class="card-box">
-                        <h2>Recommended For You</h2>
-                        <div id="recommendedTripsGrid">
-                            <p>No recommendations available.</p>
+            <div class="dash-scroll-area">
+                <!-- Stat Pills Row -->
+                <div class="stat-ribbon" id="stat-ribbon">
+                    <div class="stat-pill">
+                        <div class="pill-icon"><i class="fas fa-landmark"></i></div>
+                        <div class="pill-data">
+                            <span class="pill-value" id="stat-monuments" data-target="12">0</span>
+                            <span class="pill-label">Sites Explored</span>
                         </div>
-                    </section>
-
-                    <section class="card-box">
-                        <h2>Popular Destinations</h2>
-                        <div id="destinationsGrid">
-                            <p>No destinations loaded.</p>
+                    </div>
+                    <div class="stat-pill">
+                        <div class="pill-icon"><i class="fas fa-map-marked-alt"></i></div>
+                        <div class="pill-data">
+                            <span class="pill-value" id="stat-cities" data-target="2">0</span>
+                            <span class="pill-label">Cities Visited</span>
                         </div>
-                    </section>
+                    </div>
+                    <div class="stat-pill">
+                        <div class="pill-icon"><i class="fas fa-route"></i></div>
+                        <div class="pill-data">
+                            <span class="pill-value" id="stat-trips" data-target="3">0</span>
+                            <span class="pill-label">Journeys Taken</span>
+                        </div>
+                    </div>
+                    <div class="stat-pill stat-pill--accent">
+                        <div class="pill-icon"><i class="fas fa-award"></i></div>
+                        <div class="pill-data">
+                            <span class="pill-value pill-value--text" id="stat-level">Explorer</span>
+                            <span class="pill-label">Journey Level</span>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="right-col">
-                    <section class="card-box">
-                        <h3>Upcoming Trips</h3>
-                        <div id="activeBookingsList">
-                            <p>No upcoming trips.</p>
+                <!-- Hero Journey Card -->
+                <section class="hero-journey" id="hero-journey">
+                    <div class="hero-journey__img-wrap" id="next-trip-container">
+                        <!-- Populated by JS -->
+                        <div class="hero-journey__placeholder">
+                            <div class="placeholder-shimmer"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Bento Grid -->
+                <div class="bento-grid">
+                    <!-- Quick Actions -->
+                    <section class="bento-cell bento-actions" id="bento-actions">
+                        <h3 class="bento-title">Quick Actions</h3>
+                        <div class="action-tiles">
+                            <a href="../DayPackages/dayPackages.html" class="action-tile">
+                                <div class="tile-icon"><i class="fas fa-sun"></i></div>
+                                <span class="tile-label">Day Trips</span>
+                            </a>
+                            <a href="../WeeklyPackagePage/week-packages.html" class="action-tile">
+                                <div class="tile-icon"><i class="fas fa-calendar-week"></i></div>
+                                <span class="tile-label">Week Packages</span>
+                            </a>
+                            <a href="../CustomTripBuilderPage/CustomTripBuilderPage.html" class="action-tile">
+                                <div class="tile-icon"><i class="fas fa-compass"></i></div>
+                                <span class="tile-label">Build a Trip</span>
+                            </a>
+                            <a href="../myBookings/myBookings.html" class="action-tile">
+                                <div class="tile-icon"><i class="fas fa-suitcase-rolling"></i></div>
+                                <span class="tile-label">My Journeys</span>
+                            </a>
                         </div>
                     </section>
 
-                    <section class="card-box">
-                        <h3>Community Reviews</h3>
-                        <div id="reviewsList">
-                            <p>No reviews yet.</p>
+                    <!-- Architect's Desk -->
+                    <section class="bento-cell bento-drafts" id="bento-drafts">
+                        <div class="bento-header">
+                            <h3 class="bento-title">Architect's Desk</h3>
+                            <i class="fas fa-pen-nib bento-header-icon"></i>
+                        </div>
+                        <div id="draft-container">
+                            <p class="muted">No active blueprints currently.</p>
+                        </div>
+                        <a href="../CustomTripBuilderPage/CustomTripBuilderPage.html" class="btn-bento">
+                            <i class="fas fa-plus"></i> New Creation
+                        </a>
+                    </section>
+
+                    <!-- Traveler Stories -->
+                    <section class="bento-cell bento-stories" id="bento-stories">
+                        <div class="bento-header">
+                            <h3 class="bento-title">Traveler Stories</h3>
+                            <a href="../CustomerReviews/writing-reviews.html" class="bento-link">See All</a>
+                        </div>
+                        <div class="stories-scroll" id="story-feed">
+                            <!-- Populated by JS -->
+                        </div>
+                    </section>
+
+                    <!-- Inspiration Card -->
+                    <section class="bento-cell bento-inspire" id="bento-inspire">
+                        <div class="inspire-bg"></div>
+                        <div class="inspire-content">
+                            <span class="inspire-tag">Featured</span>
+                            <h3 class="inspire-title">The Temples of Abu Simbel</h3>
+                            <p class="inspire-text">Witness the sun illuminate Ramesses II twice a year.</p>
+                            <a href="../SingleLocationPage/SingleLocation.html" class="inspire-cta">Explore <i
+                                    class="fas fa-arrow-right"></i></a>
                         </div>
                     </section>
                 </div>
@@ -139,6 +198,9 @@
     </div>
 
     <script src="js/dashboard.js"></script>
+    <script src="../mockData.js"></script>
+    <script src="../storage.js"></script>
+    <script src="../global.js"></script>
 </body>
 
 </html>

@@ -5,135 +5,268 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Day Packages - Beyond the Pyramids</title>
+
+    <link rel="stylesheet" href="../global.css">
     <link rel="stylesheet" href="css/dayPackages.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 
 <body>
+    <div class="noise-overlay"></div>
 
-    <!-- Navigation Bar -->
-    <div class="navbar">
-        <div class="logo">
-            <span>Beyond the Pyramids</span>
-        </div>
-        <div class="nav-links">
-            <a href="index.html">Home</a>
-            <a href="dayPackages.html" class="active">Day Packages</a>
-            <a href="weekPackages.html">Week Packages</a>
-            <a href="customTrip.html">Custom Trip</a>
-            <a href="myBookings.html">My Bookings</a>
-            <a href="profile.html">Profile</a>
-            <a href="login.html" id="authLink">Login</a>
-        </div>
-    </div>
+    <div class="page-shell">
 
-    <!-- Page Title -->
-    <div class="page-title">
-        <h1>Day Packages</h1>
-        <p>Discover Egypt's most amazing destinations in one day</p>
-    </div>
-
-    <!-- Main Container -->
-    <div class="main-container">
-
-        <!-- Filters Sidebar -->
-        <div id="filtersSidebar" class="filters-sidebar">
-            <h3>Filter Packages</h3>
-            
-            <div class="filter-group">
-                <label>Price Range:</label>
-                <select id="priceFilter">
-                    <option value="all">All Prices</option>
-                    <option value="under40">Under $40</option>
-                    <option value="40to50">$40 - $50</option>
-                    <option value="50to60">$50 - $60</option>
-                    <option value="over60">Over $60</option>
-                </select>
+        <!-- ── Sidebar ─────────────────────────────────────── -->
+        <aside class="page-sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <a href="../LandingPage/LandingPage.html">
+                    <img src="../WebsiteLogo.png" alt="Beyond the Pyramids">
+                </a>
             </div>
 
-            <div class="filter-group">
-                <label>Trip Type:</label>
-                <select id="typeFilter">
-                    <option value="all">All Types</option>
-                    <option value="coastal">Coastal</option>
-                    <option value="historical">Historical</option>
-                    <option value="cultural">Cultural</option>
-                </select>
+            <nav class="sidebar-nav">
+                <div class="nav-group">
+                    <span class="group-label">Discovery</span>
+                    <ul>
+                        <li><a href="../LandingPage/LandingPage.html"><i class="fas fa-home"></i> <span>Home
+                                    Sanctuary</span></a></li>
+                        <li class="active"><a href="../DayPackages/dayPackages.html"><i class="fas fa-sun"></i>
+                                <span>Day Packages</span></a></li>
+                        <li><a href="../WeeklyPackagePage/week-packages.html"><i class="fas fa-calendar-week"></i>
+                                <span>Week Packages</span></a></li>
+                        <li><a href="../SingleLocationPage/SingleLocation.html"><i class="fas fa-location-dot"></i>
+                                <span>Single Locations</span></a></li>
+                        <li><a href="../CustomTripBuilderPage/CustomTripBuilderPage.html"><i class="fas fa-compass"></i>
+                                <span>Trip Architect</span></a></li>
+                    </ul>
+                </div>
+
+                <div class="nav-group">
+                    <span class="group-label">Personal Desk</span>
+                    <ul>
+                        <li><a href="../UserDashboardPage/dashboard.html"><i class="fas fa-columns"></i>
+                                <span>Dashboard</span></a></li>
+                        <li><a href="../myBookings/myBookings.html"><i class="fas fa-suitcase-rolling"></i> <span>My
+                                    Journeys</span></a></li>
+                        <li><a href="../UserProfilePage/UserProfile.html"><i class="fas fa-user-circle"></i>
+                                <span>Profile Settings</span></a></li>
+                    </ul>
+                </div>
+
+                <div class="nav-group">
+                    <span class="group-label">Concierge</span>
+                    <ul>
+                        <li><a href="../FAQpage/FAQpage.html"><i class="fas fa-question-circle"></i> <span>Help &amp;
+                                    FAQ</span></a></li>
+
+                        <li><a href="../CustomerReviews/writing-reviews.html"><i class="fas fa-star"></i>
+                                <span>Reviews</span></a></li>
+                    </ul>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button id="theme-toggle" class="theme-toggle-btn">
+                    <i class="fas fa-moon"></i> <span>Dark Mode</span>
+                </button>
+                <a href="../LoginPage/login.html" class="logout-link"><i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span></a>
+            </div>
+        </aside>
+
+        <!-- ── Page Content ─────────────────────────────────── -->
+        <div class="page-content">
+
+            <div class="page-title reveal-up">
+                <h1 class="hero-title">Day <span class="text-gold">Packages</span></h1>
+                <p class="hero-description">Discover Egypt's most amazing destinations in one day</p>
             </div>
 
-            <button id="applyFiltersBtn">Apply Filters</button>
-            <button id="resetFiltersBtn">Reset</button>
-        </div>
 
-        <!-- Booking Options (initially hidden) -->
-        <div id="bookingOptions" class="booking-options" style="display: none;">
-            <h3>Booking Options</h3>
-            
-            <div>
-                <label><input type="checkbox" id="overnightCheckbox"> Add Overnight Stay</label>
-            </div>
-            
-            <div>
-                <label><input type="checkbox" id="mealCheckbox"> Add Meal</label>
-            </div>
-            
-            <div>
-                <label>Number of People:</label>
-                <select id="peopleCount">
-                    <option value="1">1 person</option>
-                    <option value="2">2 people</option>
-                    <option value="3">3 people</option>
-                    <option value="4">4 people</option>
-                    <option value="5">5 people</option>
-                    <option value="6">6 people</option>
-                </select>
-            </div>
-            
-            <div>
-                <label><input type="checkbox" id="translatorCheckbox"> Need a Translator</label>
-                <div id="languageSelect" style="display: none; margin-left: 20px;">
-                    <select id="translatorLanguage">
-                        <option value="">Select Language</option>
-                        <option value="English">English</option>
-                        <option value="Spanish">Spanish</option>
-                        <option value="French">French</option>
-                        <option value="German">German</option>
-                    </select>
+            <div class="main-container">
+
+                <div id="listView" class="view-container active">
+                    <div id="packagesGrid" class="packages-grid reveal-up"></div>
+                </div>
+
+
+                <div id="selectionView" class="view-container">
+                    <div class="selection-grid reveal-up">
+
+                        <div class="selection-identity">
+                            <button class="back-link" id="backToGrid"><i class="fas fa-arrow-left"></i> Back to All
+                                Packages</button>
+                            <div id="selected-package-hero" class="glass-card">
+
+                            </div>
+                        </div>
+
+
+                        <div class="selection-config">
+                            <div id="bookingOptions" class="booking-options glass-card">
+                                <h3>Customise Your Day</h3>
+
+                                <div class="config-section">
+                                    <h4 class="config-label">Enhancements</h4>
+                                    <div class="config-row">
+                                        <label class="checkbox-container">
+                                            <input type="checkbox" id="overnightCheckbox">
+                                            <span class="checkmark"></span>
+                                            Add Overnight Stay
+                                        </label>
+                                    </div>
+                                    <div class="config-row">
+                                        <label class="checkbox-container">
+                                            <input type="checkbox" id="mealCheckbox">
+                                            <span class="checkmark"></span>
+                                            Add Heritage Meal
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="config-section">
+                                    <h4 class="config-label">Party Size</h4>
+                                    <select id="peopleCount" class="luxury-select">
+                                        <option value="1">1 Explorer</option>
+                                        <option value="2">2 Explorers</option>
+                                        <option value="3">3 Explorers</option>
+                                        <option value="4">4 Explorers</option>
+                                        <option value="5">5 Explorers</option>
+                                        <option value="6">Large Party (6+)</option>
+                                    </select>
+                                </div>
+
+                                <div class="config-section">
+                                    <h4 class="config-label">Expert Guidance</h4>
+                                    <div class="config-row">
+                                        <label class="checkbox-container">
+                                            <input type="checkbox" id="translatorCheckbox">
+                                            <span class="checkmark"></span>
+                                            Multilingual Guide
+                                        </label>
+                                    </div>
+                                    <div id="languageSelect" class="sub-config" style="display: none;">
+                                        <select id="translatorLanguage" class="luxury-select">
+                                            <option value="">Choose Language</option>
+                                            <option value="English">English</option>
+                                            <option value="Spanish">Spanish</option>
+                                            <option value="French">French</option>
+                                            <option value="German">German</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="config-section">
+                                    <h4 class="config-label">Privacy Level</h4>
+                                    <div class="radio-group">
+                                        <label class="radio-container">
+                                            <input type="radio" name="groupType" value="small" checked>
+                                            <span class="radio-mark"></span>
+                                            Private Master Tour
+                                        </label>
+                                        <label class="radio-container">
+                                            <input type="radio" name="groupType" value="large">
+                                            <span class="radio-mark"></span>
+                                            Classic Group Experience
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="price-receipt glass-card">
+                                    <div class="receipt-row">
+                                        <span>Base Experience</span>
+                                        <span class="price">EGP <span id="basePriceDisplay">0</span></span>
+                                    </div>
+                                    <div class="receipt-row addon" id="overnightDisplay" style="display: none;">
+                                        <span>Overnight Enhancement</span>
+                                        <span class="price">+EGP <span id="overnightPriceDisplay">0</span></span>
+                                    </div>
+                                    <div class="receipt-row addon" id="mealDisplay" style="display: none;">
+                                        <span>Heritage Dining</span>
+                                        <span class="price">+EGP <span id="mealPriceDisplay">0</span></span>
+                                    </div>
+                                    <div class="receipt-row addon" id="translatorDisplay" style="display: none;">
+                                        <span>Personal Translator</span>
+                                        <span class="price">+EGP 30</span>
+                                    </div>
+                                    <div class="receipt-row addon" id="groupDisplay" style="display: none;">
+                                        <span>Private Access</span>
+                                        <span class="price">+EGP 50</span>
+                                    </div>
+                                    <hr class="receipt-divider">
+                                    <div class="receipt-total">
+                                        <span>Total Price</span>
+                                        <span class="total-value">EGP <span id="totalFinal">0</span></span>
+                                    </div>
+                                    <p class="per-person-note">Approx. EGP <span id="totalPerPerson">0</span> per
+                                        explorer</p>
+                                </div>
+
+                                <div class="config-actions">
+                                    <button id="bookNowBtn" class="btn btn--primary btn--full btn--large">Confirm
+                                        Journey</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            
-            <div>
-                <label>Group Type:</label>
-                <div>
-                    <label><input type="radio" name="groupType" value="large"> Large Group</label>
-                    <label><input type="radio" name="groupType" value="small" checked> Small Private Group</label>
+
+
+            <footer class="main-footer reveal-up">
+                <div class="container footer-grid">
+                    <div class="footer-brand">
+                        <h3 class="footer-logo">Beyond the Pyramids</h3>
+                        <p>Curating the eternal legacy of Egypt since 2012.</p>
+                    </div>
+
+                    <nav class="footer-nav">
+                        <div class="footer-group">
+                            <h4>Explore</h4>
+                            <ul>
+                                <li><a href="../LandingPage/LandingPage.html#destinations">Destinations</a></li>
+                                <li><a href="../LandingPage/LandingPage.html#packages">Tour Packages</a></li>
+                                <li><a href="../CustomTripBuilderPage/CustomTripBuilderPage.html">Custom Trips</a></li>
+                            </ul>
+                        </div>
+                        <div class="footer-group">
+                            <h4>Company</h4>
+                            <ul>
+                                <li><a href="../AboutUsPage/AboutUs.html">Our Story</a></li>
+                                <li><a href="../FAQpage/FAQpage.html">Common Questions</a></li>
+                            </ul>
+                        </div>
+                        <div class="footer-group">
+                            <h4>Legal</h4>
+                            <ul>
+                                <li><a href="../TermsAndConditionsPage/TermsAndConditionsPage.html">Terms of Service</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </nav>
+
+                    <div class="footer-newsletter">
+                        <h4>Join the Inner Circle</h4>
+                        <p>Receive exclusive travel insights and early access to new tours.</p>
+                        <form class="newsletter-form">
+                            <input type="email" placeholder="Your email address" required>
+                            <button type="submit" class="btn btn--primary">Join</button>
+                        </form>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="price-details">
-                <p>Base Price: $<span id="basePriceDisplay">0</span></p>
-                <p id="overnightDisplay" style="display: none;">+ Overnight: $<span id="overnightPriceDisplay">0</span></p>
-                <p id="mealDisplay" style="display: none;">+ Meal: $<span id="mealPriceDisplay">0</span></p>
-                <p id="translatorDisplay" style="display: none;">+ Translator: $30</p>
-                <p id="groupDisplay" style="display: none;">+ Private Group: $50</p>
-                <p><strong>Total for 1 person: $<span id="totalPerPerson">0</span></strong></p>
-                <p><strong>Total for <span id="peopleCountDisplay">1</span> people: $<span id="totalFinal">0</span></strong></p>
-            </div>
-            
-            <div>
-                <button id="bookNowBtn">Book Now</button>
-                <button id="cancelBookingBtn">Cancel</button>
-            </div>
-        </div>
 
-        <!-- Packages Grid -->
-        <div id="packagesGrid"></div>
-    </div>
+                <div class="footer-bottom container">
+                    <p>&copy; 2026 Beyond the Pyramids. All rights reserved.</p>
+                    <div class="credit">Designed for the modern explorer.</div>
+                </div>
+            </footer>
 
-    <!-- Footer -->
-    <div class="footer">
-        <p>&copy; 2025 Beyond the Pyramids</p>
-    </div>
+        </div><!-- /.page-content -->
+    </div><!-- /.page-shell -->
 
+    <script src="../mockData.js"></script>
+    <script src="../storage.js"></script>
+    <script src="../global.js"></script>
     <script src="js/dayPackages.js"></script>
 </body>
 

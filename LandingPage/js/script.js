@@ -1,428 +1,447 @@
-// Main JavaScript file for Beyond the Pyramids - All functions in one file
 
-// Wait for DOM to load
-document.addEventListener('DOMContentLoaded', function() {
+
+document.addEventListener('DOMContentLoaded', () => {
     
-    // Smooth scrolling for anchor links
+    initTheme();
+    initScrollProgress();
+    initCustomCursor();
     initSmoothScroll();
-    
-    // Load testimonials
+    initNavbarScroll();
+    initRevealAnimations();
+    initParallax();
     loadTestimonials();
-    
-    // Handle contact form submission
-    initContactForm();
-    
-    // Handle newsletter form submission
     initNewsletter();
     
-    // Check if user is logged in (for navbar display)
-    updateNavbarForUser();
-    
-    // Handle login form submission
-    const loginForm = document.getElementById('loginForm');
-    if (loginForm) {
-        loginForm.addEventListener('submit', handleLogin);
-    }
-    
-    // Handle registration form submission
-    const registerForm = document.getElementById('registerForm');
-    if (registerForm) {
-        registerForm.addEventListener('submit', handleRegister);
-    }
-    
-    // Password validation for registration
-    const passwordField = document.getElementById('regPassword');
-    const confirmField = document.getElementById('confirmPassword');
-    if (passwordField && confirmField) {
-        passwordField.addEventListener('keyup', validatePasswordMatch);
-        confirmField.addEventListener('keyup', validatePasswordMatch);
-    }
-    
-    // Check if user is already logged in
-    checkLoggedIn();
-    
-    // Add demo credentials filler for login page
-    const demoNotice = document.querySelector('.demo-notice');
-    if (demoNotice) {
-        demoNotice.addEventListener('click', fillDemoCredentials);
+    // Dynamic Packages from AppStorage (falls back to mockData.js)
+    if (window.AppStorage && window.AppStorage.getPackages) {
+        const packages = window.AppStorage.getPackages();
+        renderFeaturedDestinations(packages);
+        renderSignaturePackages(packages);
+    } else if (window.MockData && window.MockData.packages) {
+        renderFeaturedDestinations(window.MockData.packages);
+        renderSignaturePackages(window.MockData.packages);
     }
 });
 
-// ========== GENERAL FUNCTIONS ==========
 
-// Smooth scroll function
+function initTheme() {
+    const themeToggle = document.getElementById('theme-toggle');
+    const htmlElement = document.documentElement;
+
+    const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    
+    function applyTheme(theme) {
+        htmlElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+        
+        if (themeToggle) {
+            const sunIcon = themeToggle.querySelector('.sun-icon');
+            const moonIcon = themeToggle.querySelector('.moon-icon');
+            if (sunIcon && moonIcon) {
+                if (theme === 'dark') {
+                    sunIcon.style.display = 'block';
+                    moonIcon.style.display = 'none';
+                    themeToggle.setAttribute('aria-label', 'Switch to Light Mode');
+                } else {
+                    sunIcon.style.display = 'none';
+                    moonIcon.style.display = 'block';
+                    themeToggle.setAttribute('aria-label', 'Switch to Dark Mode');
+                }
+            }
+        }
+    }
+
+    applyTheme(savedTheme);
+
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = htmlElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            applyTheme(newTheme);
+        });
+    }
+
+    // Listen for changes across tabs
+    window.addEventListener('storage', function (e) {
+        if (e.key === 'theme' && e.newValue) {
+            applyTheme(e.newValue);
+        }
+    });
+}
+
+
+function initScrollProgress() {
+    const progressBar = document.getElementById('scroll-progress');
+    if (!progressBar) return;
+
+    window.addEventListener('scroll', () => {
+        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+        progressBar.style.width = scrolled + "%";
+    });
+}
+
+
+function initCustomCursor() {
+    const cursor = document.getElementById('custom-cursor');
+    if (!cursor) return;
+
+    let mouseX = 0;
+    let mouseY = 0;
+    let cursorX = 0;
+    let cursorY = 0;
+
+    document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+    });
+
+    
+    const animateCursor = () => {
+        const distX = mouseX - cursorX;
+        const distY = mouseY - cursorY;
+
+        cursorX = cursorX + (distX * 0.15);
+        cursorY = cursorY + (distY * 0.15);
+
+        
+        const tiltX = distY * 0.1;
+        const tiltY = distX * -0.1;
+
+        cursor.style.left = cursorX + 'px';
+        cursor.style.top = cursorY + 'px';
+        cursor.style.transform = `translate(-50%, -50%) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
+
+        requestAnimationFrame(animateCursor);
+    };
+
+    animateCursor();
+
+    
+    document.addEventListener('mouseleave', () => cursor.style.opacity = '0');
+    document.addEventListener('mouseenter', () => cursor.style.opacity = '1');
+
+    
+    const interactiveElements = document.querySelectorAll('a, button, .btn');
+
+    interactiveElements.forEach(el => {
+        el.addEventListener('mouseenter', () => {
+            cursor.classList.add('cursor--active');
+            cursor.style.transform = 'translate(-50%, -50%) scale(1.5)';
+        });
+
+        el.addEventListener('mouseleave', () => {
+            cursor.classList.remove('cursor--active');
+            cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+            el.style.transform = ''; 
+        });
+
+        el.addEventListener('mousemove', (e) => {
+            const rect = el.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
+
+            
+            el.style.transform = `translate(${x * 0.15}px, ${y * 0.15}px) scale(1.02)`;
+        });
+    });
+}
+
+
+function initNavbarScroll() {
+    const nav = document.getElementById('main-nav');
+    if (!nav) return;
+
+    const handleScroll = () => {
+        if (window.scrollY > 50) {
+            nav.classList.add('navbar--scrolled');
+        } else {
+            nav.classList.remove('navbar--scrolled');
+        }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); 
+}
+
+
+function initRevealAnimations() {
+    const observerOptions = {
+        threshold: 0.15,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+                observer.unobserve(entry.target); 
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.reveal-up').forEach(el => observer.observe(el));
+}
+
+
+function initParallax() {
+    const heroVideo = document.querySelector('.hero-video');
+    const heroContent = document.querySelector('.hero-content');
+
+    window.addEventListener('scroll', () => {
+        const scrolled = window.pageYOffset;
+
+        
+        if (heroVideo && scrolled < window.innerHeight) {
+            heroVideo.style.transform = `scale(${1 + scrolled * 0.0003})`;
+        }
+
+        
+        if (heroContent && scrolled < window.innerHeight) {
+            heroContent.style.transform = `translateY(${scrolled * 0.4}px)`;
+            heroContent.style.opacity = 1 - (scrolled / (window.innerHeight * 0.8));
+        }
+    });
+}
+
+
 function initSmoothScroll() {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
+            const targetId = this.getAttribute('href');
+            if (targetId === '#') return;
+
+            const target = document.querySelector(targetId);
             if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
+                const navHeight = document.getElementById('main-nav')?.offsetHeight || 0;
+                const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - navHeight;
+
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
                 });
             }
         });
     });
 }
 
-// Load testimonials dynamically
+
 function loadTestimonials() {
-    const testimonialsContainer = document.getElementById('testimonialsContainer');
-    if (!testimonialsContainer) return;
-    
-    // Sample testimonials data
+    const container = document.getElementById('testimonialsContainer');
+    if (!container) return;
+
     const testimonials = [
         {
-            name: "Sarah Johnson",
-            country: "USA",
-            text: "An unforgettable experience! The Pyramids at sunrise were magical. Our guide was knowledgeable and friendly.",
+            name: "Alexandra Sterling",
+            country: "United Kingdom",
+            text: "The Nile cruise was a masterclass in luxury. Seeing the Valley of the Kings at sunrise is a memory I will cherish forever. Beyond the Pyramids handled every detail perfectly.",
             rating: 5,
-            image: "https://randomuser.me/api/portraits/women/1.jpg"
+            image: "https://randomuser.me/api/portraits/women/3.jpg"
         },
         {
-            name: "Ahmed Hassan",
-            country: "UAE",
-            text: "The Nile cruise package exceeded all expectations. Perfect organization and excellent service.",
+            name: "Julian Moretti",
+            country: "Italy",
+            text: "Exceptional service and deep historical knowledge. Our guide didn't just show us ruins; they told us the story of a civilization. A truly profound experience.",
             rating: 5,
-            image: "https://randomuser.me/api/portraits/men/1.jpg"
+            image: "https://randomuser.me/api/portraits/men/4.jpg"
         },
         {
-            name: "Emma Watson",
-            country: "UK",
-            text: "Booking was easy and the custom trip builder helped me create my dream itinerary.",
-            rating: 4,
-            image: "https://randomuser.me/api/portraits/women/2.jpg"
-        },
-        {
-            name: "Michael Chen",
-            country: "Canada",
-            text: "Excellent guides and seamless transportation. Will definitely book again!",
+            name: "Elena Rodriguez",
+            country: "Spain",
+            text: "The custom trip builder allowed me to plan a unique itinerary through the Western Desert. The execution was flawless. Highly recommended for the discerning traveler.",
             rating: 5,
-            image: "https://randomuser.me/api/portraits/men/2.jpg"
+            image: "https://randomuser.me/api/portraits/women/5.jpg"
         }
     ];
-    
-    // Build testimonials HTML
-    let testimonialsHTML = '<div class="testimonials-grid">';
-    testimonials.forEach(testimonial => {
-        testimonialsHTML += `
-            <div class="testimonial-card">
+
+    let html = '<div class="testimonials-grid">';
+    testimonials.forEach((t, i) => {
+        html += `
+            <div class="testimonial-card reveal-up" style="transition-delay: ${i * 0.1}s">
                 <div class="testimonial-header">
-                    <img src="${testimonial.image}" alt="${testimonial.name}">
-                    <div>
-                        <h4>${testimonial.name}</h4>
-                        <p>${testimonial.country}</p>
+                    <img src="${t.image}" alt="${t.name}">
+                    <div class="testimonial-info">
+                        <h4>${t.name}</h4>
+                        <p>${t.country}</p>
                     </div>
                 </div>
                 <div class="testimonial-rating">
-                    ${'★'.repeat(testimonial.rating)}${'☆'.repeat(5-testimonial.rating)}
+                    ${'★'.repeat(t.rating)}
                 </div>
-                <p class="testimonial-text">"${testimonial.text}"</p>
+                <blockquote class="testimonial-text">"${t.text}"</blockquote>
             </div>
         `;
     });
-    testimonialsHTML += '</div>';
+    html += '</div>';
+
     
-    testimonialsContainer.innerHTML = testimonialsHTML;
+    setTimeout(() => {
+        container.innerHTML = html;
+        
+        document.querySelectorAll('.testimonial-card.reveal-up').forEach(el => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, { threshold: 0.1 });
+            observer.observe(el);
+        });
+    }, 300);
 }
 
-// Contact form handler
-function initContactForm() {
-    const contactForm = document.getElementById('contactForm');
-    if (!contactForm) return;
-    
-    contactForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        alert('Thank you for your message! We will get back to you soon.');
-        this.reset();
-    });
-}
 
-// Newsletter form handler
+
 function initNewsletter() {
-    const newsletterForm = document.querySelector('.newsletter-form');
-    if (!newsletterForm) return;
-    
-    newsletterForm.addEventListener('submit', function(e) {
+    const form = document.querySelector('.newsletter-form');
+    if (!form) return;
+
+    form.addEventListener('submit', (e) => {
         e.preventDefault();
-        const email = this.querySelector('input[type="email"]').value;
-        if (email) {
-            alert(`Thank you for subscribing with ${email}!`);
-            this.reset();
-        } else {
-            alert('Please enter an email address');
-        }
+        const email = form.querySelector('input').value;
+        alert(`Thank you. ${email} has been added to our exclusive inner circle.`);
+        form.reset();
     });
 }
 
-// Update navbar based on login status
-function updateNavbarForUser() {
-    const user = getCurrentUser();
-    const navButtons = document.querySelector('.nav-buttons');
+// --- Dynamic Rendering from MockData ---
+
+function renderFeaturedDestinations(packages) {
+    const container = document.getElementById('dynamicDestinationsGrid');
+    if (!container) return;
+
+    // Filter to top 4 'single' location packages
+    const destinations = packages.filter(p => p.type === 'single').slice(0, 4);
     
-    if (user && navButtons) {
-        // User is logged in, show different buttons
-        const userName = user.name || user.email;
-        navButtons.innerHTML = `
-            <span class="welcome-text">Welcome, ${userName.split(' ')[0]}</span>
-            <a href="dashboard.html" class="btn1btn">Dashboard</a>
-            <button onclick="logout()" class="btn2btn">Logout</button>
+    container.innerHTML = '';
+    
+    destinations.forEach((pkg, index) => {
+        const card = document.createElement('article');
+        card.className = 'destination-card reveal-up';
+        if (index === 0) {
+            card.innerHTML = `
+                <div class="card-image-wrapper">
+                    <img src="${pkg.image}" alt="${pkg.name}" class="card-image">
+                    <div class="card-badge">Top Choice</div>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">${pkg.name}</h3>
+                    <p class="card-text">${pkg.description.substring(0, 80)}...</p>
+                    <div class="card-meta">
+                        <span class="card-price">From <span class="price-value">${pkg.price} EGP</span></span>
+                        <a href="PackageDetailsPage/package-details.html?id=${pkg.id}" class="btn-link">Explore Details</a>
+                    </div>
+                </div>
+            `;
+        } else {
+            card.innerHTML = `
+                <div class="card-image-wrapper">
+                    <img src="${pkg.image}" alt="${pkg.name}" class="card-image">
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">${pkg.name}</h3>
+                    <p class="card-text">${pkg.description.substring(0, 80)}...</p>
+                    <div class="card-meta">
+                        <span class="card-price">From <span class="price-value">${pkg.price} EGP</span></span>
+                        <a href="PackageDetailsPage/package-details.html?id=${pkg.id}" class="btn-link">Explore Details</a>
+                    </div>
+                </div>
+            `;
+        }
+        container.appendChild(card);
+    });
+
+    // Re-observe new elements for reveal animations
+    observeRevealElements(container);
+}
+
+function renderSignaturePackages(packages) {
+    const container = document.getElementById('dynamicPackagesGrid');
+    if (!container) return;
+
+    // Filter to 'week' and 'day' packages, slice top 2
+    const signature = packages.filter(p => p.type === 'week' || p.type === 'day').slice(0, 2);
+    
+    container.innerHTML = '';
+    
+    signature.forEach(pkg => {
+        const card = document.createElement('article');
+        card.className = 'package-card reveal-up';
+        if (pkg.type === 'week') card.setAttribute('data-featured', 'true');
+        
+        const typeLabel = pkg.type === 'week' ? 'Weekly' : 'Day Trip';
+        const pricingLabel = pkg.type === 'week' ? 'Total journey' : 'Per person';
+        const currency = 'EGP'; // Assuming EGP for consistency
+        
+        card.innerHTML = `
+            <div class="package-header">
+                <span class="package-type">${typeLabel}</span>
+                <img src="${pkg.image}" alt="${pkg.name}" class="package-img">
+            </div>
+            <div class="package-content">
+                <h3 class="package-title">${pkg.name}</h3>
+                <p class="package-desc">${pkg.description.substring(0, 90)}...</p>
+                <ul class="package-amenities">
+                    <li><i class="fas fa-circle-check"></i> ${pkg.accommodationIncluded === 'yes' ? 'Luxury Accommodation' : 'Expert Guide'}</li>
+                    <li><i class="fas fa-circle-check"></i> Luxury Transport</li>
+                    <li><i class="fas fa-circle-check"></i> ${pkg.type === 'week' ? 'Guided Shore Tours' : 'Gourmet Lunch'}</li>
+                </ul>
+                <div class="package-footer">
+                    <div class="package-pricing">
+                        <span class="price-label">${pricingLabel}</span>
+                        <span class="price-total">${pkg.price} ${currency}</span>
+                    </div>
+                    <a href="PackageDetailsPage/package-details.html?id=${pkg.id}" class="btn btn--primary btn--small">Reserve Now</a>
+                </div>
+            </div>
         `;
-    }
+        container.appendChild(card);
+    });
+
+    // Add the fixed Bespoke card
+    const bespokeCard = document.createElement('article');
+    bespokeCard.className = 'package-card package-card--custom reveal-up';
+    bespokeCard.innerHTML = `
+        <div class="package-header">
+            <span class="package-type">Bespoke</span>
+            <div class="custom-icon-wrapper" style="display: flex; align-items: center; justify-content: center; height: 100%; font-size: 3rem; color: var(--color-gold);">
+                <i class="fas fa-compass"></i>
+            </div>
+        </div>
+        <div class="package-content">
+            <h3 class="package-title">Design Your Journey</h3>
+            <p class="package-desc">Craft a unique itinerary tailored entirely to your rhythm and interests.</p>
+            <ul class="package-amenities">
+                <li><i class="fas fa-circle-check"></i> Personal Concierge</li>
+                <li><i class="fas fa-circle-check"></i> Flexible Pacing</li>
+                <li><i class="fas fa-circle-check"></i> Exclusive Access</li>
+            </ul>
+            <div class="package-footer">
+                <a href="CustomTripBuilderPage/CustomTripBuilderPage.html" class="btn btn--outline btn--full">Start Architecting</a>
+            </div>
+        </div>
+    `;
+    container.appendChild(bespokeCard);
+    observeRevealElements(container);
 }
 
-// Get current user from storage
-function getCurrentUser() {
-    const user = sessionStorage.getItem('user') || localStorage.getItem('user');
-    return user ? JSON.parse(user) : null;
-}
-
-// Logout function
-function logout() {
-    sessionStorage.removeItem('user');
-    localStorage.removeItem('user');
-    window.location.href = 'index.html';
-}
-
-// ========== AUTHENTICATION FUNCTIONS ==========
-
-// Handle login
-function handleLogin(e) {
-    e.preventDefault();
-    
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    const remember = document.querySelector('input[name="remember"]')?.checked || false;
-    
-    // Demo authentication logic
-    if (email === 'admin@demo.com' && password === 'admin123') {
-        // Store user session
-        const userData = {
-            email: email,
-            role: 'admin',
-            name: 'Admin User',
-            id: 'admin1'
-        };
-        
-        if (remember) {
-            localStorage.setItem('user', JSON.stringify(userData));
-        } else {
-            sessionStorage.setItem('user', JSON.stringify(userData));
-        }
-        
-        alert('Login successful! Redirecting to admin dashboard...');
-        window.location.href = 'admin/dashboard.html';
-        
-    } else if (email === 'user@demo.com' && password === 'user123') {
-        // Store user session
-        const userData = {
-            email: email,
-            role: 'user',
-            name: 'Demo User',
-            id: 'user1'
-        };
-        
-        if (remember) {
-            localStorage.setItem('user', JSON.stringify(userData));
-        } else {
-            sessionStorage.setItem('user', JSON.stringify(userData));
-        }
-        
-        alert('Login successful! Redirecting to dashboard...');
-        window.location.href = 'dashboard.html';
-        
-    } else if (email === 'guide@demo.com' && password === 'guide123') {
-        // Guide login
-        const userData = {
-            email: email,
-            role: 'guide',
-            name: 'Tour Guide',
-            id: 'guide1'
-        };
-        sessionStorage.setItem('user', JSON.stringify(userData));
-        alert('Login successful! Redirecting to guide dashboard...');
-        window.location.href = 'guide/dashboard.html';
-        
-    } else if (email === 'hotel@demo.com' && password === 'hotel123') {
-        // Hotel manager login
-        const userData = {
-            email: email,
-            role: 'hotel',
-            name: 'Hotel Manager',
-            id: 'hotel1'
-        };
-        sessionStorage.setItem('user', JSON.stringify(userData));
-        alert('Login successful! Redirecting to hotel dashboard...');
-        window.location.href = 'hotel-manager/dashboard.html';
-        
-    } else if (email === 'transport@demo.com' && password === 'transport123') {
-        // Transportation manager login
-        const userData = {
-            email: email,
-            role: 'transport',
-            name: 'Transport Manager',
-            id: 'transport1'
-        };
-        sessionStorage.setItem('user', JSON.stringify(userData));
-        alert('Login successful! Redirecting to transport dashboard...');
-        window.location.href = 'transport-manager/dashboard.html';
-        
-    } else if (email === 'planner@demo.com' && password === 'planner123') {
-        // Planner login
-        const userData = {
-            email: email,
-            role: 'planner',
-            name: 'Trip Planner',
-            id: 'planner1'
-        };
-        sessionStorage.setItem('user', JSON.stringify(userData));
-        alert('Login successful! Redirecting to planner dashboard...');
-        window.location.href = 'planner/dashboard.html';
-        
-    } else if (email === 'booking@demo.com' && password === 'booking123') {
-        // Booking manager login
-        const userData = {
-            email: email,
-            role: 'booking',
-            name: 'Booking Manager',
-            id: 'booking1'
-        };
-        sessionStorage.setItem('user', JSON.stringify(userData));
-        alert('Login successful! Redirecting to booking manager dashboard...');
-        window.location.href = 'booking-manager/dashboard.html';
-        
-    } else if (email === 'support@demo.com' && password === 'support123') {
-        // Customer support login
-        const userData = {
-            email: email,
-            role: 'support',
-            name: 'Customer Support',
-            id: 'support1'
-        };
-        sessionStorage.setItem('user', JSON.stringify(userData));
-        alert('Login successful! Redirecting to support dashboard...');
-        window.location.href = 'support/dashboard.html';
-        
-    } else {
-        alert('Invalid credentials. Try:\n' +
-              'Admin: admin@demo.com / admin123\n' +
-              'User: user@demo.com / user123\n' +
-              'Guide: guide@demo.com / guide123\n' +
-              'Hotel: hotel@demo.com / hotel123\n' +
-              'Transport: transport@demo.com / transport123\n' +
-              'Planner: planner@demo.com / planner123\n' +
-              'Booking: booking@demo.com / booking123\n' +
-              'Support: support@demo.com / support123');
-    }
-}
-
-// Handle registration
-function handleRegister(e) {
-    e.preventDefault();
-    
-    // Get form values
-    const firstName = document.getElementById('firstName')?.value || '';
-    const lastName = document.getElementById('lastName')?.value || '';
-    const email = document.getElementById('regEmail')?.value || '';
-    const phone = document.getElementById('phone')?.value || '';
-    const language = document.getElementById('preferredLanguage')?.value || '';
-    const password = document.getElementById('regPassword')?.value || '';
-    const confirmPassword = document.getElementById('confirmPassword')?.value || '';
-    const terms = document.querySelector('input[name="terms"]')?.checked || false;
-    
-    // Validate
-    if (!firstName || !lastName || !email || !phone || !language || !password || !confirmPassword) {
-        alert('Please fill in all fields');
-        return;
-    }
-    
-    if (password !== confirmPassword) {
-        alert('Passwords do not match!');
-        return;
-    }
-    
-    if (password.length < 6) {
-        alert('Password must be at least 6 characters');
-        return;
-    }
-    
-    if (!terms) {
-        alert('Please accept the Terms & Conditions');
-        return;
-    }
-    
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-        alert('Please enter a valid email address');
-        return;
-    }
-    
-    // Validate phone (simple check)
-    if (phone.length < 10) {
-        alert('Please enter a valid phone number');
-        return;
-    }
-    
-    // For demo purposes, just show success and redirect
-    alert(`Registration successful! Welcome ${firstName}!\n\nIn a real app, this would create an account in the database.`);
-    
-    // Store basic info for demo
-    const userData = {
-        name: firstName + ' ' + lastName,
-        email: email,
-        role: 'user',
-        phone: phone,
-        language: language
+function observeRevealElements(container) {
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
     };
-    sessionStorage.setItem('user', JSON.stringify(userData));
-    
-    // Redirect to login
-    window.location.href = 'login.html';
-}
 
-// Validate password match
-function validatePasswordMatch() {
-    const password = document.getElementById('regPassword').value;
-    const confirm = document.getElementById('confirmPassword').value;
-    const confirmField = document.getElementById('confirmPassword');
-    
-    if (confirm === '') {
-        confirmField.style.borderColor = '';
-        confirmField.style.borderWidth = '';
-    } else if (password !== confirm) {
-        confirmField.style.borderColor = 'red';
-        confirmField.style.borderWidth = '2px';
-    } else {
-        confirmField.style.borderColor = 'green';
-        confirmField.style.borderWidth = '2px';
-    }
-}
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
 
-// Check if user is logged in
-function checkLoggedIn() {
-    const user = sessionStorage.getItem('user') || localStorage.getItem('user');
-    
-    // If on login or register page and already logged in, redirect to dashboard
-    const currentPage = window.location.pathname;
-    if (user && (currentPage.includes('login.html') || currentPage.includes('register.html'))) {
-        const userData = JSON.parse(user);
-        if (userData.role === 'admin') {
-            window.location.href = 'admin/dashboard.html';
-        } else {
-            window.location.href = 'dashboard.html';
-        }
-    }
-}
-
-// Fill demo credentials when clicking on demo notice
-function fillDemoCredentials() {
-    const emailField = document.getElementById('email');
-    const passwordField = document.getElementById('password');
-    
-    if (emailField && passwordField) {
-        emailField.value = 'user@demo.com';
-        passwordField.value = 'user123';
-    }
+    container.querySelectorAll('.reveal-up').forEach(el => observer.observe(el));
 }

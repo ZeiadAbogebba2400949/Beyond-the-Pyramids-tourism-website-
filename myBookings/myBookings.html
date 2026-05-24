@@ -1,97 +1,176 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Bookings - Beyond the Pyramids</title>
+    
+    <link rel="stylesheet" href="../global.css">
     <link rel="stylesheet" href="css/myBookings.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-
 <body>
+    <div class="noise-overlay"></div>
 
-    <!-- Navigation Bar -->
-    <div class="navbar">
-        <div class="logo">
-            <span>Beyond the Pyramids</span>
-        </div>
-        <div class="nav-links">
-            <a href="index.html">Home</a>
-            <a href="dayPackages.html">Day Packages</a>
-            <a href="weekPackages.html">Week Packages</a>
-            <a href="customTrip.html">Custom Trip</a>
-            <a href="myBookings.html" class="active">My Bookings</a>
-            <a href="profile.html">Profile</a>
-            <a href="login.html" id="authLink">Login</a>
-        </div>
-    </div>
+    
+    <div class="dashboard-shell">
+        <aside class="dashboard-sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <a href="../LandingPage/LandingPage.html">
+                    <img src="../WebsiteLogo.png" alt="Beyond the Pyramids">
+                </a>
+            </div>
 
-    <!-- Page Title -->
-    <div class="page-title">
-        <h1>My Bookings</h1>
-        <p>View and manage your trip reservations</p>
-    </div>
+            <nav class="sidebar-nav">
+                <div class="nav-group">
+                    <span class="group-label">Discovery</span>
+                    <ul>
+                        <li><a href="../LandingPage/LandingPage.html"><i class="fas fa-home"></i> Home Sanctuary</a></li>
+                        <li><a href="../DayPackages/dayPackages.html"><i class="fas fa-sun"></i> Day Packages</a></li>
+                        <li><a href="../WeeklyPackagePage/week-packages.html"><i class="fas fa-calendar-week"></i> Week Packages</a></li>
+                        <li><a href="../SingleLocationPage/SingleLocation.html"><i class="fas fa-location-dot"></i> Single Locations</a></li>
+                        <li><a href="../CustomTripBuilderPage/CustomTripBuilderPage.html"><i class="fas fa-compass"></i> Trip Architect</a></li>
+                    </ul>
+                </div>
 
-    <!-- Main Container -->
-    <div class="main-container">
+                <div class="nav-group">
+                    <span class="group-label">Personal Desk</span>
+                    <ul>
+                        <li><a href="../UserDashboardPage/dashboard.html"><i class="fas fa-columns"></i> Dashboard</a></li>
+                        <li class="active"><a href="../myBookings/myBookings.html"><i class="fas fa-suitcase-rolling"></i> My Journeys</a></li>
+                        <li><a href="../UserProfilePage/UserProfile.html"><i class="fas fa-user-circle"></i> Profile Settings</a></li>
+                    </ul>
+                </div>
 
-        <!-- Filters Section -->
-        <div class="filters-sidebar">
-            <h3>Filter by Date</h3>
+                <div class="nav-group">
+                    <span class="group-label">Concierge</span>
+                    <ul>
+                        <li><a href="../FAQpage/FAQpage.html"><i class="fas fa-question-circle"></i> Help & FAQ</a></li>
+                        <li><a href="../CustomerReviews/writing-reviews.html"><i class="fas fa-star"></i> Reviews</a></li>
+                    </ul>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button id="theme-toggle" class="theme-toggle-btn">
+                    <i class="fas fa-moon"></i> <span>Dark Mode</span>
+                </button>
+                <a href="../LoginPage/login.html" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+        </aside>
+
+        <main class="dashboard-main">
+            
+            <div class="page-title reveal-up">
+                <h1>My <span class="text-gold">Reservations</span></h1>
+                <p>Manage your upcoming journeys and historical explorations.</p>
+            </div>
+
+            <div class="main-container">
+
+        
+        <aside class="filters-sidebar glass-card reveal-up">
+            <h3>Refine Journal</h3>
             
             <div class="filter-group">
-                <label>From Date:</label>
+                <label>Arrival From</label>
                 <input type="date" id="dateFrom">
             </div>
             
             <div class="filter-group">
-                <label>To Date:</label>
+                <label>Arrival To</label>
                 <input type="date" id="dateTo">
             </div>
 
-            <!-- Status Filter -->
             <div class="filter-group">
-                <label>Trip Status:</label>
+                <label>Journey Status</label>
                 <select id="statusFilter">
                     <option value="all">All Statuses</option>
-                    <option value="pending approval">Pending Approval</option>
                     <option value="confirmed">Confirmed</option>
-                    <option value="completed">Completed</option>
+                    <option value="checked-in">Checked In</option>
+                    <option value="checked-out">Checked Out</option>
                     <option value="cancelled">Cancelled</option>
                 </select>
             </div>
             
-            <button id="applyDateFilter">Apply Filter</button>
-            <button id="resetDateFilter">Reset</button>
-        </div>
+            <button id="applyDateFilter">Update View</button>
+            <button id="resetDateFilter">Clear Filters</button>
+        </aside>
 
-        <!-- Bookings List Section -->
-        <div class="bookings-container">
+        
+        <section class="bookings-container reveal-up">
             <div id="bookingsList">
-                <!-- Bookings will be loaded here -->
+                
             </div>
-        </div>
+        </section>
     </div>
 
-    <!-- View Details Modal (popup) -->
-    <div id="detailsModal" class="modal" style="display: none;">
+    
+    <div id="detailsModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Trip Details</h2>
+                <h2>Journey Manifesto</h2>
                 <span class="close-modal">&times;</span>
             </div>
             <div id="modalBody">
-                <!-- Dynamic modal content -->
+                
             </div>
         </div>
     </div>
 
-    <!-- Footer -->
-    <div class="footer">
-        <p>&copy; 2025 Beyond the Pyramids</p>
+    <footer class="main-footer reveal-up">
+        <div class="container footer-grid">
+            <div class="footer-brand">
+                <h3 class="footer-logo">Beyond the Pyramids</h3>
+                <p>Curating the eternal legacy of Egypt since 2012.</p>
+            </div>
+
+            <nav class="footer-nav">
+                <div class="footer-group">
+                    <h4>Explore</h4>
+                    <ul>
+                        <li><a href="../LandingPage/LandingPage.html#destinations">Destinations</a></li>
+                        <li><a href="../LandingPage/LandingPage.html#packages">Tour Packages</a></li>
+                        <li><a href="../CustomTripBuilderPage/CustomTripBuilderPage.html">Custom Trips</a></li>
+                    </ul>
+                </div>
+                <div class="footer-group">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="../AboutUsPage/AboutUs.html">Our Story</a></li>
+                        <li><a href="../FAQpage/FAQpage.html">Common Questions</a></li>
+                    </ul>
+                </div>
+                <div class="footer-group">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="../TermsAndConditionsPage/TermsAndConditionsPage.html">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </nav>
+
+            <div class="footer-newsletter">
+                <h4>Join the Inner Circle</h4>
+                <p>Receive exclusive travel insights and early access to new tours.</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Your email address" required>
+                    <button type="submit" class="btn btn--primary">Join</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="footer-bottom container">
+            <p>&copy; 2026 Beyond the Pyramids. All rights reserved.</p>
+            <div class="credit">Designed for the modern explorer.</div>
+        </div>
+    </footer>
+
+        </main>
     </div>
 
+    <script src="../mockData.js"></script>
+    <script src="../storage.js"></script>
+    <script src="../global.js"></script>
     <script src="js/myBookings.js"></script>
 </body>
-
 </html>
