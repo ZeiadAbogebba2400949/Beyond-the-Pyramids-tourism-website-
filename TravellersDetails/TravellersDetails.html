@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travelers Details — Beyond the Pyramids</title>
+    <meta name="description" content="Enter details for all travelers in your party before confirming your Egyptian journey.">
+
+    <link rel="stylesheet" href="../global.css">
+    <link rel="stylesheet" href="../UserDashboardPage/css/style.css">
+    <link rel="stylesheet" href="css/syles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="noise-overlay"></div>
+
+    <div class="dashboard-shell">
+
+        <!-- ════ SIDEBAR ════ -->
+        <aside class="dashboard-sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <a href="../index.html">
+                    <img src="../WebsiteBanner.png" alt="Beyond the Pyramids">
+                </a>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-group">
+                    <span class="group-label">Discovery</span>
+                    <ul>
+                        <li><a href="../index.html"><i class="fas fa-home"></i> Home Sanctuary</a></li>
+                        <li><a href="../DayPackages/dayPackages.html"><i class="fas fa-sun"></i> Day Packages</a></li>
+                        <li><a href="../WeeklyPackagePage/week-packages.html"><i class="fas fa-calendar-week"></i> Week Packages</a></li>
+                        <li><a href="../SingleLocationPage/SingleLocation.html"><i class="fas fa-location-dot"></i> Single Locations</a></li>
+                        <li><a href="../CustomTripBuilderPage/CustomTripBuilderPage.html"><i class="fas fa-compass"></i> Trip Architect</a></li>
+                    </ul>
+                </div>
+
+                <div class="nav-group">
+                    <span class="group-label">Personal Desk</span>
+                    <ul>
+                        <li><a href="../UserDashboardPage/dashboard.html"><i class="fas fa-columns"></i> Dashboard</a></li>
+                        <li><a href="../myBookings/myBookings.html"><i class="fas fa-suitcase-rolling"></i> My Journeys</a></li>
+                        <li><a href="../UserProfilePage/UserProfile.html"><i class="fas fa-user-circle"></i> Profile Settings</a></li>
+                    </ul>
+                </div>
+
+                <div class="nav-group">
+                    <span class="group-label">Concierge</span>
+                    <ul>
+                        <li><a href="../FAQpage/FAQpage.html"><i class="fas fa-question-circle"></i> Help &amp; FAQ</a></li>
+                        <li><a href="../CustomerReviews/writing-reviews.html"><i class="fas fa-star"></i> Reviews</a></li>
+                    </ul>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button id="theme-toggle" class="theme-toggle-btn">
+                    <i class="fas fa-moon"></i> <span>Dark Mode</span>
+                </button>
+                <a href="../LoginPage/login.html" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+        </aside>
+        <!-- ════ END SIDEBAR ════ -->
+
+        <!-- ════ MAIN ════ -->
+        <main class="dashboard-main">
+
+            <!-- Top bar (fixed, non-scrolling) -->
+            <header class="dash-topbar" id="dash-topbar">
+                <div class="topbar-left">
+                    <div class="greeting-stack">
+                        <span class="greeting-label">Additional Guests</span>
+                        <h1 class="greeting-name">Traveler Details</h1>
+                    </div>
+                </div>
+                <div class="topbar-right">
+                    <div class="topbar-avatar" id="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+            </header>
+
+            <!-- ── Scrollable area — footer lives inside here ── -->
+            <div class="td-scroll-area">
+
+                <!-- Page header -->
+                <div class="td-page-header reveal-up">
+                    <div class="td-page-header__eyebrow">
+                        <span class="td-step-badge"><i class="fas fa-users"></i> Step 1 of 2</span>
+                    </div>
+                    <h2 class="td-page-header__title">Who is traveling with you?</h2>
+                    <p class="td-page-header__subtitle">Please provide details for each additional traveler in your party. All fields marked with an asterisk are required.</p>
+                    <div class="td-page-header__rule"></div>
+                </div>
+
+                <!-- Form -->
+                <div class="td-form-wrap reveal-up">
+                    <form id="travelers-form" class="editorial-section">
+                        <div id="travelers-container">
+                            <!-- Dynamic traveler cards injected here by JS -->
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="td-actions">
+                            <button type="button" id="back-btn" class="btn-editorial secondary">
+                                <i class="fas fa-arrow-left"></i> Go Back
+                            </button>
+                            <button type="submit" id="continue-btn" class="btn-editorial primary">
+                                Continue to Summary <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Footer inside scroll area — not sticky -->
+                <footer class="td-footer">
+                    <div class="td-footer__inner">
+                        <div class="td-footer__brand">
+                            <span class="td-footer__logo">Beyond the Pyramids</span>
+                            <p class="td-footer__tagline">Curating the eternal legacy of Egypt since 2012.</p>
+                        </div>
+                        <div class="td-footer__bottom">
+                            <span>&copy; 2026 Beyond the Pyramids. All rights reserved.</span>
+                            <span class="td-footer__credit">Designed for the modern explorer.</span>
+                        </div>
+                    </div>
+                </footer>
+
+            </div><!-- end .td-scroll-area -->
+
+        </main>
+        <!-- ════ END MAIN ════ -->
+
+    </div><!-- end .dashboard-shell -->
+
+    <script src="../mockData.js"></script>
+    <script src="../storage.js"></script>
+    <script src="../global.js"></script>
+    <script src="js/script.js?v=2"></script>
+</body>
+
+</html>

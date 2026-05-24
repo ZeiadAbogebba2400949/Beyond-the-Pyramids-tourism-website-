@@ -40,15 +40,18 @@ function renderPackages(packagesToShow) {
             <h3>${pkg.name}</h3>
             <p class="package-description">${pkg.description}</p>
             <div class="package-price-tag">EGP ${pkg.price} <small>/ explorer</small></div>
-            <button class="btn btn--primary btn--small" onclick="selectPackage('${pkg.id}')">Explore Journey</button>
+            <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                <button class="btn btn--secondary btn--small" style="flex: 1; padding: 0.5rem;" onclick="selectPackage('${pkg.id}', 'standard')">Standard (Inc. Transport)</button>
+                <button class="btn btn--primary btn--small" style="flex: 2; padding: 0.5rem;" onclick="selectPackage('${pkg.id}', 'deluxe')">Deluxe (Inc. Guide)</button>
+            </div>
         `;
 
         packagesGrid.appendChild(card);
     });
 }
 
-function selectPackage(packageId) {
-    window.location.href = `../PackageDetailsPage/package-details.html?id=${packageId}`;
+function selectPackage(packageId, tier = 'standard') {
+    window.location.href = `../PackageDetailsPage/package-details.html?id=${packageId}&tier=${tier}`;
 }
 
 function initTheme() {

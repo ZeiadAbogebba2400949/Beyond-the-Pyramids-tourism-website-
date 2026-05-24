@@ -44,8 +44,58 @@ function renderSummaryUI() {
             <div class="grid-item"><span class="grid-label">Location</span><span class="grid-value">${activeBooking.location}</span></div>
             <div class="grid-item"><span class="grid-label">Date</span><span class="grid-value">${activeBooking.date}</span></div>
             <div class="grid-item"><span class="grid-label">Tier</span><span class="grid-value">${activeBooking.tier === 'full' ? 'Complete Luxury' : 'Tour Only'}</span></div>
-            <div class="grid-item"><span class="grid-label">Travelers</span><span class="grid-value">${activeBooking.travelers}</span></div>
+            <div class="grid-item"><span class="grid-label">Total Travelers</span><span class="grid-value">${activeBooking.travelers}</span></div>
         `;
+    }
+
+    const travelersContainer = document.getElementById("travelers-content");
+    if (travelersContainer) {
+        let travelersHTML = '';
+        
+        // 1. Main User (Primary Booker)
+        let mainUser = "Primary Booker";
+        let mainEmail = activeBooking.userEmail || "N/A";
+        let mainName = activeBooking.userName || "N/A";
+        
+        // Retrieve session if available for more details
+        let session = null;
+        try {
+            if (window.AppStorage && window.AppStorage.getUserSession) {
+                session = window.AppStorage.getUserSession();
+            } else {
+                const s = localStorage.getItem('userSession') || sessionStorage.getItem('userSession');
+                if (s) session = JSON.parse(s);
+            }
+        } catch (e) {}
+
+        if (session && session.name) mainName = session.name;
+
+        travelersHTML += `
+            <div style="grid-column: 1 / -1; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border-color);">
+                <h4 style="margin: 0 0 0.5rem 0; color: var(--primary-gold);">Traveler 1 (Primary)</h4>
+                <div class="grid-item"><span class="grid-label">Name</span><span class="grid-value">${mainName}</span></div>
+                <div class="grid-item"><span class="grid-label">Email</span><span class="grid-value">${mainEmail}</span></div>
+            </div>
+        `;
+
+        // 2. Additional Travelers
+        if (activeBooking.additionalTravelers && activeBooking.additionalTravelers.length > 0) {
+            activeBooking.additionalTravelers.forEach(t => {
+                travelersHTML += `
+                    <div style="grid-column: 1 / -1; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border-color);">
+                        <h4 style="margin: 0 0 0.5rem 0; color: var(--primary-dark);">Traveler ${t.index}</h4>
+                        <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+                            <div class="grid-item"><span class="grid-label">Name</span><span class="grid-value">${t.name}</span></div>
+                            <div class="grid-item"><span class="grid-label">Date of Birth</span><span class="grid-value">${t.dob}</span></div>
+                            <div class="grid-item"><span class="grid-label">Nationality</span><span class="grid-value">${t.nationality}</span></div>
+                            ${t.phone ? `<div class="grid-item"><span class="grid-label">Phone</span><span class="grid-value">${t.phone}</span></div>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+        
+        travelersContainer.innerHTML = travelersHTML;
     }
 
     
@@ -87,7 +137,7 @@ function setupEventListeners() {
             
             setTimeout(() => {
                 // Show custom modal instead of alert
-                showPaymentSuccessModal(activeBooking.location, () => {
+                showPaymentSuccessModal(activeBooking.packageName || activeBooking.location || "your destination", () => {
                     let history = JSON.parse(localStorage.getItem('beyondPyramids_bookings') || '[]');
                     history.push({
                         ...activeBooking,
@@ -142,7 +192,7 @@ function showPaymentSuccessModal(location, callback) {
             <i class="fas fa-check-circle"></i>
         </div>
         <h2 style="font-family: var(--font-heading, serif); font-size: 1.8rem; margin-bottom: 0.5rem;">Payment Successful</h2>
-        <p style="color: var(--color-text-secondary); margin-bottom: 2rem; line-height: 1.5;">Your luxury journey to <strong>${location}</strong> is now secured.</p>
+        <p style="color: var(--color-text-secondary); margin-bottom: 2rem; line-height: 1.5;">Your booking for <strong>${location}</strong> is now secured.</p>
         <button id="modal-continue-btn" class="btn btn--primary" style="width: 100%;">View Booking Receipt</button>
     `;
 

@@ -62,7 +62,10 @@ function renderSingleLocations() {
                 ${pkg.openingHours  ? `<p style="font-size:.8rem;opacity:.7;margin:.25rem 0;"><i class="fas fa-clock"></i> ${pkg.openingHours}</p>` : ''}
                 ${pkg.recommendedDuration ? `<p style="font-size:.8rem;opacity:.7;margin:.25rem 0;"><i class="fas fa-hourglass-half"></i> Recommended: ${pkg.recommendedDuration}h</p>` : ''}
                 ${pkg.guidedTour === 'yes' ? `<p style="font-size:.8rem;opacity:.7;margin:.25rem 0;"><i class="fas fa-user-tie"></i> Guided tours available</p>` : ''}
-                <button class="details-btn btn btn--primary btn--small" data-id="${pkg.id}" style="margin-top:.75rem;">Explore Location</button>
+                <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                    <button class="details-btn btn btn--secondary btn--small" data-id="${pkg.id}" data-tier="standard" style="flex: 1; padding: 0.5rem;">Standard (Inc. Transport)</button>
+                    <button class="details-btn btn btn--primary btn--small" data-id="${pkg.id}" data-tier="deluxe" style="flex: 2; padding: 0.5rem;">Deluxe (Inc. Guide)</button>
+                </div>
             </div>
         `;
         container.appendChild(card);
@@ -72,7 +75,8 @@ function renderSingleLocations() {
     document.querySelectorAll('.details-btn').forEach(btn => {
         btn.addEventListener('click', function () {
             const pkgId = this.closest('.card').dataset.pkgId;
-            window.location.href = `../PackageDetailsPage/package-details.html?id=${pkgId}`;
+            const tier = this.dataset.tier || 'standard';
+            window.location.href = `../PackageDetailsPage/package-details.html?id=${pkgId}&tier=${tier}`;
         });
     });
 

@@ -1,154 +1,154 @@
 window.AppStorage = {
-    
-    
-    
-    getItem: function(key) {
+
+
+
+    getItem: function (key) {
         try { return localStorage.getItem(key); } catch (e) { return null; }
     },
-    setItem: function(key, val) {
-        try { localStorage.setItem(key, val); } catch (e) {}
+    setItem: function (key, val) {
+        try { localStorage.setItem(key, val); } catch (e) { }
     },
-    removeItem: function(key) {
-        try { localStorage.removeItem(key); } catch (e) {}
+    removeItem: function (key) {
+        try { localStorage.removeItem(key); } catch (e) { }
     },
-    getSessionItem: function(key) {
+    getSessionItem: function (key) {
         try { return sessionStorage.getItem(key); } catch (e) { return null; }
     },
-    setSessionItem: function(key, val) {
-        try { sessionStorage.setItem(key, val); } catch (e) {}
+    setSessionItem: function (key, val) {
+        try { sessionStorage.setItem(key, val); } catch (e) { }
     },
-    removeSessionItem: function(key) {
-        try { sessionStorage.removeItem(key); } catch (e) {}
+    removeSessionItem: function (key) {
+        try { sessionStorage.removeItem(key); } catch (e) { }
     },
 
-    
-    
-    
-    getTheme: function() {
+
+
+
+    getTheme: function () {
         return this.getItem('theme');
     },
-    setTheme: function(theme) {
+    setTheme: function (theme) {
         this.setItem('theme', theme);
     },
 
-    
-    
-    
-    isLoggedIn: function() {
+
+
+
+    isLoggedIn: function () {
         return this.getItem('isLoggedIn') === 'true';
     },
-    setLoggedIn: function(status) {
+    setLoggedIn: function (status) {
         this.setItem('isLoggedIn', status);
     },
-    getCurrentUser: function() {
+    getCurrentUser: function () {
         const u = this.getItem('beyondPyramids_currentUser');
         return u ? JSON.parse(u) : null;
     },
-    setCurrentUser: function(user) {
-        if(user) this.setItem('beyondPyramids_currentUser', JSON.stringify(user));
+    setCurrentUser: function (user) {
+        if (user) this.setItem('beyondPyramids_currentUser', JSON.stringify(user));
         else this.removeItem('beyondPyramids_currentUser');
     },
-    clearCurrentUser: function() {
+    clearCurrentUser: function () {
         this.removeItem('isLoggedIn');
         this.removeItem('beyondPyramids_currentUser');
     },
-    getCurrentUserRole: function() {
+    getCurrentUserRole: function () {
         return this.getItem('currentUserRole');
     },
-    setCurrentUserRole: function(role) {
+    setCurrentUserRole: function (role) {
         this.setItem('currentUserRole', role);
     },
-    getUsers: function() {
+    getUsers: function () {
         const users = this.getItem('beyondPyramids_users');
         return users ? JSON.parse(users) : [];
     },
-    setUsers: function(users) {
+    setUsers: function (users) {
         this.setItem('beyondPyramids_users', JSON.stringify(users));
     },
 
-    
-    
-    
-    getUserSession: function() {
+
+
+
+    getUserSession: function () {
         const session = this.getItem('userSession') || this.getSessionItem('userSession');
         return session ? JSON.parse(session) : null;
     },
-    setUserSessionLocal: function(data) {
+    setUserSessionLocal: function (data) {
         this.setItem('userSession', JSON.stringify(data));
     },
-    setUserSessionSession: function(data) {
+    setUserSessionSession: function (data) {
         this.setSessionItem('userSession', JSON.stringify(data));
     },
-    clearUserSession: function() {
+    clearUserSession: function () {
         this.removeItem('userSession');
         this.removeSessionItem('userSession');
     },
 
-    
-    
-    
-    getBookings: function() {
+
+
+
+    getBookings: function () {
         const b = this.getItem('beyondPyramids_bookings');
         return b ? JSON.parse(b) : [];
     },
-    setBookings: function(bookings) {
+    setBookings: function (bookings) {
         this.setItem('beyondPyramids_bookings', JSON.stringify(bookings));
     },
-    getCurrentBooking: function() {
+    getCurrentBooking: function () {
         const cb = this.getItem('currentBooking');
         return cb ? JSON.parse(cb) : null;
     },
-    setCurrentBooking: function(booking) {
+    setCurrentBooking: function (booking) {
         this.setItem('currentBooking', JSON.stringify(booking));
     },
-    getDraft: function() {
+    getDraft: function () {
         const draft = this.getItem('btp_draft');
         return draft ? JSON.parse(draft) : null;
     },
-    setDraft: function(draft) {
+    setDraft: function (draft) {
         this.setItem('btp_draft', JSON.stringify(draft));
     },
-    clearDraft: function() {
+    clearDraft: function () {
         this.removeItem('btp_draft');
     },
 
-    
-    
-    
-    getTransportVehicles: function() {
+
+
+
+    getTransportVehicles: function () {
         const v = this.getItem('transport_vehicles');
         return v ? JSON.parse(v) : null;
     },
-    setTransportVehicles: function(vehicles) {
+    setTransportVehicles: function (vehicles) {
         this.setItem('transport_vehicles', JSON.stringify(vehicles));
     },
-    getTransportDrivers: function() {
+    getTransportDrivers: function () {
         const d = this.getItem('transport_drivers');
         return d ? JSON.parse(d) : null;
     },
-    setTransportDrivers: function(drivers) {
+    setTransportDrivers: function (drivers) {
         this.setItem('transport_drivers', JSON.stringify(drivers));
     },
-    getTransportBookings: function() {
+    getTransportBookings: function () {
         const b = this.getItem('transport_bookings');
         return b ? JSON.parse(b) : null;
     },
-    setTransportBookings: function(bookings) {
+    setTransportBookings: function (bookings) {
         this.setItem('transport_bookings', JSON.stringify(bookings));
     },
 
-    
-    
-    
-    getTermsAccepted: function() {
+
+
+
+    getTermsAccepted: function () {
         return this.getItem('termsAccepted') === 'true';
     },
-    setTermsAccepted: function(isAccepted) {
+    setTermsAccepted: function (isAccepted) {
         this.setItem('termsAccepted', isAccepted ? 'true' : 'false');
     },
 
     // --- Package Management ---
-    getPackages: function() {
+    getPackages: function () {
         const p = this.getItem('beyondPyramids_packages');
         if (p) return JSON.parse(p);
         // Fallback to MockData if available
@@ -157,7 +157,7 @@ window.AppStorage = {
         }
         return [];
     },
-    setPackages: function(packages) {
+    setPackages: function (packages) {
         this.setItem('beyondPyramids_packages', JSON.stringify(packages));
     },
 
@@ -166,12 +166,12 @@ window.AppStorage = {
     // Each entry: { id, name, email, password, phone, nationality, dob,
     //               role, dashboard, joinDate, image, bookings[] }
 
-    getRegisteredUsers: function() {
+    getRegisteredUsers: function () {
         const raw = this.getItem('bp_registered_users');
         return raw ? JSON.parse(raw) : [];
     },
 
-    saveRegisteredUser: function(user) {
+    saveRegisteredUser: function (user) {
         const users = this.getRegisteredUsers();
         const existingIdx = users.findIndex(u => u.email.toLowerCase() === user.email.toLowerCase());
         if (existingIdx >= 0) {
@@ -182,7 +182,7 @@ window.AppStorage = {
         this.setItem('bp_registered_users', JSON.stringify(users));
     },
 
-    updateRegisteredUser: function(email, updates) {
+    updateRegisteredUser: function (email, updates) {
         const users = this.getRegisteredUsers();
         const idx = users.findIndex(u => u.email.toLowerCase() === email.toLowerCase());
         if (idx >= 0) {
@@ -194,7 +194,7 @@ window.AppStorage = {
     },
 
     // Search registered users first, then MockData.users
-    getUserByEmail: function(email) {
+    getUserByEmail: function (email) {
         if (!email) return null;
         const lower = email.toLowerCase();
         const registered = this.getRegisteredUsers();
@@ -208,11 +208,11 @@ window.AppStorage = {
     },
 
     // ─── Per-user Booking History ──────────────────────────────────────────
-    _bookingKey: function(email) {
+    _bookingKey: function (email) {
         return 'bp_bookings_' + (email || '').toLowerCase().replace(/[^a-z0-9]/g, '_');
     },
 
-    getUserBookings: function(email) {
+    getUserBookings: function (email) {
         if (!email) return [];
         const raw = this.getItem(this._bookingKey(email));
         let stored = raw ? JSON.parse(raw) : [];
@@ -229,7 +229,7 @@ window.AppStorage = {
         return stored;
     },
 
-    addBookingToUserHistory: function(email, booking) {
+    addBookingToUserHistory: function (email, booking) {
         if (!email || !booking) return;
         const key = this._bookingKey(email);
         const existing = this.getItem(key);
@@ -250,7 +250,7 @@ window.AppStorage = {
         }
     },
 
-    updateUserBooking: function(email, bookingId, updates) {
+    updateUserBooking: function (email, bookingId, updates) {
         if (!email || !bookingId) return;
         const key = this._bookingKey(email);
         const existing = this.getItem(key);
@@ -262,7 +262,7 @@ window.AppStorage = {
                 this.setItem(key, JSON.stringify(bookings));
             }
         }
-        
+
         // Also update in registered user's array
         const users = this.getRegisteredUsers();
         const uIdx = users.findIndex(u => u.email.toLowerCase() === email.toLowerCase());

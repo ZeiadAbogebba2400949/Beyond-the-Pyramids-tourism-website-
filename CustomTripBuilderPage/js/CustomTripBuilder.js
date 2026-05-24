@@ -26,20 +26,6 @@ var ROOM_TYPES = [
     { id: "suite", name: "Suite", mult: 2 }
 ];
 
-var TRANSPORT = [
-    { id: "private", name: "Private Car", price: 45 },
-    { id: "minibus", name: "Minibus", price: 30 },
-    { id: "luxury", name: "Luxury Van", price: 80 }
-];
-
-var GUIDES = [
-    { id: "standard", name: "Standard Guide", price: 40 },
-    { id: "premium", name: "Premium Guide", price: 80 }
-];
-
-var LANGUAGES = ["English", "Arabic", "French", "German", "Spanish", "Italian", "Japanese", "Chinese", "Russian"];
-var SPECS = ["Ancient History", "Islamic Architecture", "Marine Biology", "Photography Tours", "Adventure", "Food & Culture"];
-
 
 
 var currentStep = 0;
@@ -52,8 +38,6 @@ var selectedGuide = "";
 document.addEventListener("DOMContentLoaded", function () {
     buildStep1();
     buildStep3();
-    buildStep4();
-    buildStep5();
 
     var today = new Date().toISOString().split("T")[0];
     document.getElementById("trip-start").min = today;
@@ -63,8 +47,6 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("trip-end").addEventListener("change", onDateChange);
     document.getElementById("acc-type").addEventListener("change", recalcPrice);
     document.getElementById("acc-room").addEventListener("change", recalcPrice);
-    document.getElementById("airport-pickup").addEventListener("change", recalcPrice);
-    document.getElementById("inter-city").addEventListener("change", recalcPrice);
 
     showStep(0);
 });
@@ -83,13 +65,13 @@ function showStep(n) {
         if (i === n) items[i].classList.add("active");
         else if (i < n) items[i].classList.add("completed");
     }
-    if (n === 5) buildReview();
+    if (n === 3) buildReview();
     recalcPrice();
 }
 
 function nextStep() {
     if (!validateStep(currentStep)) return;
-    if (currentStep < 5) showStep(currentStep + 1);
+    if (currentStep < 3) showStep(currentStep + 1);
 }
 
 function prevStep() {
@@ -113,7 +95,7 @@ function validateStep(step) {
         if (d < 1) { showError("date-error", "End date must be after start date."); return false; }
         if (d > 14) { showError("date-error", "Maximum trip duration is 14 days."); return false; }
     }
-    if (step === 5 && !document.getElementById("terms-check").checked) {
+    if (step === 3 && !document.getElementById("terms-check").checked) {
         showError("review-error", "Please accept the terms and conditions.");
         return false;
     }
@@ -201,54 +183,6 @@ function buildStep3() {
 
 
 
-function buildStep4() {
-    var c = document.getElementById("transport-cards");
-    for (var i = 0; i < TRANSPORT.length; i++) {
-        var card = document.createElement("div");
-        card.className = "option-card";
-        card.dataset.id = TRANSPORT[i].id;
-        card.innerHTML = "<strong>" + TRANSPORT[i].name + "</strong><br>EGP " + TRANSPORT[i].price + "/day";
-        card.addEventListener("click", (function (id) {
-            return function () {
-                selectedTransport = id;
-                var all = document.querySelectorAll("#transport-cards .option-card");
-                for (var j = 0; j < all.length; j++) { all[j].classList.toggle("selected", all[j].dataset.id === id); }
-                recalcPrice();
-            };
-        })(TRANSPORT[i].id));
-        c.appendChild(card);
-    }
-}
-
-
-
-function buildStep5() {
-    var c = document.getElementById("guide-cards");
-    for (var i = 0; i < GUIDES.length; i++) {
-        var card = document.createElement("div");
-        card.className = "option-card";
-        card.dataset.id = GUIDES[i].id;
-        card.innerHTML = "<strong>" + GUIDES[i].name + "</strong><br>EGP " + GUIDES[i].price + "/day";
-        card.addEventListener("click", (function (id) {
-            return function () {
-                selectedGuide = id;
-                var all = document.querySelectorAll("#guide-cards .option-card");
-                for (var j = 0; j < all.length; j++) { all[j].classList.toggle("selected", all[j].dataset.id === id); }
-                recalcPrice();
-            };
-        })(GUIDES[i].id));
-        c.appendChild(card);
-    }
-
-    var lang = document.getElementById("guide-lang");
-    lang.innerHTML = '<option value="">-- Select Language --</option>';
-    for (var i = 0; i < LANGUAGES.length; i++) { lang.innerHTML += '<option value="' + LANGUAGES[i] + '">' + LANGUAGES[i] + '</option>'; }
-
-    var spec = document.getElementById("guide-spec");
-    spec.innerHTML = '<option value="">-- Any --</option>';
-    for (var i = 0; i < SPECS.length; i++) { spec.innerHTML += '<option value="' + SPECS[i] + '">' + SPECS[i] + '</option>'; }
-}
-
 
 
 function recalcPrice() {
@@ -272,23 +206,9 @@ function recalcPrice() {
         accTotal = ppn * rm * nights;
     }
 
-    var transTotal = 0;
-    if (selectedTransport && days > 0) {
-        for (var i = 0; i < TRANSPORT.length; i++) { if (TRANSPORT[i].id === selectedTransport) transTotal = TRANSPORT[i].price * days; }
-    }
-    if (document.getElementById("airport-pickup").checked) transTotal += 35;
-    if (document.getElementById("inter-city").checked) transTotal += 50;
-
-    var guideTotal = 0;
-    if (selectedGuide && days > 0) {
-        for (var i = 0; i < GUIDES.length; i++) { if (GUIDES[i].id === selectedGuide) guideTotal = GUIDES[i].price * days; }
-    }
-
     document.getElementById("price-dest").textContent = "EGP " + destTotal;
     document.getElementById("price-acc").textContent = "EGP " + Math.round(accTotal);
-    document.getElementById("price-trans").textContent = "EGP " + transTotal;
-    document.getElementById("price-guide").textContent = "EGP " + guideTotal;
-    document.getElementById("price-total").textContent = "EGP " + (destTotal + Math.round(accTotal) + transTotal + guideTotal);
+    document.getElementById("price-total").textContent = "EGP " + (destTotal + Math.round(accTotal));
 }
 
 
@@ -314,27 +234,13 @@ function buildReview() {
         h += "<p>" + name + "</p>";
     } else { h += "<p>Not selected</p>"; }
 
-    h += "<h3>Transportation</h3>";
-    if (selectedTransport) {
-        var name = "";
-        for (var i = 0; i < TRANSPORT.length; i++) { if (TRANSPORT[i].id === selectedTransport) name = TRANSPORT[i].name; }
-        h += "<p>" + name + "</p>";
-    } else { h += "<p>Not selected</p>"; }
-
-    h += "<h3>Guide</h3>";
-    if (selectedGuide) {
-        var name = "";
-        for (var i = 0; i < GUIDES.length; i++) { if (GUIDES[i].id === selectedGuide) name = GUIDES[i].name; }
-        h += "<p>" + name + " - " + (document.getElementById("guide-lang").value || "No language") + "</p>";
-    } else { h += "<p>Not selected</p>"; }
-
     document.getElementById("review-body").innerHTML = h;
 }
 
 
 
 function submitTrip() {
-    if (!validateStep(5)) return;
+    if (!validateStep(3)) return;
 
     // Construct the booking object for the purchase flow
     const totalDisplay = document.getElementById("price-total").textContent;

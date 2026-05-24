@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -18,7 +18,7 @@
 
         <aside class="page-sidebar" id="sidebar">
             <div class="sidebar-brand">
-                <a href="../LandingPage/LandingPage.html">
+                <a href="../index.html">
                     <img src="../WebsiteLogo.png" alt="Beyond the Pyramids">
                 </a>
             </div>
@@ -27,7 +27,7 @@
                 <div class="nav-group">
                     <span class="group-label">Discovery</span>
                     <ul>
-                        <li><a href="../LandingPage/LandingPage.html"><i class="fas fa-home"></i> <span>Home Sanctuary</span></a></li>
+                        <li><a href="../index.html"><i class="fas fa-home"></i> <span>Home Sanctuary</span></a></li>
                         <li><a href="../DayPackages/dayPackages.html"><i class="fas fa-sun"></i> <span>Day Packages</span></a></li>
                         <li><a href="../WeeklyPackagePage/week-packages.html"><i class="fas fa-calendar-week"></i> <span>Week Packages</span></a></li>
                         <li><a href="../SingleLocationPage/SingleLocation.html"><i class="fas fa-location-dot"></i> <span>Single Locations</span></a></li>
@@ -76,9 +76,7 @@
             <div class="stepper-step active">1. Destinations</div>
             <div class="stepper-step">2. Dates</div>
             <div class="stepper-step">3. Accommodation</div>
-            <div class="stepper-step">4. Transportation</div>
-            <div class="stepper-step">5. Guide</div>
-            <div class="stepper-step">6. Review</div>
+            <div class="stepper-step">4. Review</div>
         </div>
     </div>
 
@@ -161,52 +159,6 @@
             
             <div class="wizard-step" id="step-3">
                 <div class="step-card">
-                    <h2>Transportation (optional)</h2>
-                    <p>Select your preferred vehicle and extras</p><br>
-                    <div class="option-cards" id="transport-cards"></div>
-                    <div class="checkbox-row">
-                        <input type="checkbox" id="airport-pickup">
-                        <label for="airport-pickup">Airport pickup &amp; drop-off (+EGP 35)</label>
-                    </div>
-                    <div class="checkbox-row">
-                        <input type="checkbox" id="inter-city">
-                        <label for="inter-city">Inter-city transfers (+EGP 50)</label>
-                    </div>
-                    <div class="error-msg" id="transport-error"></div>
-                </div>
-                <div class="step-nav">
-                    <button onclick="prevStep()">&larr; Back</button>
-                    <button onclick="nextStep()">Continue &rarr;</button>
-                </div>
-            </div>
-
-            
-            <div class="wizard-step" id="step-4">
-                <div class="step-card">
-                    <h2>Tourist Guide (optional)</h2>
-                    <p>Pick your guide type and preferences</p><br>
-                    <div class="option-cards" id="guide-cards"></div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="guide-lang">Preferred Language</label>
-                            <select id="guide-lang"></select>
-                        </div>
-                        <div class="form-group">
-                            <label for="guide-spec">Specialization</label>
-                            <select id="guide-spec"></select>
-                        </div>
-                    </div>
-                    <div class="error-msg" id="guide-error"></div>
-                </div>
-                <div class="step-nav">
-                    <button onclick="prevStep()">&larr; Back</button>
-                    <button onclick="nextStep()">Continue &rarr;</button>
-                </div>
-            </div>
-
-            
-            <div class="wizard-step" id="step-5">
-                <div class="step-card">
                     <h2>Review Your Trip</h2>
                     <p>Confirm all details before submitting</p><br>
                     <div id="review-body"></div>
@@ -239,14 +191,7 @@
                     <span>Accommodation</span>
                     <span id="price-acc">EGP 0</span>
                 </div>
-                <div class="price-line">
-                    <span>Transportation</span>
-                    <span id="price-trans">EGP 0</span>
-                </div>
-                <div class="price-line">
-                    <span>Guide</span>
-                    <span id="price-guide">EGP 0</span>
-                </div>
+
 
                 <div class="price-total">
                     <span>Total</span>
@@ -273,8 +218,8 @@
                 <div class="footer-group">
                     <h4>Explore</h4>
                     <ul>
-                        <li><a href="../LandingPage/LandingPage.html#destinations">Destinations</a></li>
-                        <li><a href="../LandingPage/LandingPage.html#packages">Tour Packages</a></li>
+                        <li><a href="../index.html#destinations">Destinations</a></li>
+                        <li><a href="../index.html#packages">Tour Packages</a></li>
                         <li><a href="../CustomTripBuilderPage/CustomTripBuilderPage.html">Custom Trips</a></li>
                     </ul>
                 </div>

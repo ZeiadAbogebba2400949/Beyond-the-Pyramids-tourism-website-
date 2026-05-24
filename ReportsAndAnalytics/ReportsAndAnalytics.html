@@ -26,10 +26,7 @@
                 <ul>
                     <li><a href="../AdminDashboardPage/admin-dashboard.html"><i class="fas fa-chart-line"></i> Overview</a></li>
                     <li><a href="../BookingManagementPage/bookingmanagement.html"><i class="fas fa-calendar-check"></i> Booking Management</a></li>
-                    <li><a href="../GuideManagementPage/GuideManagement.html"><i class="fas fa-map-marked-alt"></i> Guide Management</a></li>
-                    <li><a href="../HotelManagementPage/HotelManagement.html"><i class="fas fa-hotel"></i> Hotel Management</a></li>
                     <li><a href="../PackageManagementPage/packagemanagement.html"><i class="fas fa-cubes"></i> Package Management</a></li>
-                    <li><a href="../TransportationManagementPage/TransportationManagement.html"><i class="fas fa-bus"></i> Transportation</a></li>
                     <li><a href="../UserManagement/userManagement.html"><i class="fas fa-user-shield"></i> User Management</a></li>
                     <li class="active"><a href="../ReportsAndAnalytics/ReportsAndAnalytics.html"><i class="fas fa-file-invoice-dollar"></i> Reports &amp; Analytics</a></li>
                 </ul>
@@ -43,7 +40,7 @@
             <header class="dashboard-header">
                 <div>
                     <h1>Reports &amp; Analytics</h1>
-                    <p>Platform-wide performance across bookings, packages, hotels, and transportation</p>
+                    <p>Platform-wide performance across users, bookings, packages, and reviews</p>
                 </div>
             </header>
 
@@ -128,76 +125,7 @@
                 </div>
             </div>
 
-            <!-- ── 3. Hotel Reservations ── -->
-            <div class="report-section card">
-                <div class="section-header">
-                    <h2><i class="fas fa-hotel"></i> Hotel Reservations</h2>
-                    <div class="section-filters">
-                        <select id="hotelFilter" class="select-modern">
-                            <option value="all">All Hotels</option>
-                        </select>
-                        <select id="hotelStatusFilter" class="select-modern">
-                            <option value="all">All Statuses</option>
-                            <option value="confirmed">Confirmed</option>
-                            <option value="checked-in">Checked-In</option>
-                            <option value="checked-out">Checked-Out</option>
-                            <option value="cancelled">Cancelled</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="section-content">
-                    <div class="stats-grid" id="hotelStatsGrid"></div>
-                    <div class="two-col">
-                        <div class="chart-container">
-                            <canvas id="hotelStatusChart"></canvas>
-                        </div>
-                        <div class="chart-container">
-                            <canvas id="hotelRevenueChart"></canvas>
-                        </div>
-                    </div>
-                    <div class="table-container" style="margin-top:24px;">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Booking ID</th>
-                                    <th>Guest</th>
-                                    <th>Hotel</th>
-                                    <th>Check-In</th>
-                                    <th>Check-Out</th>
-                                    <th>Total (EGP)</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody id="hotelTableBody"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
 
-            <!-- ── 4. Transportation Bookings ── -->
-            <div class="report-section card">
-                <div class="section-header">
-                    <h2><i class="fas fa-shuttle-van"></i> Transportation Bookings</h2>
-                    <div class="section-filters">
-                        <select id="transportStatusFilter" class="select-modern">
-                            <option value="all">All Statuses</option>
-                            <option value="confirmed">Confirmed</option>
-                            <option value="cancelled">Cancelled</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="section-content">
-                    <div class="stats-grid" id="transportStatsGrid"></div>
-                    <div class="two-col">
-                        <div class="chart-container">
-                            <canvas id="transportStatusChart"></canvas>
-                        </div>
-                        <div class="chart-container">
-                            <canvas id="transportVehicleChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
             <!-- ── 5. Platform Reviews ── -->
             <div class="report-section card">

@@ -1,0 +1,411 @@
+/* ================================================================
+   TravellersDetails — Luxury / Refined Aesthetic
+   Aesthetic:  Luxury Minimal  (Cormorant Garamond + Montserrat)
+   DFII Score: 12 — Execute fully
+   Anchor:     Underline-only inputs on a vast white canvas,
+               gold top-rule on each traveler card
+   ================================================================ */
+
+/* ── Layout: give the main area a proper scroll wrapper ───────── */
+.dashboard-main {
+    overflow: hidden; /* topbar stays fixed */
+}
+
+.td-scroll-area {
+    flex: 1;
+    overflow-y: auto;
+    /* min-height trick so footer is pushed to the true bottom */
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 64px); /* 64px = dash-topbar height */
+    scrollbar-width: thin;
+    scrollbar-color: var(--gold-primary) transparent;
+}
+.td-scroll-area::-webkit-scrollbar { width: 5px; }
+.td-scroll-area::-webkit-scrollbar-track { background: transparent; }
+.td-scroll-area::-webkit-scrollbar-thumb { background: var(--gold-primary); border-radius: 10px; }
+
+/* ── Page header ───────────────────────────────────────────────── */
+.td-page-header {
+    padding: 3.5rem 4rem 2rem;
+    max-width: 860px;
+}
+
+.td-page-header__eyebrow {
+    margin-bottom: 1.25rem;
+}
+
+.td-step-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold-primary);
+    border: 1px solid rgba(197, 160, 89, 0.35);
+    padding: 0.35rem 0.85rem;
+    border-radius: 0; /* square — intentional */
+}
+
+.td-page-header__title {
+    font-family: var(--font-display);
+    font-size: 2.8rem;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    color: var(--color-text);
+    margin-bottom: 1rem;
+    line-height: 1.15;
+}
+
+.td-page-header__subtitle {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--color-text-muted);
+    line-height: 1.7;
+    max-width: 560px;
+    margin-bottom: 2.5rem;
+}
+
+.td-page-header__rule {
+    height: 1px;
+    background: linear-gradient(to right, var(--gold-primary), transparent);
+    width: 120px;
+    margin-bottom: 0;
+}
+
+/* ── Form wrap ─────────────────────────────────────────────────── */
+.td-form-wrap {
+    padding: 2.5rem 4rem 0;
+    flex: 1; /* pushes footer to bottom */
+}
+
+.editorial-section {
+    max-width: 800px;
+}
+
+/* ── Traveler card ─────────────────────────────────────────────── */
+.traveler-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-light);
+    border-top: 3px solid var(--gold-primary);
+    border-radius: 0;
+    padding: 2.75rem 3rem;
+    margin-bottom: 2.5rem;
+    position: relative;
+    transition: box-shadow 0.4s ease, transform 0.4s ease;
+
+    /* entrance animation */
+    opacity: 0;
+    animation: tdCardIn 0.6s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+
+.traveler-card:nth-child(1) { animation-delay: 0.05s; }
+.traveler-card:nth-child(2) { animation-delay: 0.15s; }
+.traveler-card:nth-child(3) { animation-delay: 0.25s; }
+.traveler-card:nth-child(n+4) { animation-delay: 0.35s; }
+
+@keyframes tdCardIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.traveler-card:hover {
+    box-shadow: 0 12px 40px rgba(197, 160, 89, 0.1);
+    transform: translateY(-2px);
+}
+
+/* traveler card heading */
+.traveler-card h4 {
+    margin-top: 0;
+    margin-bottom: 2.25rem;
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    font-weight: 400;
+    color: var(--color-text);
+    border-bottom: 1px solid var(--color-border-light);
+    padding-bottom: 1rem;
+    letter-spacing: 0.03em;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.traveler-card h4::before {
+    content: attr(data-num);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: var(--gold-primary);
+    color: #fff;
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 700;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+/* ── Form layout ───────────────────────────────────────────────── */
+.form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 3rem; /* generous horizontal gap, no vertical gap (handled by groups) */
+    margin-bottom: 2.25rem;
+}
+
+.form-group {
+    flex: 1 1 calc(50% - 1.5rem);
+    display: flex;
+    flex-direction: column;
+    min-width: 200px;
+}
+
+/* ── Field label ────────────────────────────────────────────────── */
+.form-group label {
+    font-family: var(--font-body);
+    font-size: 0.68rem;
+    font-weight: 700;
+    margin-bottom: 0.65rem;
+    color: var(--color-text-muted);
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+}
+
+/* ── Underline-only input (the memorable anchor) ───────────────── */
+.form-group input {
+    padding: 0.75rem 0 0.6rem;
+    border: none;
+    border-bottom: 1px solid var(--color-border);
+    border-radius: 0;
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    background: transparent;
+    color: var(--color-text);
+    transition: border-color 0.35s ease, box-shadow 0.35s ease;
+    width: 100%;
+    outline: none;
+}
+
+.form-group input:focus {
+    border-bottom-color: var(--gold-primary);
+    box-shadow: 0 1px 0 0 var(--gold-primary);
+}
+
+.form-group input::placeholder {
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    font-weight: 300;
+    color: var(--color-text-muted);
+    opacity: 0.55;
+}
+
+/* Date input quirk — force same font as text inputs */
+.form-group input[type="date"] {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+}
+
+/* Nationality dropdown — matches underline aesthetic */
+.nationality-select {
+    appearance: none;
+    -webkit-appearance: none;
+    padding: 0.75rem 2rem 0.6rem 0;
+    border: none;
+    border-bottom: 1px solid var(--color-border);
+    border-radius: 0;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    background-color: transparent;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23C5A059' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.25rem center;
+    color: var(--color-text);
+    cursor: pointer;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.35s ease, box-shadow 0.35s ease;
+}
+
+.nationality-select:focus {
+    border-bottom-color: var(--gold-primary);
+    box-shadow: 0 1px 0 0 var(--gold-primary);
+}
+
+/* Placeholder option */
+.nationality-select option[value=""] {
+    color: var(--color-text-muted);
+}
+
+/* Dark mode: ensure dropdown background is visible */
+[data-theme="dark"] .nationality-select {
+    background-color: var(--color-surface);
+    color: var(--color-text);
+}
+
+[data-theme="dark"] .nationality-select option {
+    background-color: var(--color-surface);
+}
+
+/* ── Phone group (hidden until 18+ detected) ────────────────────── */
+.phone-group {
+    display: none;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+.phone-group.visible {
+    display: flex;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ── Action buttons ────────────────────────────────────────────── */
+.td-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 1rem;
+    padding: 2rem 0 3.5rem;
+    border-top: 1px solid var(--color-border-light);
+    margin-top: 0.5rem;
+}
+
+.btn-editorial {
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    padding: 0.95rem 2.25rem;
+    border-radius: 0;
+    cursor: pointer;
+    transition: background 0.35s ease, border-color 0.35s ease, color 0.35s ease, box-shadow 0.35s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    border: 1px solid transparent;
+    line-height: 1;
+}
+
+.btn-editorial.primary {
+    background: var(--color-text);
+    color: var(--color-bg);
+    border-color: var(--color-text);
+}
+
+.btn-editorial.primary:hover {
+    background: var(--gold-primary);
+    border-color: var(--gold-primary);
+    color: #fff;
+    box-shadow: 0 6px 24px rgba(197, 160, 89, 0.35);
+    transform: translateY(-2px);
+}
+
+.btn-editorial.secondary {
+    background: transparent;
+    color: var(--color-text-secondary);
+    border-color: var(--color-border);
+}
+
+.btn-editorial.secondary:hover {
+    border-color: var(--color-text);
+    color: var(--color-text);
+    transform: translateY(-2px);
+}
+
+/* ── Footer (flows at bottom of scroll area, never sticky) ──────── */
+.td-footer {
+    margin-top: auto; /* push to absolute bottom */
+    border-top: 1px solid var(--color-border-light);
+    background: var(--color-surface-alt);
+    padding: 2.5rem 4rem;
+}
+
+.td-footer__inner {
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.td-footer__logo {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--color-text);
+    display: block;
+    margin-bottom: 0.35rem;
+}
+
+.td-footer__tagline {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin: 0;
+}
+
+.td-footer__bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--color-border-light);
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.td-footer__credit {
+    font-style: italic;
+    letter-spacing: 0.02em;
+}
+
+/* ── Dark-mode tweaks ─────────────────────────────────────────── */
+[data-theme="dark"] .traveler-card {
+    background: var(--color-surface);
+}
+
+[data-theme="dark"] .traveler-card h4 {
+    color: var(--gold-primary);
+}
+
+[data-theme="dark"] .td-footer {
+    background: var(--color-surface-alt);
+}
+
+[data-theme="dark"] .btn-editorial.primary {
+    background: var(--color-text);
+    color: var(--color-bg);
+}
+
+/* ── Responsive ───────────────────────────────────────────────── */
+@media (max-width: 992px) {
+    .td-page-header,
+    .td-form-wrap,
+    .td-footer {
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+    .td-page-header__title { font-size: 2.2rem; }
+}
+
+@media (max-width: 768px) {
+    .td-page-header,
+    .td-form-wrap,
+    .td-footer {
+        padding-left: 1.25rem;
+        padding-right: 1.25rem;
+    }
+    .td-page-header { padding-top: 2rem; }
+    .form-row { gap: 0 1.5rem; }
+    .form-group { flex: 1 1 100%; }
+    .traveler-card { padding: 1.75rem 1.5rem; }
+    .td-actions { flex-direction: column-reverse; align-items: stretch; }
+    .btn-editorial { justify-content: center; }
+    .td-footer__bottom { flex-direction: column; align-items: flex-start; }
+}

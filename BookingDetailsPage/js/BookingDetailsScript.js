@@ -67,15 +67,24 @@ function renderVoucherUI(booking) {
     // 4. Receipt Payment Breakdown
     const receiptBody = document.querySelector('.receipt-body');
     if (receiptBody) {
-        const subtotal = booking.totalPrice;
+        // Fallback for older bookings that used price instead of totalPrice
+        const rawPrice = booking.totalPrice || booking.price || 0;
+        
+        // Remove currency symbols or commas if stored as string, then parse
+        const subtotal = typeof rawPrice === 'string' 
+            ? parseFloat(rawPrice.replace(/[^0-9.-]+/g, "")) 
+            : parseFloat(rawPrice);
+
+        const travelers = parseInt(booking.travelers) || 1;
+        const perPerson = Math.round(subtotal / travelers);
 
         receiptBody.innerHTML = `
             <div class="receipt-line">
-                <span>Base Package (${booking.travelers} Travelers)</span>
-                <span>EGP ${subtotal.toLocaleString()}</span>
+                <span>Base Package (${booking.travelers} Traveler${booking.travelers > 1 ? 's' : ''})</span>
+                <span>EGP ${perPerson.toLocaleString()} &times; ${booking.travelers}</span>
             </div>
             <div class="receipt-line">
-                <span>Taxes & Service Fees</span>
+                <span>Taxes &amp; Service Fees</span>
                 <span>Included</span>
             </div>
             ${booking.tier === 'full' ? `
@@ -86,15 +95,15 @@ function renderVoucherUI(booking) {
             <hr class="receipt-divider">
             <div class="receipt-line total-line">
                 <span>Total Paid</span>
-                <span>EGP ${booking.totalPrice.toLocaleString()}</span>
+                <span>EGP ${subtotal.toLocaleString()}</span>
             </div>
-            <p class="payment-method">Paid via Secure Wallet</p>
+            <p class="payment-method">Paid via Secure Wallet &bull; Egyptian Pound (EGP)</p>
         `;
     }
 }
 
 function initVoucherActions() {
-    // Print
+    // Print — relies entirely on @media print CSS to isolate the voucher
     const printBtn = document.getElementById("print-btn");
     if (printBtn) {
         printBtn.addEventListener("click", () => window.print());
@@ -122,4 +131,35 @@ function initVoucherActions() {
             if (arrow) arrow.innerHTML = isOpen ? "&#9660;" : "&#9650;";
         });
     }
+
+    // Force Light Mode text visibility via JS to bypass any CSS caching
+    function enforceLightModeColors() {
+        const isLight = document.documentElement.getAttribute("data-theme") === "light";
+        const textElements = document.querySelectorAll('.editorial-title, .editorial-subtitle, .card-title, .info-row .label, .info-row .value, .itinerary-list li, .accordion-btn, .concierge-box h4, .concierge-box p, .concierge-link');
+        
+        textElements.forEach(el => {
+            if (isLight) {
+                el.style.setProperty("color", "#111111", "important");
+            } else {
+                el.style.removeProperty("color");
+            }
+        });
+
+        // specific colors for labels/accents in light mode
+        const accentElements = document.querySelectorAll('.info-row .label, .accordion-content strong');
+        accentElements.forEach(el => {
+            if (isLight) {
+                el.style.setProperty("color", "#b88a44", "important");
+            } else {
+                el.style.removeProperty("color");
+            }
+        });
+    }
+
+    // Run once on load
+    setTimeout(enforceLightModeColors, 100);
+
+    // Watch for theme toggles
+    const observer = new MutationObserver(enforceLightModeColors);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 }

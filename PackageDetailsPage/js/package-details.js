@@ -12,23 +12,23 @@
  */
 
 /* ─── Booking state ─────────────────────────────────── */
-let selectedPkg  = null;
+let selectedPkg = null;
 let currentBooking = {
-    packageId : null,
-    tier      : 'tour',
-    travelers : 2,
-    date      : null,
-    basePrice : 0,
+    packageId: null,
+    tier: new URLSearchParams(window.location.search).get('tier') || 'standard',
+    travelers: 2,
+    date: null,
+    basePrice: 0,
     totalPrice: 0
 };
 
 /* ─── Calendar state ─────────────────────────────────── */
 const MONTH_NAMES = [
-    'January','February','March','April','May','June',
-    'July','August','September','October','November','December'
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
 ];
 
-let calYear  = new Date().getFullYear();
+let calYear = new Date().getFullYear();
 let calMonth = new Date().getMonth();
 
 /* ════════════════════════════════════════════════════════
@@ -112,9 +112,9 @@ function normalise(p) {
 
     // Category / type badge
     let category = p.category || (p.type === 'single' ? 'Single Location'
-                                : p.type === 'day'    ? 'Day Package'
-                                : p.type === 'week'   ? 'Week Package'
-                                : 'Package');
+        : p.type === 'day' ? 'Day Package'
+            : p.type === 'week' ? 'Week Package'
+                : 'Package');
 
     // Itinerary — admin stores it as a JSON string OR an array
     let itinerary = p.itinerary || p.dailyItinerary || [];
@@ -129,10 +129,17 @@ function normalise(p) {
     }
     if (p.accommodationIncluded === 'yes' && p.hotelName) {
         included.push(`Hotel: ${p.hotelName}`);
+    } else if (category.includes('Week')) {
+        included.push('Accommodation Included');
     }
 
+    if (category.includes('Day') && !included.some(i => i.toLowerCase().includes('transport'))) {
+        included.push('Transportation Included');
+    }
+
+
     // Rating & reviews
-    const rating  = p.rating  ?? 4.7;
+    const rating = p.rating ?? 4.7;
     const reviews = p.reviews ?? 0;
 
     // Description lead
@@ -148,15 +155,15 @@ function normalise(p) {
 
     return {
         ...p,
-        _basePrice : basePrice,
-        _fullPrice : fullPrice,
-        _duration  : duration,
-        _category  : category,
-        _itinerary : itinerary,
-        _included  : included,
-        _rating    : rating,
-        _reviews   : reviews,
-        _lead      : lead,
+        _basePrice: basePrice,
+        _fullPrice: fullPrice,
+        _duration: duration,
+        _category: category,
+        _itinerary: itinerary,
+        _included: included,
+        _rating: rating,
+        _reviews: reviews,
+        _lead: lead,
         _highlights: highlights,
     };
 }
@@ -265,19 +272,19 @@ function buildPageHTML(pkg) {
 
                 <!-- Tier selection -->
                 <div class="pkg-tiers" id="pkg-tiers">
-                    <div class="pkg-tier active" data-type="tour" tabindex="0" role="button" aria-pressed="true">
+                    <div class="pkg-tier ${currentBooking.tier === 'standard' ? 'active' : ''}" data-type="standard" tabindex="0" role="button" aria-pressed="${currentBooking.tier === 'standard' ? 'true' : 'false'}">
                         <div class="pkg-tier__header">
-                            <span class="pkg-tier__name"><i class="fas fa-compass"></i> Tour Only</span>
+                            <span class="pkg-tier__name"><i class="fas fa-compass"></i> Standard</span>
                             <span class="pkg-tier__price" id="price-tour">${formatPrice(pkg._basePrice)}</span>
                         </div>
-                        <p class="pkg-tier__desc">Expert-led guided tours &amp; all entrance fees included</p>
+                        <p class="pkg-tier__desc">Self-guided, entrance fees only ${pkg._category.includes('Day') ? '&amp; transportation' : ''} ${pkg._category.includes('Week') ? '(accommodation included)' : ''}</p>
                     </div>
-                    <div class="pkg-tier" data-type="full" tabindex="0" role="button" aria-pressed="false">
+                    <div class="pkg-tier ${currentBooking.tier === 'deluxe' ? 'active' : ''}" data-type="deluxe" tabindex="0" role="button" aria-pressed="${currentBooking.tier === 'deluxe' ? 'true' : 'false'}">
                         <div class="pkg-tier__header">
-                            <span class="pkg-tier__name"><i class="fas fa-hotel"></i> Complete Luxury</span>
+                            <span class="pkg-tier__name"><i class="fas fa-crown"></i> Deluxe</span>
                             <span class="pkg-tier__price" id="price-full">${formatPrice(pkg._fullPrice)}</span>
                         </div>
-                        <p class="pkg-tier__desc">Premium accommodation &amp; private luxury transportation</p>
+                        <p class="pkg-tier__desc">Includes expert tour guide</p>
                     </div>
                 </div>
 
@@ -337,10 +344,10 @@ function buildPageHTML(pkg) {
 function buildItinerary(items) {
     return items.map((step, idx) => {
         // Support both { day, title, desc } and { time, activity }
-        const dayLabel  = step.day  ? `Day ${step.day}`  : step.time ? step.time : `Step ${idx + 1}`;
-        const stepTitle = step.title    || step.activity || `—`;
-        const stepDesc  = step.desc     || '';
-        const meal      = step.meal     || '';
+        const dayLabel = step.day ? `Day ${step.day}` : step.time ? step.time : `Step ${idx + 1}`;
+        const stepTitle = step.title || step.activity || `—`;
+        const stepDesc = step.desc || '';
+        const meal = step.meal || '';
 
         return `
         <div class="pkg-day reveal-timeline" style="transition-delay: ${idx * 80}ms">
@@ -418,9 +425,9 @@ function buildReviews(pkg) {
 function buildStars(rating) {
     let html = '';
     for (let i = 1; i <= 5; i++) {
-        if (rating >= i)       html += '<i class="fas fa-star"></i>';
+        if (rating >= i) html += '<i class="fas fa-star"></i>';
         else if (rating >= i - 0.5) html += '<i class="fas fa-star-half-stroke"></i>';
-        else                    html += '<i class="far fa-star"></i>';
+        else html += '<i class="far fa-star"></i>';
     }
     return html;
 }
@@ -482,19 +489,19 @@ function initCalendar() {
 }
 
 function renderCalendar() {
-    const grid  = document.getElementById('pkg-calendar');
+    const grid = document.getElementById('pkg-calendar');
     const label = document.getElementById('cal-month-label');
     if (!grid || !label) return;
 
     label.textContent = `${MONTH_NAMES[calMonth]} ${calYear}`;
     grid.innerHTML = '';
 
-    const today     = new Date();
-    const firstDay  = new Date(calYear, calMonth, 1).getDay();
+    const today = new Date();
+    const firstDay = new Date(calYear, calMonth, 1).getDay();
     const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
 
     // Day-of-week headers
-    ['S','M','T','W','T','F','S'].forEach(d => {
+    ['S', 'M', 'T', 'W', 'T', 'F', 'S'].forEach(d => {
         const h = document.createElement('div');
         h.className = 'pkg-cal-day header';
         h.textContent = d;
@@ -512,7 +519,7 @@ function renderCalendar() {
     for (let i = 1; i <= daysInMonth; i++) {
         const d = document.createElement('div');
         const thisDate = new Date(calYear, calMonth, i);
-        const isPast   = thisDate < new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        const isPast = thisDate < new Date(today.getFullYear(), today.getMonth(), today.getDate());
 
         d.className = 'pkg-cal-day ' + (isPast ? 'past' : 'available');
         d.textContent = i;
@@ -532,8 +539,8 @@ function renderCalendar() {
 
 /* ─── Traveller counter ─────────────────────────────── */
 function initTravellerCounter() {
-    const minus   = document.getElementById('traveller-minus');
-    const plus    = document.getElementById('traveller-plus');
+    const minus = document.getElementById('traveller-minus');
+    const plus = document.getElementById('traveller-plus');
     const display = document.getElementById('traveller-count');
     if (!minus || !plus) return;
 
@@ -561,11 +568,11 @@ function updateTotalDisplay() {
     const pkg = selectedPkg;
     if (!pkg) return;
 
-    const multiplier = currentBooking.tier === 'full' ? 1 : 1;
-    const perPerson  = currentBooking.tier === 'full' ? pkg._fullPrice : pkg._basePrice;
-    const total      = perPerson * currentBooking.travelers;
+    const multiplier = currentBooking.tier === 'deluxe' ? 1 : 1;
+    const perPerson = currentBooking.tier === 'deluxe' ? pkg._fullPrice : pkg._basePrice;
+    const total = perPerson * currentBooking.travelers;
     currentBooking.totalPrice = total;
-    currentBooking.basePrice  = perPerson;
+    currentBooking.basePrice = perPerson;
 
     const totalEl = document.getElementById('total-display');
     if (totalEl) {
@@ -622,20 +629,20 @@ function initBookingAction() {
 
         // ── PROCEED WITH BOOKING ──────────────────────────────────────────
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Preparing Summary…';
-        btn.disabled  = true;
+        btn.disabled = true;
 
         const finalBooking = {
             ...currentBooking,
-            id           : 'BKG-' + Math.floor(Math.random() * 1000000),
+            id: 'BKG-' + Math.floor(Math.random() * 1000000),
             bookingNumber: 'EG-' + new Date().getFullYear() + '-' + Math.floor(Math.random() * 90000 + 10000),
-            packageName  : selectedPkg.name,
-            packageId    : selectedPkg.id,
-            location     : selectedPkg.location || selectedPkg.city,
-            image        : selectedPkg.image,
-            timestamp    : new Date().toISOString(),
-            userEmail    : session.email,
-            userName     : session.name || session.email.split('@')[0],
-            status       : 'confirmed'
+            packageName: selectedPkg.name,
+            packageId: selectedPkg.id,
+            location: selectedPkg.location || selectedPkg.city,
+            image: selectedPkg.image,
+            timestamp: new Date().toISOString(),
+            userEmail: session.email,
+            userName: session.name || session.email.split('@')[0],
+            status: 'confirmed'
         };
 
         if (window.AppStorage) {
@@ -656,7 +663,11 @@ function initBookingAction() {
         }
 
         setTimeout(() => {
-            window.location.href = '../BookingSummaryPage/BookingSummary.html';
+            if (finalBooking.travelers > 1) {
+                window.location.href = '../TravellersDetails/TravellersDetails.html';
+            } else {
+                window.location.href = '../BookingSummaryPage/BookingSummary.html';
+            }
         }, 800);
     });
 }

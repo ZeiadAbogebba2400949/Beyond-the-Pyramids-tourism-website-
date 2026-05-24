@@ -31,12 +31,12 @@ function renderWeekPackages() {
     container.innerHTML = '';
 
     weekPkgs.forEach(pkg => {
-        const durationDays  = pkg.durationDays  || 7;
-        const nights        = pkg.nights        || (durationDays - 1);
-        const price         = pkg.discountedPrice || pkg.price || 0;
-        const hasDiscount   = pkg.discountedPrice && pkg.discountedPrice < pkg.price;
-        const accomType     = (pkg.hotelName || '').toLowerCase().includes('cruise') ? 'cruise' : 'hotel';
-        const priceRange    = price >= 20000 ? 'luxury' : 'budget';
+        const durationDays = pkg.durationDays || 7;
+        const nights = pkg.nights || (durationDays - 1);
+        const price = pkg.discountedPrice || pkg.price || 0;
+        const hasDiscount = pkg.discountedPrice && pkg.discountedPrice < pkg.price;
+        const accomType = (pkg.hotelName || '').toLowerCase().includes('cruise') ? 'cruise' : 'hotel';
+        const priceRange = price >= 20000 ? 'luxury' : 'budget';
 
         // Parse daily itinerary if present
         let itineraryHtml = '';
@@ -53,10 +53,10 @@ function renderWeekPackages() {
 
         const card = document.createElement('article');
         card.className = 'card glass-card reveal-up';
-        card.dataset.pkgId    = pkg.id;
+        card.dataset.pkgId = pkg.id;
         card.dataset.duration = durationDays;
-        card.dataset.price    = priceRange;
-        card.dataset.acc      = accomType;
+        card.dataset.price = priceRange;
+        card.dataset.acc = accomType;
 
         card.innerHTML = `
             <div class="package-img-wrapper" style="aspect-ratio: 16/9; overflow: hidden; border-radius: 12px 12px 0 0;">
@@ -67,11 +67,14 @@ function renderWeekPackages() {
                 <h3>${pkg.name}</h3>
                 <p class="highlights">${pkg.description}</p>
                 ${hasDiscount
-                    ? `<p class="price">EGP ${pkg.discountedPrice.toLocaleString()} <span style="text-decoration:line-through;opacity:.6;font-size:.85em;">EGP ${pkg.price.toLocaleString()}</span></p>`
-                    : `<p class="price">EGP ${price.toLocaleString()}</p>`
-                }
+                ? `<p class="price">EGP ${pkg.discountedPrice.toLocaleString()} <span style="text-decoration:line-through;opacity:.6;font-size:.85em;">EGP ${pkg.price.toLocaleString()}</span></p>`
+                : `<p class="price">EGP ${price.toLocaleString()}</p>`
+            }
                 ${pkg.hotelName ? `<p style="font-size:.8rem;opacity:.7;margin-bottom:.5rem;"><i class="fas fa-hotel"></i> ${pkg.hotelName}</p>` : ''}
-                <button class="details-btn" data-id="${pkg.id}">View Journey Details</button>
+                <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                    <button class="details-btn" data-id="${pkg.id}" data-tier="standard" style="flex: 1; padding: 0.5rem; background: var(--surface); color: var(--text-primary); border: 1px solid var(--border);">Standard (Inc. Acc. & Transport)</button>
+                    <button class="details-btn" data-id="${pkg.id}" data-tier="deluxe" style="flex: 2; padding: 0.5rem;">Deluxe (Inc. Guide)</button>
+                </div>
                 <div class="itinerary-data" style="display:none;">${itineraryHtml}</div>
             </div>
         `;
@@ -81,9 +84,10 @@ function renderWeekPackages() {
     // Attach detail button listeners
     document.querySelectorAll('.details-btn').forEach(btn => {
         btn.addEventListener('click', function () {
-            const card  = this.closest('.card');
+            const card = this.closest('.card');
             const pkgId = card.dataset.pkgId;
-            window.location.href = `../PackageDetailsPage/package-details.html?id=${pkgId}`;
+            const tier = this.dataset.tier || 'standard';
+            window.location.href = `../PackageDetailsPage/package-details.html?id=${pkgId}&tier=${tier}`;
         });
     });
 
@@ -103,19 +107,19 @@ function renderWeekPackages() {
 // ── Filters ──────────────────────────────────────────────────────────────────
 function initFilters() {
     const durationFilter = document.getElementById('filter-duration');
-    const priceFilter    = document.getElementById('filter-price');
-    const accFilter      = document.getElementById('filter-acc');
+    const priceFilter = document.getElementById('filter-price');
+    const accFilter = document.getElementById('filter-acc');
     if (!durationFilter) return;
 
     function applyFilters() {
         const selDuration = durationFilter.value;
-        const selPrice    = priceFilter.value;
-        const selAcc      = accFilter.value;
+        const selPrice = priceFilter.value;
+        const selAcc = accFilter.value;
 
         document.querySelectorAll('.card').forEach(card => {
-            const matchDur  = selDuration === 'all' || selDuration === card.dataset.duration;
-            const matchPrice = selPrice   === 'all' || selPrice    === card.dataset.price;
-            const matchAcc  = selAcc      === 'all' || selAcc      === card.dataset.acc;
+            const matchDur = selDuration === 'all' || selDuration === card.dataset.duration;
+            const matchPrice = selPrice === 'all' || selPrice === card.dataset.price;
+            const matchAcc = selAcc === 'all' || selAcc === card.dataset.acc;
             card.style.display = (matchDur && matchPrice && matchAcc) ? '' : 'none';
         });
     }

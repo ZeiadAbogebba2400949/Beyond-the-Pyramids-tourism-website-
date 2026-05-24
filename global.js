@@ -68,7 +68,7 @@ window.PlatformErrorHandler = {
 
         if (requiredRole && userSession.role !== requiredRole && userSession.role !== 'Admin') {
             alert("Access Denied: You do not have permission to view this page.");
-            window.location.href = prefix + 'LandingPage/LandingPage.html';
+            window.location.href = prefix + 'index.html';
             return false;
         }
 
@@ -147,10 +147,95 @@ document.addEventListener('DOMContentLoaded', () => {
     
     updateAuthUI();
 
+    // ── Global Newsletter Form Validation ──────────────────────────────────
+    document.querySelectorAll('.newsletter-form').forEach(form => {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const input = form.querySelector('input[type="email"]');
+            if (input) {
+                const email = input.value.trim();
+                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailPattern.test(email)) {
+                    alert('Please enter a valid email address to join the Inner Circle.');
+                    return;
+                }
+                const btn = form.querySelector('button');
+                const oldText = btn.textContent;
+                btn.textContent = 'Subscribed!';
+                btn.style.pointerEvents = 'none';
+                btn.style.background = 'var(--color-success)';
+                setTimeout(() => {
+                    form.reset();
+                    btn.textContent = oldText;
+                    btn.style.pointerEvents = 'auto';
+                    btn.style.background = '';
+                }, 3000);
+            }
+        });
+    });
+
+    // Fill the #user-avatar circle used by dashboard-shell pages
+    // (TravellersDetails, BookingSummary, BookingDetails, etc.)
+    populateDashboardAvatar();
     
     initGlobalThemeToggle();
 });
 
+
+/**
+ * populateDashboardAvatar()
+ * Populates the #user-avatar element present in every dashboard-shell page
+ * (TravellersDetails, BookingSummary, BookingDetails, etc.) with the user's
+ * real profile photo when available, or a styled gold icon fallback.
+ * Called automatically from DOMContentLoaded in global.js.
+ */
+function populateDashboardAvatar() {
+    const avatarEl = document.getElementById('user-avatar');
+    if (!avatarEl) return; // Not a dashboard-shell page — skip
+
+    // Resolve session
+    let session = null;
+    try {
+        const s = localStorage.getItem('userSession') || sessionStorage.getItem('userSession');
+        if (s) session = JSON.parse(s);
+    } catch (e) {}
+    if (!session) return;
+
+    // Resolve full user record (same lookup chain as updateAuthUI)
+    let userRecord = null;
+    try {
+        if (window.AppStorage && window.AppStorage.getUserByEmail) {
+            userRecord = window.AppStorage.getUserByEmail(session.email);
+        }
+        if (!userRecord && window.MockData && window.MockData.users) {
+            userRecord = window.MockData.users.find(
+                u => u.email && u.email.toLowerCase() === session.email.toLowerCase()
+            ) || null;
+        }
+        if (!userRecord && window.MockData && window.MockData.accounts) {
+            const match = Object.values(window.MockData.accounts).find(
+                a => a.email === session.email
+            );
+            if (match) userRecord = match;
+        }
+    } catch (e) {}
+
+    const displayName = userRecord?.name || session.name || session.email.split('@')[0];
+    const photoUrl    = userRecord?.image || null;
+
+    if (photoUrl) {
+        avatarEl.innerHTML = `
+            <img src="${photoUrl}" alt="${displayName}"
+                style="width:100%;height:100%;object-fit:cover;border-radius:50%;"
+                onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+            <span style="display:none;align-items:center;justify-content:center;width:100%;height:100%;">
+                <i class="fas fa-user-circle" style="font-size:1.5rem;color:var(--gold-primary);"></i>
+            </span>`;
+    } else {
+        avatarEl.innerHTML = `<i class="fas fa-user-circle" style="font-size:1.5rem;color:var(--gold-primary);"></i>`;
+    }
+    avatarEl.title = displayName;
+}
 
 function initGlobalThemeToggle() {
     const themeToggle = document.getElementById('theme-toggle');
@@ -300,7 +385,7 @@ function updateAuthUI() {
                 e.stopPropagation();
                 localStorage.removeItem('userSession');
                 sessionStorage.removeItem('userSession');
-                window.location.href = `${prefix}LandingPage/LandingPage.html`;
+                window.location.href = `${prefix}index.html`;
             });
         }, 100);
     }
@@ -334,7 +419,7 @@ function updateAuthUI() {
                 e.preventDefault();
                 localStorage.removeItem('userSession');
                 sessionStorage.removeItem('userSession');
-                window.location.href = `${prefix}LandingPage/LandingPage.html`;
+                window.location.href = `${prefix}index.html`;
             });
         }, 100);
     }
@@ -347,7 +432,7 @@ function updateAuthUI() {
             sessionStorage.removeItem('userSession');
             window.location.href = link.href.includes('login.html')
                 ? link.href
-                : `${prefix}LandingPage/LandingPage.html`;
+                : `${prefix}index.html`;
         });
     });
 }

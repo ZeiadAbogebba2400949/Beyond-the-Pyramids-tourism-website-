@@ -40,12 +40,19 @@
     line-height: 1.1;
     margin-bottom: 0.5rem;
     letter-spacing: -0.02em;
-    color: var(--color-text);
+    /* Explicit dark color — not inherited from dark dashboard shell */
+    color: var(--color-text, #111);
+}
+
+/* Light mode override: ensure title is always dark on a light background */
+[data-theme="light"] .editorial-title,
+:root:not([data-theme="dark"]) .editorial-title {
+    color: #111;
 }
 
 .editorial-subtitle {
     font-size: 1rem;
-    color: var(--color-text-secondary);
+    color: var(--color-text-secondary, #555);
     font-weight: 300;
 }
 
@@ -62,7 +69,13 @@
     border-bottom: 1px solid var(--border-color);
     padding-bottom: 0.75rem;
     margin-bottom: 1.5rem;
-    color: var(--color-text);
+    /* Explicit color prevents inheriting near-white from dark shell */
+    color: var(--color-text, #111);
+}
+
+[data-theme="light"] .card-title,
+:root:not([data-theme="dark"]) .card-title {
+    color: #111;
 }
 
 .info-group {
@@ -161,6 +174,27 @@
 
 .accordion-content strong {
     color: var(--color-gold, #d4af37);
+}
+
+/* ─── Light Mode Aggressive Text Overrides ─── */
+html[data-theme="light"] .editorial-title,
+html[data-theme="light"] .editorial-subtitle,
+html[data-theme="light"] .card-title,
+html[data-theme="light"] .info-row .label,
+html[data-theme="light"] .info-row .value,
+html[data-theme="light"] .itinerary-list li,
+html[data-theme="light"] .itinerary-list li strong,
+html[data-theme="light"] .accordion-btn,
+html[data-theme="light"] .accordion-content,
+html[data-theme="light"] .concierge-box h4,
+html[data-theme="light"] .concierge-box p,
+html[data-theme="light"] .concierge-link {
+    color: #111 !important;
+}
+
+html[data-theme="light"] .info-row .label,
+html[data-theme="light"] .accordion-content strong {
+    color: var(--color-primary-dark, #b88a44) !important;
 }
 
 /* ─── The Physical Ticket / Voucher (Right Column) ─── */
@@ -376,4 +410,47 @@
 
 .concierge-link:hover {
     color: var(--color-gold, #d4af37);
+}
+
+/* ─── Print: fallback @media print (JS printVoucherOnly is primary) ─── */
+@media print {
+    /* Hide the entire app shell — sidebar, topbar, left column, etc. */
+    body > *:not(.dashboard-shell) { display: none !important; }
+    .dashboard-sidebar,
+    .dash-topbar,
+    .editorial-booking-main,
+    .concierge-box,
+    .ticket-actions,
+    .noise-overlay { display: none !important; }
+
+    /* Make the shell a plain white page */
+    .dashboard-shell,
+    .dashboard-main,
+    .dash-scroll-area,
+    .editorial-booking-container,
+    .editorial-booking-sidebar { 
+        all: unset;
+        display: block !important;
+    }
+
+    /* The voucher ticket fills the print page */
+    .voucher-ticket {
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+        box-shadow: none !important;
+        border: 2px solid #000;
+        transform: scale(1.35);
+        transform-origin: top center;
+    }
+
+    /* Hide concierge box when printing */
+    .concierge-box {
+        display: none !important;
+    }
+
+    @page {
+        size: A4 portrait;
+        margin: 1.5cm;
+    }
 }

@@ -196,17 +196,32 @@ function savePackage() {
     const id = document.getElementById('packageId').value;
     const type = document.getElementById('pkgType').value;
     const name = document.getElementById('pkgName').value.trim();
-    if (!name) return alert('Name is required');
+    const city = document.getElementById('pkgCity').value;
+    const price = parseFloat(document.getElementById('pkgPrice').value);
+    const discountedPriceRaw = document.getElementById('pkgDiscountedPrice').value.trim();
+    const discountedPrice = discountedPriceRaw !== '' ? parseFloat(discountedPriceRaw) : null;
+    const imageUrl = document.getElementById('pkgImage').value.trim();
+
+    if (!name) { alert('Package name is required.'); return; }
+    if (name.length < 3) { alert('Package name must be at least 3 characters.'); return; }
+    if (!city) { alert('Please select a city.'); return; }
+    if (isNaN(price) || price <= 0) { alert('Price must be a positive number.'); return; }
+    if (price > 1000000) { alert('Price seems unrealistically high. Please check the value.'); return; }
+    if (discountedPrice !== null) {
+        if (isNaN(discountedPrice) || discountedPrice <= 0) { alert('Discounted price must be a positive number.'); return; }
+        if (discountedPrice >= price) { alert('Discounted price must be less than the original price.'); return; }
+    }
+    if (imageUrl && !/^https?:\/\//i.test(imageUrl)) { alert('Image URL must start with http:// or https://'); return; }
 
     const pkgData = {
         id: id || 'P' + Date.now(),
         type: type,
         name: name,
-        city: document.getElementById('pkgCity').value,
+        city: city,
         description: document.getElementById('pkgDescription').value,
-        image: document.getElementById('pkgImage').value,
-        price: parseFloat(document.getElementById('pkgPrice').value),
-        discountedPrice: parseFloat(document.getElementById('pkgDiscountedPrice').value) || null,
+        image: imageUrl,
+        price: price,
+        discountedPrice: discountedPrice,
         status: document.getElementById('pkgStatus').value,
         rating: 4.5,
         reviews: 0

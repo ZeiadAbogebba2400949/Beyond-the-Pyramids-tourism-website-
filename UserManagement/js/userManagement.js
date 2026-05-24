@@ -6,7 +6,7 @@
 'use strict';
 
 let users = [];
-let editingId  = null;
+let editingId = null;
 let deletingId = null;
 
 // ─── Data Loading ─────────────────────────────────────────────────────────────
@@ -42,15 +42,15 @@ function loadAllUsers() {
 
 function updateStats() {
     document.getElementById('totalUsersCount').textContent = users.length;
-    document.getElementById('adminCount').textContent      = users.filter(u => u.role === 'admin').length;
-    document.getElementById('userCount').textContent       = users.filter(u => u.role === 'user').length;
-    document.getElementById('suspendedCount').textContent  = users.filter(u => u.status === 'suspended').length;
+    document.getElementById('adminCount').textContent = users.filter(u => u.role === 'admin').length;
+    document.getElementById('userCount').textContent = users.filter(u => u.role === 'user').length;
+    document.getElementById('suspendedCount').textContent = users.filter(u => u.status === 'suspended').length;
 }
 
 // ─── Render Table ─────────────────────────────────────────────────────────────
 
 function displayUsers() {
-    const search     = document.getElementById('searchInput').value.toLowerCase();
+    const search = document.getElementById('searchInput').value.toLowerCase();
     const roleFilter = document.getElementById('roleFilter').value;
     const statusFilter = document.getElementById('statusFilter').value;
 
@@ -60,11 +60,11 @@ function displayUsers() {
         (statusFilter === 'all' || (u.status || 'active') === statusFilter)
     );
 
-    const tbody      = document.getElementById('usersList');
+    const tbody = document.getElementById('usersList');
     const emptyState = document.getElementById('emptyState');
 
     if (filtered.length === 0) {
-        tbody.innerHTML     = '';
+        tbody.innerHTML = '';
         emptyState.style.display = 'flex';
         return;
     }
@@ -81,43 +81,43 @@ function displayUsers() {
 
         const name = u.name || u.email?.split('@')[0] || 'Unknown';
         const avatarHtml = u.image
-            ? \`<img src="\${u.image}" alt="\${name}" class="user-avatar-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">\`
+            ? `<img src="${u.image}" alt="${name}" class="user-avatar-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">`
             : '';
-        const avatarFallback = \`<div class="user-avatar-fallback" \${u.image ? 'style="display:none"' : ''}>\${name.charAt(0).toUpperCase()}</div>\`;
+        const avatarFallback = `<div class="user-avatar-fallback" ${u.image ? 'style="display:none"' : ''}>${name.charAt(0).toUpperCase()}</div>`;
 
-        return \`
+        return `
         <tr>
             <td>
                 <div class="user-cell">
                     <div class="user-avatar">
-                        \${avatarHtml}
-                        \${avatarFallback}
+                        ${avatarHtml}
+                        ${avatarFallback}
                     </div>
                     <div>
-                        <div class="user-name">\${name}</div>
-                        <div class="user-id">\${u.id}</div>
+                        <div class="user-name">${name}</div>
+                        <div class="user-id">${u.id}</div>
                     </div>
                 </div>
             </td>
-            <td>\${u.email}</td>
-            <td><span class="badge-role \${roleClass}">\${roleLabel}</span></td>
-            <td>\${u.nationality || '—'}</td>
-            <td>\${u.phone || '—'}</td>
-            <td>\${u.joinDate || u.timestamp?.substring(0,10) || '—'}</td>
-            <td>\${statusBadge}</td>
+            <td>${u.email}</td>
+            <td><span class="badge-role ${roleClass}">${roleLabel}</span></td>
+            <td>${u.nationality || '—'}</td>
+            <td>${u.phone || '—'}</td>
+            <td>${u.joinDate || u.timestamp?.substring(0, 10) || '—'}</td>
+            <td>${statusBadge}</td>
             <td>
                 <div class="actions-cell">
-                    <button class="btn-action-edit" onclick="openEditModal('\${u.id}')" title="Edit"><i class="fas fa-edit"></i></button>
-                    <button class="btn-action-delete" onclick="openDeleteModal('\${u.id}', '\${name.replace(/'/g, "\\'")}')" title="Delete"><i class="fas fa-trash"></i></button>
+                    <button class="btn-action-edit" onclick="openEditModal('${u.id}')" title="Edit"><i class="fas fa-edit"></i></button>
+                    <button class="btn-action-delete" onclick="openDeleteModal('${u.id}', '${name.replace(/'/g, "\\'")}')" title="Delete"><i class="fas fa-trash"></i></button>
                 </div>
             </td>
-        </tr>\`;
+        </tr>`;
     }).join('');
 }
 
 // ─── Modals ───────────────────────────────────────────────────────────────────
 
-function openModal(id)  { document.getElementById(id).classList.add('open');    }
+function openModal(id) { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
 function openAddModal() {
@@ -134,15 +134,15 @@ function openEditModal(id) {
     if (!u) return;
     editingId = id;
     document.getElementById('modalTitle').textContent = 'Edit User';
-    document.getElementById('userId').value          = u.id;
-    document.getElementById('userName').value         = u.name || '';
-    document.getElementById('userEmail').value        = u.email || '';
-    document.getElementById('userPhone').value        = u.phone || '';
-    document.getElementById('userNationality').value  = u.nationality || '';
-    document.getElementById('userRole').value         = u.role || 'user';
-    document.getElementById('userStatus').value       = u.status || 'active';
-    document.getElementById('userJoinDate').value     = u.joinDate || u.timestamp?.substring(0,10) || '';
-    document.getElementById('userPassword').value     = u.password || '';
+    document.getElementById('userId').value = u.id;
+    document.getElementById('userName').value = u.name || '';
+    document.getElementById('userEmail').value = u.email || '';
+    document.getElementById('userPhone').value = u.phone || '';
+    document.getElementById('userNationality').value = u.nationality || '';
+    document.getElementById('userRole').value = u.role || 'user';
+    document.getElementById('userStatus').value = u.status || 'active';
+    document.getElementById('userJoinDate').value = u.joinDate || u.timestamp?.substring(0, 10) || '';
+    document.getElementById('userPassword').value = u.password || '';
     openModal('userModal');
 }
 
@@ -155,18 +155,80 @@ function openDeleteModal(id, name) {
 // ─── Save User ────────────────────────────────────────────────────────────────
 
 function saveUser() {
-    const name        = document.getElementById('userName').value.trim();
-    const email       = document.getElementById('userEmail').value.trim();
-    const phone       = document.getElementById('userPhone').value.trim();
+    const name = document.getElementById('userName').value.trim();
+    const email = document.getElementById('userEmail').value.trim();
+    const phone = document.getElementById('userPhone').value.trim();
     const nationality = document.getElementById('userNationality').value.trim();
-    const role        = document.getElementById('userRole').value;
-    const status      = document.getElementById('userStatus').value;
-    const joinDate    = document.getElementById('userJoinDate').value;
-    const password    = document.getElementById('userPassword').value.trim();
+    const role = document.getElementById('userRole').value;
+    const status = document.getElementById('userStatus').value;
+    const joinDate = document.getElementById('userJoinDate').value;
+    const password = document.getElementById('userPassword').value.trim();
 
     if (!name || !email || !role) {
         alert('Name, Email, and Role are required.');
         return;
+    }
+
+    // Full field validations
+    if (name.trim().length < 2) {
+        alert('Full name must be at least 2 characters.');
+        return;
+    }
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+        alert('Please enter a valid email address.');
+        return;
+    }
+    if (phone && phone.replace(/\D/g, '').length < 7) {
+        alert('Phone number must have at least 7 digits if provided.');
+        return;
+    }
+    if (nationality && nationality.length < 2) {
+        alert('Nationality must be at least 2 characters.');
+        return;
+    }
+    const joinDate = document.getElementById('userJoinDate').value;
+    if (joinDate) {
+        const selected = new Date(joinDate);
+        const today = new Date();
+        today.setHours(23, 59, 59, 999);
+        if (selected > today) {
+            alert('Join date cannot be in the future.');
+            return;
+        }
+    }
+    const password = document.getElementById('userPassword').value.trim();
+    if (password && password.length < 6) {
+        alert('Password must be at least 6 characters if provided.');
+        return;
+    }
+
+    // RBAC Checks for role changes
+    if (editingId) {
+        const originalUser = users.find(u => u.id === editingId);
+        if (originalUser && originalUser.role !== role) {
+            let session = null;
+            if (window.AppStorage && window.AppStorage.getUserSession) {
+                session = window.AppStorage.getUserSession();
+            } else {
+                const s = localStorage.getItem('userSession') || sessionStorage.getItem('userSession');
+                if (s) session = JSON.parse(s);
+            }
+
+            if (session) {
+                const isSelf = session.email.toLowerCase() === originalUser.email.toLowerCase();
+                if (!isSelf) {
+                    if (session.role === 'admin' && originalUser.role === 'admin') {
+                        alert("Access Denied: An admin cannot change the role of another admin.");
+                        return;
+                    }
+                    if (session.role === 'user' && originalUser.role === 'user') {
+                        alert("Access Denied: A user cannot change the role of another user.");
+                        return;
+                    }
+                }
+            }
+        }
     }
 
     let updatedUser = null;
@@ -211,7 +273,7 @@ function saveUser() {
 
 function deleteUser() {
     if (!deletingId) return;
-    
+
     const u = users.find(x => x.id === deletingId);
     if (u && window.AppStorage) {
         let existingLocal = window.AppStorage.getRegisteredUsers();
@@ -220,7 +282,7 @@ function deleteUser() {
     }
 
     users = users.filter(x => x.id !== deletingId);
-    
+
     closeModal('deleteModal');
     updateStats();
     displayUsers();
@@ -234,20 +296,20 @@ function init() {
     updateStats();
     displayUsers();
 
-    document.getElementById('addUserBtn').onclick    = openAddModal;
-    document.getElementById('saveUserBtn').onclick   = saveUser;
+    document.getElementById('addUserBtn').onclick = openAddModal;
+    document.getElementById('saveUserBtn').onclick = saveUser;
     document.getElementById('closeModalBtn').onclick = () => closeModal('userModal');
-    document.getElementById('cancelModalBtn').onclick= () => closeModal('userModal');
-    document.getElementById('cancelDeleteBtn').onclick= () => closeModal('deleteModal');
+    document.getElementById('cancelModalBtn').onclick = () => closeModal('userModal');
+    document.getElementById('cancelDeleteBtn').onclick = () => closeModal('deleteModal');
     document.getElementById('confirmDeleteBtn').onclick = deleteUser;
 
-    document.getElementById('searchInput').addEventListener('input',   displayUsers);
-    document.getElementById('roleFilter').addEventListener('change',   displayUsers);
+    document.getElementById('searchInput').addEventListener('input', displayUsers);
+    document.getElementById('roleFilter').addEventListener('change', displayUsers);
     document.getElementById('statusFilter').addEventListener('change', displayUsers);
 }
 
 // Expose for inline onclick handlers
-window.openEditModal   = openEditModal;
+window.openEditModal = openEditModal;
 window.openDeleteModal = openDeleteModal;
 
 document.addEventListener('DOMContentLoaded', init);
