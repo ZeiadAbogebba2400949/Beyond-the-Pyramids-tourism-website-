@@ -20,7 +20,7 @@
         <aside class="dashboard-sidebar" id="sidebar">
             <div class="sidebar-brand">
                 <a href="../index.html">
-                    <img src="../WebsiteLogo.png" alt="Beyond the Pyramids">
+                    <img src="../WebsiteBanner.png" alt="Beyond the Pyramids">
                 </a>
             </div>
 
@@ -32,6 +32,7 @@
                         <li><a href="../DayPackages/dayPackages.html"><i class="fas fa-sun"></i> Day Packages</a></li>
                         <li><a href="../WeeklyPackagePage/week-packages.html"><i class="fas fa-calendar-week"></i> Week Packages</a></li>
                         <li><a href="../SingleLocationPage/SingleLocation.html"><i class="fas fa-location-dot"></i> Single Locations</a></li>
+                        <li><a href="../CustomTripBuilderPage/CustomTripBuilderPage.html"><i class="fas fa-compass"></i> Trip Architect</a></li>
                     </ul>
                 </div>
 
@@ -39,7 +40,6 @@
                     <span class="group-label">Personal Desk</span>
                     <ul>
                         <li><a href="../UserDashboardPage/dashboard.html"><i class="fas fa-columns"></i> Dashboard</a></li>
-                        <li><a href="../CustomTripBuilderPage/CustomTripBuilderPage.html"><i class="fas fa-compass"></i> Trip Architect</a></li>
                         <li><a href="../myBookings/myBookings.html"><i class="fas fa-suitcase-rolling"></i> My Journeys</a></li>
                         <li><a href="../UserProfilePage/UserProfile.html"><i class="fas fa-user-circle"></i> Profile Settings</a></li>
                     </ul>
@@ -50,7 +50,8 @@
                     <ul>
                         <li><a href="../FAQpage/FAQpage.html"><i class="fas fa-question-circle"></i> Help & FAQ</a></li>
 
-                        <li><a href="../CustomerReviews/writing-reviews.html" class="active"><i class="fas fa-star"></i> Reviews</a></li>
+                        <li><a href="../ContactPage/contact.html"><i class="fas fa-envelope"></i> Contact Us</a></li>
+                        <li class="active"><a href="../CustomerReviews/writing-reviews.html"><i class="fas fa-star"></i> Reviews</a></li>
                     </ul>
                 </div>
             </nav>
@@ -59,113 +60,125 @@
                 <button id="theme-toggle" class="theme-toggle-btn">
                     <i class="fas fa-moon"></i> <span>Dark Mode</span>
                 </button>
-                <a href="../index.html" class="logout-link">
+                <a href="../LoginPage/login.html" class="logout-link">
                     <i class="fas fa-sign-out-alt"></i> Logout
                 </a>
             </div>
         </aside>
 
-        
         <main class="dashboard-main">
-            <header class="dashboard-header reveal-up">
-                <div class="header-welcome">
-                    <h1>Share Your <span class="text-gold">Legacy</span></h1>
-                    <p class="header-subtitle">Your insights preserve the integrity of Egypt's travel heritage.</p>
+            <header class="dash-topbar" id="dash-topbar">
+                <div class="topbar-left">
+                    <div class="greeting-stack">
+                        <span class="greeting-label">Concierge Feedback</span>
+                        <h1 class="greeting-name">Share Your Review</h1>
+                    </div>
                 </div>
-
-                <div class="header-actions">
-                    <div class="user-profile-mini">
-                        <img src="https://ui-avatars.com/api/?name=Maryam+Ayman&background=C5A059&color=fff" alt="User Avatar">
-                        <span id="user-name" style="display: none;">Maryam Ayman</span>
+                <div class="topbar-right">
+                    <div class="account-chip" data-account-chip hidden>
+                        <div class="account-chip__avatar" id="reviewer-avatar" data-account-avatar><i class="fas fa-user"></i></div>
+                        <div>
+                            <span class="account-chip__label">Signed in as</span>
+                            <strong class="account-chip__name" id="user-name" data-account-name>Traveler</strong>
+                        </div>
                     </div>
                 </div>
             </header>
 
-            
-            <div class="review-workflow-container">
-                
-                
-                <section class="review-type-section glass-card reveal-up">
-                    <div class="section-header">
-                        <h2>Select <span class="text-gold">Category</span></h2>
+            <div class="dash-scroll-area">
+                <section class="review-intro reveal-up">
+                    <div>
+                        <span class="greeting-label">Traveler Voice</span>
+                        <h2>Keep the experience honest, useful, and beautifully specific.</h2>
+                        <p>Select the package category you experienced, choose the exact package, then leave a focused review for future travelers.</p>
                     </div>
-                    <div class="review-options-grid">
-                        <label class="selection-tile">
-                            <input type="radio" name="reviewType" value="guide">
-                            <div class="tile-content">
-                                <i class="fas fa-user-tie"></i>
-                                <span>Tourist Guide</span>
-                            </div>
-                        </label>
+                </section>
 
-                        <label class="selection-tile">
-                            <input type="radio" name="reviewType" value="hotel">
-                            <div class="tile-content">
-                                <i class="fas fa-hotel"></i>
-                                <span>Luxury Hotel</span>
-                            </div>
-                        </label>
-
-                        <label class="selection-tile">
-                            <input type="radio" name="reviewType" value="transport">
-                            <div class="tile-content">
-                                <i class="fas fa-ship"></i>
-                                <span>Transportation</span>
-                            </div>
-                        </label>
-                    </div>
-
-                    <div class="select-dropdown-container reveal-up">
-                        <h3>Assign to: <span id="item-label" class="text-gold">Guide</span></h3>
-                        <div class="premium-select-wrapper">
-                            <select id="item-select">
-                                <option value="">-- Choose from our Elite Roster --</option>
-                                <option value="guide1">Ahmed Hassan - English, French, German</option>
-                                <option value="guide2">Fatima Farouk - English, Spanish, Russian, Chinese</option>
-                                <option value="guide3">Mohamed Ali - English, Italian, German</option>
-                            </select>
+                <div class="review-workflow-container">
+                    <section class="review-panel reveal-up">
+                        <div class="section-header">
+                            <span class="step-label">Step 1</span>
+                            <h2>Select Package</h2>
                         </div>
-                    </div>
-                </section>
+                        <div class="review-options-grid">
+                            <label class="selection-tile">
+                                <input type="radio" name="packageType" value="day">
+                                <div class="tile-content">
+                                    <i class="fas fa-sun"></i>
+                                    <span>Day Package</span>
+                                </div>
+                            </label>
 
-                
-                <section class="review-content-section glass-card reveal-up">
-                    <div class="rating-architecture">
-                        <h3>Overall <span class="text-gold">Rating</span></h3>
-                        <div class="stars-glamour">
-                            <i class="far fa-star" data-rating="1"></i>
-                            <i class="far fa-star" data-rating="2"></i>
-                            <i class="far fa-star" data-rating="3"></i>
-                            <i class="far fa-star" data-rating="4"></i>
-                            <i class="far fa-star" data-rating="5"></i>
+                            <label class="selection-tile">
+                                <input type="radio" name="packageType" value="week">
+                                <div class="tile-content">
+                                    <i class="fas fa-calendar-week"></i>
+                                    <span>Week Package</span>
+                                </div>
+                            </label>
+
+                            <label class="selection-tile">
+                                <input type="radio" name="packageType" value="single">
+                                <div class="tile-content">
+                                    <i class="fas fa-location-dot"></i>
+                                    <span>Single Location</span>
+                                </div>
+                            </label>
                         </div>
-                    </div>
 
-                    <div class="text-review-area">
-                        <h3>Detailed <span class="text-gold">Testimonial</span></h3>
-                        <textarea id="review-text" rows="6"
-                            placeholder="Describe your journey..."></textarea>
-                    </div>
-                </section>
+                        <div class="select-dropdown-container reveal-up">
+                            <label for="package-select">Specific <span id="package-label">package</span></label>
+                            <div class="premium-select-wrapper">
+                                <select id="package-select">
+                                    <option value="">Choose a package type first</option>
+                                </select>
+                            </div>
+                        </div>
+                    </section>
 
-                
-                <section class="photo-upload-section glass-card reveal-up">
-                    <div class="section-header">
-                        <h2>Visual <span class="text-gold">Gallery</span></h2>
-                    </div>
-                    <div class="upload-area-glamour" id="upload-area">
-                        <i class="fas fa-camera-retro"></i>
-                        <p>Upload Cinematic Captures</p>
-                        <input type="file" id="photo-input" accept="image/jpeg, image/png" style="display: none;" multiple>
-                    </div>
-                    <div class="photo-preview-grid" id="photo-preview"></div>
-                </section>
+                    <section class="review-panel reveal-up">
+                        <div class="section-header">
+                            <span class="step-label">Step 2</span>
+                            <h2>Rate Experience</h2>
+                        </div>
+                        <div class="rating-architecture">
+                            <h3>Overall rating</h3>
+                            <div class="stars-glamour">
+                                <i class="far fa-star" data-rating="1"></i>
+                                <i class="far fa-star" data-rating="2"></i>
+                                <i class="far fa-star" data-rating="3"></i>
+                                <i class="far fa-star" data-rating="4"></i>
+                                <i class="far fa-star" data-rating="5"></i>
+                            </div>
+                        </div>
 
-                
-                <div class="submit-actions reveal-up">
-                    <button id="submit-review" class="btn btn--primary btn--large">Record My Legacy</button>
+                        <div class="text-review-area">
+                            <label for="review-text">Detailed review</label>
+                            <textarea id="review-text" rows="6"
+                                placeholder="What stood out, what went smoothly, and what should improve?"></textarea>
+                        </div>
+                    </section>
+
+                    <section class="review-panel reveal-up">
+                        <div class="section-header">
+                            <span class="step-label">Optional</span>
+                            <h2>Add Photos</h2>
+                        </div>
+                        <div class="upload-area-glamour" id="upload-area">
+                            <i class="fas fa-camera-retro"></i>
+                            <p>Upload JPG or PNG photos</p>
+                            <input type="file" id="photo-input" accept="image/jpeg, image/png" style="display: none;" multiple>
+                        </div>
+                        <div class="photo-preview-grid" id="photo-preview"></div>
+                    </section>
+
+                    <div class="submit-actions reveal-up">
+                        <div id="form-feedback" class="form-feedback" aria-live="polite"></div>
+                        <button id="submit-review" class="btn btn--primary btn--large">
+                            <i class="fas fa-paper-plane"></i> Submit Review
+                        </button>
+                    </div>
                 </div>
-
             </div>
         </main>
     </div>
@@ -174,16 +187,16 @@
     <div id="success-modal" class="modal-glamour">
         <div class="modal-content glass-card reveal-up">
             <div class="success-icon"><i class="fas fa-check-circle"></i></div>
-            <h2>Legacy <span class="text-gold">Recorded</span></h2>
-            <p>Your insights have been added to our archive.</p>
-            <button class="btn btn--primary" onclick="closeModal()">Return to Sanctuary</button>
+            <h2>Review Submitted</h2>
+            <p>Your feedback has been added to your dashboard.</p>
+            <button class="btn btn--primary" onclick="closeModal()">Return to Dashboard</button>
         </div>
     </div>
 
-    <script src="js/writing-reviews.js"></script>
     <script src="../mockData.js"></script>
     <script src="../storage.js"></script>
     <script src="../global.js"></script>
+    <script src="js/writing-reviews.js"></script>
 </body>
 
 </html>

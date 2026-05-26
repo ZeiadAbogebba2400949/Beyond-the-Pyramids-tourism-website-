@@ -32,10 +32,13 @@ var currentStep = 0;
 var selectedDests = [];
 var selectedTransport = "";
 var selectedGuide = "";
-
-
+var travelerCount = 1;
 
 document.addEventListener("DOMContentLoaded", function () {
+    if (window.LoginGate && !LoginGate.requireLogin()) {
+        return;
+    }
+
     buildStep1();
     buildStep3();
 
@@ -47,6 +50,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("trip-end").addEventListener("change", onDateChange);
     document.getElementById("acc-type").addEventListener("change", recalcPrice);
     document.getElementById("acc-room").addEventListener("change", recalcPrice);
+    document.getElementById("traveler-count").addEventListener("input", onTravelerCountChange);
 
     showStep(0);
 });
@@ -65,13 +69,13 @@ function showStep(n) {
         if (i === n) items[i].classList.add("active");
         else if (i < n) items[i].classList.add("completed");
     }
-    if (n === 3) buildReview();
+    if (n === 4) buildReview();
     recalcPrice();
 }
 
 function nextStep() {
     if (!validateStep(currentStep)) return;
-    if (currentStep < 3) showStep(currentStep + 1);
+    if (currentStep < 4) showStep(currentStep + 1);
 }
 
 function prevStep() {
@@ -95,7 +99,14 @@ function validateStep(step) {
         if (d < 1) { showError("date-error", "End date must be after start date."); return false; }
         if (d > 14) { showError("date-error", "Maximum trip duration is 14 days."); return false; }
     }
-    if (step === 3 && !document.getElementById("terms-check").checked) {
+    if (step === 3) {
+        var count = getTravelerCount();
+        if (count < 1 || count > 15) {
+            showError("traveler-error", "Please choose between 1 and 15 travelers.");
+            return false;
+        }
+    }
+    if (step === 4 && !document.getElementById("terms-check").checked) {
         showError("review-error", "Please accept the terms and conditions.");
         return false;
     }
@@ -166,6 +177,18 @@ function getDuration() {
     return diff > 0 ? diff : 0;
 }
 
+function onTravelerCountChange() {
+    travelerCount = getTravelerCount();
+    recalcPrice();
+}
+
+function getTravelerCount() {
+    var input = document.getElementById("traveler-count");
+    var count = parseInt(input?.value, 10);
+    if (isNaN(count)) return 1;
+    return Math.max(1, Math.min(15, count));
+}
+
 
 
 function buildStep3() {
@@ -206,9 +229,53 @@ function recalcPrice() {
         accTotal = ppn * rm * nights;
     }
 
+    travelerCount = getTravelerCount();
+    var perTravelerTotal = destTotal + Math.round(accTotal);
+    var tripTotal = perTravelerTotal * travelerCount;
+
     document.getElementById("price-dest").textContent = "EGP " + destTotal;
     document.getElementById("price-acc").textContent = "EGP " + Math.round(accTotal);
-    document.getElementById("price-total").textContent = "EGP " + (destTotal + Math.round(accTotal));
+    document.getElementById("price-travelers").textContent = "x " + travelerCount;
+    document.getElementById("price-total").textContent = "EGP " + tripTotal;
+    saveDraftProgress(tripTotal);
+}
+
+function saveDraftProgress(total) {
+    if (!window.AppStorage || !AppStorage.setDraft) return;
+
+    var start = document.getElementById("trip-start")?.value || "";
+    var end = document.getElementById("trip-end")?.value || "";
+    var accType = document.getElementById("acc-type")?.value || "";
+    var roomType = document.getElementById("acc-room")?.value || "";
+    var hasMeaningfulInput = selectedDests.length > 0 || start || end || accType || roomType || getTravelerCount() > 1 || selectedTransport || selectedGuide;
+
+    if (!hasMeaningfulInput) return;
+
+    var destNames = selectedDests.map(function (id) {
+        var d = DESTINATIONS.find(function (dest) { return dest.id === id; });
+        return d ? d.name : id;
+    });
+
+    var completedPieces = 0;
+    if (selectedDests.length > 0) completedPieces++;
+    if (start && end) completedPieces++;
+    if (accType) completedPieces++;
+    if (getTravelerCount() > 1 || currentStep >= 3) completedPieces++;
+    if (currentStep >= 4) completedPieces++;
+
+    AppStorage.setDraft({
+        title: "Custom Architect Journey",
+        packageName: destNames.length ? destNames.join(", ") : "Custom Architect Journey",
+        destinations: destNames,
+        startDate: start,
+        endDate: end,
+        accommodation: accType,
+        roomType: roomType,
+        travelers: getTravelerCount(),
+        totalPrice: total,
+        progress: Math.max(20, Math.min(95, completedPieces * 20)),
+        updatedAt: new Date().toISOString()
+    });
 }
 
 
@@ -226,6 +293,9 @@ function buildReview() {
     h += "<h3>Dates</h3>";
     h += "<p>" + (document.getElementById("trip-start").value || "—") + " to " + (document.getElementById("trip-end").value || "—") + " (" + getDuration() + " days)</p>";
 
+    h += "<h3>Travelers</h3>";
+    h += "<p>" + getTravelerCount() + " " + (getTravelerCount() > 1 ? "travelers" : "traveler") + "</p>";
+
     h += "<h3>Accommodation</h3>";
     var at = document.getElementById("acc-type").value;
     if (at) {
@@ -240,11 +310,13 @@ function buildReview() {
 
 
 function submitTrip() {
-    if (!validateStep(3)) return;
+    if (!validateStep(4)) return;
 
     // Construct the booking object for the purchase flow
     const totalDisplay = document.getElementById("price-total").textContent;
     const total = parseInt(totalDisplay.replace("EGP ", "").replace(/,/g, "")) || 0;
+    const travelers = getTravelerCount();
+    const basePrice = Math.round(total / travelers);
     const start = document.getElementById("trip-start").value;
     const end = document.getElementById("trip-end").value;
     
@@ -259,12 +331,15 @@ function submitTrip() {
         location: destNames,
         image: "../imagesUsed/custom-trip-hero.jpg", // Placeholder for custom architecture
         date: start + " to " + end,
-        travelers: 1, 
+        travelers: travelers,
         tier: "Architect Custom",
         totalPrice: total,
-        basePrice: total,
+        basePrice: basePrice,
         timestamp: new Date().toISOString(),
-        isCustom: true
+        isCustom: true,
+        type: "custom",
+        tripType: "Custom Trip",
+        packageType: "custom"
     };
 
     // Save to localStorage so Booking Summary can pick it up
@@ -274,6 +349,9 @@ function submitTrip() {
         AppStorage.removeItem("btp_draft");
     }
     
-    // Redirect to Summary
-    window.location.href = "../BookingSummaryPage/BookingSummary.html";
+    if (travelers > 1) {
+        window.location.href = "../TravellersDetails/TravellersDetails.html";
+    } else {
+        window.location.href = "../BookingSummaryPage/BookingSummary.html";
+    }
 }

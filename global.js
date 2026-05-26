@@ -6,6 +6,248 @@
     document.documentElement.setAttribute('data-theme', savedTheme);
 })();
 
+window.AccountChip = {
+    getSession: function () {
+        try {
+            if (window.AppStorage && AppStorage.getUserSession) {
+                const session = AppStorage.getUserSession();
+                if (session && session.email) return session;
+            }
+
+            const raw = localStorage.getItem('userSession') || sessionStorage.getItem('userSession');
+            return raw ? JSON.parse(raw) : null;
+        } catch (e) {
+            return null;
+        }
+    },
+
+    getUserRecord: function (session) {
+        if (!session || !session.email) return null;
+        try {
+            if (window.AppStorage && AppStorage.getUserByEmail) {
+                return AppStorage.getUserByEmail(session.email);
+            }
+        } catch (e) {}
+        return null;
+    },
+
+    init: function () {
+        const chips = document.querySelectorAll('[data-account-chip]');
+        if (!chips.length) return;
+
+        const session = this.getSession();
+        if (!session || !session.email) return;
+
+        const userRecord = this.getUserRecord(session);
+        const name = userRecord?.name || session.name || session.email.split('@')[0] || 'Traveler';
+        const image = userRecord?.image || session.image || '';
+
+        chips.forEach(chip => {
+            const nameEl = chip.querySelector('[data-account-name]');
+            const avatarEl = chip.querySelector('[data-account-avatar]');
+
+            if (nameEl) nameEl.textContent = name;
+
+            if (avatarEl) {
+                avatarEl.innerHTML = '';
+                if (image) {
+                    const img = document.createElement('img');
+                    img.src = image;
+                    img.alt = name;
+                    avatarEl.appendChild(img);
+                } else {
+                    const icon = document.createElement('i');
+                    icon.className = 'fas fa-user';
+                    avatarEl.appendChild(icon);
+                }
+            }
+
+            chip.hidden = false;
+        });
+    }
+};
+
+document.addEventListener('DOMContentLoaded', function () {
+    if (window.AccountChip) window.AccountChip.init();
+});
+
+
+window.LoginGate = {
+    getPathPrefix: function () {
+        const path = window.location.pathname;
+        const isRoot = path.endsWith('/index.html') || path.endsWith('/') ||
+            path.endsWith('Beyond-the-Pyramids-tourism-website-') ||
+            path.includes('LandingPage');
+        return isRoot ? './' : '../';
+    },
+
+    isLoggedIn: function () {
+        try {
+            if (window.AppStorage && AppStorage.getUserSession) {
+                const session = AppStorage.getUserSession();
+                if (session && session.email) return true;
+            }
+            if (window.AppStorage && AppStorage.isLoggedIn && AppStorage.isLoggedIn()) {
+                const user = AppStorage.getCurrentUser && AppStorage.getCurrentUser();
+                if (user && (user.email || user.username)) return true;
+            }
+            const raw = localStorage.getItem('userSession') || sessionStorage.getItem('userSession');
+            if (raw) {
+                const parsed = JSON.parse(raw);
+                if (parsed && parsed.email) return true;
+            }
+        } catch (e) { /* ignore */ }
+        return false;
+    },
+
+    getMessageForPage: function () {
+        const p = window.location.pathname.toLowerCase();
+        if (p.includes('dashboard')) return 'You must be logged in to view the dashboard.';
+        if (p.includes('mybookings')) return 'You must be logged in to view your journeys.';
+        if (p.includes('userprofile')) return 'You must be logged in to view profile settings.';
+        if (p.includes('writing-reviews') || p.includes('customerreviews')) {
+            return 'You must be logged in to write reviews.';
+        }
+        if (p.includes('customtripbuilder')) {
+            return 'You must be logged in to use the Custom Trip Builder.';
+        }
+        return 'You must be logged in to view this page.';
+    },
+
+    ensureModal: function () {
+        if (document.getElementById('login-required-modal')) return;
+
+        const prefix = this.getPathPrefix();
+        const modal = document.createElement('div');
+        modal.id = 'login-required-modal';
+        modal.className = 'modal-overlay hidden';
+        modal.setAttribute('role', 'dialog');
+        modal.setAttribute('aria-modal', 'true');
+        modal.setAttribute('aria-labelledby', 'login-modal-title');
+        modal.innerHTML = `
+            <div class="modal-content login-required-modal">
+                <div class="modal-header">
+                    <h2 id="login-modal-title"><i class="fas fa-lock"></i> Login Required</h2>
+                </div>
+                <p id="login-required-message" class="login-required-message"></p>
+                <div class="modal-actions">
+                    <button type="button" id="login-gate-go-back-btn" class="btn btn--outline">Go Back</button>
+                    <a href="${prefix}LoginPage/login.html" id="login-gate-login-btn" class="btn btn--primary">Log In</a>
+                </div>
+            </div>`;
+        document.body.appendChild(modal);
+
+        const self = this;
+        document.getElementById('login-gate-go-back-btn').addEventListener('click', (e) => {
+            e.preventDefault();
+            self.hide();
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                window.location.href = prefix + 'index.html';
+            }
+        });
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) self.hide();
+        });
+    },
+
+    hide: function () {
+        const modal = document.getElementById('login-required-modal');
+        if (modal) {
+            modal.classList.add('hidden');
+            modal.style.display = 'none';
+        }
+        document.body.style.overflow = '';
+        document.documentElement.style.overflow = '';
+        const shell = document.querySelector('.page-shell, .dashboard-shell');
+        if (shell) shell.removeAttribute('aria-hidden');
+    },
+
+    show: function (options) {
+        const opts = options || {};
+        const message = opts.message || this.getMessageForPage();
+        this.ensureModal();
+
+        const msgEl = document.getElementById('login-required-message');
+        if (msgEl) msgEl.textContent = message;
+
+        const loginBtn = document.getElementById('login-gate-login-btn');
+        if (loginBtn) loginBtn.href = this.getPathPrefix() + 'LoginPage/login.html';
+
+        const modal = document.getElementById('login-required-modal');
+        if (modal) {
+            modal.classList.remove('hidden');
+            modal.style.display = 'flex';
+            modal.style.cssText = [
+                'position:fixed',
+                'inset:0',
+                'z-index:10000',
+                'display:flex',
+                'align-items:center',
+                'justify-content:center',
+                'background:rgba(0,0,0,0.6)',
+                'backdrop-filter:blur(12px)'
+            ].join(';');
+        }
+
+        const shell = document.querySelector('.page-shell, .dashboard-shell');
+        if (shell) shell.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = 'hidden';
+    },
+
+    requireLogin: function (options) {
+        if (this.isLoggedIn()) return true;
+        this.show(options);
+        return false;
+    },
+
+    updateSidebarAuth: function () {
+        const loggedIn = this.isLoggedIn();
+        document.querySelectorAll('.dashboard-sidebar .logout-link, .page-sidebar .logout-link').forEach(link => {
+            link.style.display = loggedIn ? '' : 'none';
+        });
+    },
+
+    getProtectedSegments: function () {
+        return [
+            { segment: 'dashboard.html', message: 'You must be logged in to view the dashboard.' },
+            { segment: 'myBookings.html', message: 'You must be logged in to view your journeys.' },
+            { segment: 'UserProfile.html', message: 'You must be logged in to view profile settings.' },
+            { segment: 'writing-reviews.html', message: 'You must be logged in to write reviews.' },
+            { segment: 'CustomTripBuilderPage.html', message: 'You must be logged in to use the Custom Trip Builder.' }
+        ];
+    },
+
+    guardProtectedNavLinks: function () {
+        if (this.isLoggedIn()) return;
+
+        const protectedSegments = this.getProtectedSegments();
+        const selector = [
+            '.dashboard-sidebar a[href]',
+            '.page-sidebar a[href]',
+            '.navbar .nav-menu a[href]'
+        ].join(', ');
+
+        document.querySelectorAll(selector).forEach(anchor => {
+            const href = anchor.getAttribute('href') || '';
+            const match = protectedSegments.find(item => href.includes(item.segment));
+            if (!match) return;
+
+            anchor.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.show({ message: match.message });
+            });
+        });
+    },
+
+    /** @deprecated use guardProtectedNavLinks */
+    guardPersonalDeskLinks: function () {
+        this.guardProtectedNavLinks();
+    }
+};
+
 
 window.PlatformErrorHandler = {
     
@@ -60,13 +302,21 @@ window.PlatformErrorHandler = {
         const isRoot = path.endsWith('/') || path.includes('LandingPage');
         const prefix = isRoot ? './' : '../';
 
-        if (!userSession) {
-            alert("You must be logged in to view this page.");
-            window.location.href = prefix + 'LoginPage/login.html';
+        if (!userSession || !userSession.email) {
+            if (window.LoginGate) {
+                LoginGate.show();
+            } else {
+                alert("You must be logged in to view this page.");
+                window.location.href = prefix + 'LoginPage/login.html';
+            }
             return false;
         }
 
-        if (requiredRole && userSession.role !== requiredRole && userSession.role !== 'Admin') {
+        const currentRole = String(userSession.role || '').toLowerCase();
+        const neededRole = String(requiredRole || '').toLowerCase();
+        const isAdmin = currentRole === 'admin';
+
+        if (requiredRole && currentRole !== neededRole && !isAdmin) {
             alert("Access Denied: You do not have permission to view this page.");
             window.location.href = prefix + 'index.html';
             return false;
@@ -90,6 +340,10 @@ window.onerror = function (message, source, lineno, colno, error) {
     
     
 };
+
+window.addEventListener('pageshow', () => {
+    if (window.LoginGate) LoginGate.hide();
+});
 
 document.addEventListener('DOMContentLoaded', () => {
     
@@ -145,6 +399,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     
+    if (window.LoginGate) {
+        LoginGate.hide();
+        LoginGate.updateSidebarAuth();
+        LoginGate.guardProtectedNavLinks();
+    }
     updateAuthUI();
 
     // ── Global Newsletter Form Validation ──────────────────────────────────
@@ -239,17 +498,32 @@ function populateDashboardAvatar() {
 
 function initGlobalThemeToggle() {
     const themeToggle = document.getElementById('theme-toggle');
-    if (!themeToggle) return;
+    if (!themeToggle || themeToggle.dataset.themeBound === 'true') return;
+    themeToggle.dataset.themeBound = 'true';
 
     function applyThemeToUI(theme) {
         document.documentElement.setAttribute('data-theme', theme);
-        if (window.AppStorage) {
+        if (window.AppStorage && window.AppStorage.setTheme) {
             window.AppStorage.setTheme(theme);
         } else {
             localStorage.setItem('theme', theme);
         }
 
-        // Only update dashboard-style button elements (ignoring .sun-icon/.moon-icon which use CSS)
+        const sunIcon = themeToggle.querySelector('.sun-icon');
+        const moonIcon = themeToggle.querySelector('.moon-icon');
+        if (sunIcon && moonIcon) {
+            if (theme === 'dark') {
+                sunIcon.style.display = 'block';
+                moonIcon.style.display = 'none';
+                themeToggle.setAttribute('aria-label', 'Switch to Light Mode');
+            } else {
+                sunIcon.style.display = 'none';
+                moonIcon.style.display = 'block';
+                themeToggle.setAttribute('aria-label', 'Switch to Dark Mode');
+            }
+        }
+
+        // Dashboard-style toggle (single icon + label)
         const icon = themeToggle.querySelector('i:not(.sun-icon):not(.moon-icon)');
         const span = themeToggle.querySelector('span');
 
@@ -262,13 +536,16 @@ function initGlobalThemeToggle() {
         }
     }
 
-    // Apply initial UI state immediately
-    const currentTheme = document.documentElement.getAttribute('data-theme') || localStorage.getItem('theme') || 'dark';
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const currentTheme = document.documentElement.getAttribute('data-theme')
+        || savedTheme
+        || (prefersDark ? 'dark' : 'light');
     applyThemeToUI(currentTheme);
 
     themeToggle.addEventListener('click', () => {
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        const activeTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+        const newTheme = activeTheme === 'dark' ? 'light' : 'dark';
         applyThemeToUI(newTheme);
     });
 
@@ -310,16 +587,13 @@ function updateAuthUI() {
         }
     } catch (e) { console.warn('Could not retrieve session'); }
 
-    // Intercept clicks on the dashboard link if the user isn't logged in
-    const navDashboardLink = document.getElementById('nav-dashboard-link');
-    if (!userSession || !userSession.role) {
-        if (navDashboardLink) {
-            navDashboardLink.addEventListener('click', (e) => {
-                e.preventDefault();
-                alert('You must be logged in to view the dashboard.');
-            });
-        }
-        return; // not logged in — leave default buttons
+    if (!userSession || !userSession.email) {
+        return; // not logged in — leave default buttons; LoginGate guards nav links
+    }
+
+    const heroStartJourney = document.getElementById('hero-start-journey');
+    if (heroStartJourney) {
+        heroStartJourney.style.display = 'none';
     }
 
     // ── 2. Resolve full user record (for photo + display name) ───────────
@@ -424,15 +698,19 @@ function updateAuthUI() {
         }, 100);
     }
 
-    // ── 5. Sidebar logout link: wire up real logout ───────────────────────
-    document.querySelectorAll('.logout-link').forEach(link => {
+    // ── 5. Sidebar logout link: wire up real logout (logged-in only) ─────
+    document.querySelectorAll('.dashboard-sidebar .logout-link, .page-sidebar .logout-link').forEach(link => {
         link.addEventListener('click', e => {
             e.preventDefault();
             localStorage.removeItem('userSession');
             sessionStorage.removeItem('userSession');
+            if (window.AppStorage && AppStorage.clearCurrentUser) AppStorage.clearCurrentUser();
+            if (window.AppStorage && AppStorage.setLoggedIn) AppStorage.setLoggedIn(false);
             window.location.href = link.href.includes('login.html')
                 ? link.href
                 : `${prefix}index.html`;
         });
     });
+
+    if (window.LoginGate) LoginGate.updateSidebarAuth();
 }

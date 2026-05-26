@@ -1,8 +1,6 @@
 
 
 document.addEventListener('DOMContentLoaded', () => {
-    
-    initTheme();
     initScrollProgress();
     initCustomCursor();
     initSmoothScroll();
@@ -22,52 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
         renderSignaturePackages(window.MockData.packages);
     }
 });
-
-
-function initTheme() {
-    const themeToggle = document.getElementById('theme-toggle');
-    const htmlElement = document.documentElement;
-
-    const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    
-    function applyTheme(theme) {
-        htmlElement.setAttribute('data-theme', theme);
-        localStorage.setItem('theme', theme);
-        
-        if (themeToggle) {
-            const sunIcon = themeToggle.querySelector('.sun-icon');
-            const moonIcon = themeToggle.querySelector('.moon-icon');
-            if (sunIcon && moonIcon) {
-                if (theme === 'dark') {
-                    sunIcon.style.display = 'block';
-                    moonIcon.style.display = 'none';
-                    themeToggle.setAttribute('aria-label', 'Switch to Light Mode');
-                } else {
-                    sunIcon.style.display = 'none';
-                    moonIcon.style.display = 'block';
-                    themeToggle.setAttribute('aria-label', 'Switch to Dark Mode');
-                }
-            }
-        }
-    }
-
-    applyTheme(savedTheme);
-
-    if (themeToggle) {
-        themeToggle.addEventListener('click', () => {
-            const currentTheme = htmlElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            applyTheme(newTheme);
-        });
-    }
-
-    // Listen for changes across tabs
-    window.addEventListener('storage', function (e) {
-        if (e.key === 'theme' && e.newValue) {
-            applyTheme(e.newValue);
-        }
-    });
-}
 
 
 function initScrollProgress() {
@@ -313,8 +265,10 @@ function renderFeaturedDestinations(packages) {
     const container = document.getElementById('dynamicDestinationsGrid');
     if (!container) return;
 
-    // Filter to top 4 'single' location packages
-    const destinations = packages.filter(p => p.type === 'single').slice(0, 4);
+    // Filter to top 4 active single-location packages (same rules as Single Locations page)
+    const destinations = packages
+        .filter(p => p.type === 'single' && p.status !== 'inactive')
+        .slice(0, 4);
     
     container.innerHTML = '';
     

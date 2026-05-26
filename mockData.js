@@ -259,7 +259,7 @@ window.MockData = {
             image: 'https://images.unsplash.com/photo-1565000546955-6ed8d56b8d7b?w=800&q=80',
             price: 5500,
             discountedPrice: 4800,
-            status: 'inactive',
+            status: 'active',
             rating: 4.9,
             reviews: 178,
             openingHours: '6:00 AM - 5:00 PM',

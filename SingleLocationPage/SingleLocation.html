@@ -48,6 +48,7 @@
                     <span class="group-label">Concierge</span>
                     <ul>
                         <li><a href="../FAQpage/FAQpage.html"><i class="fas fa-question-circle"></i> <span>Help &amp; FAQ</span></a></li>
+                        <li><a href="../ContactPage/contact.html"><i class="fas fa-envelope"></i> <span>Contact Us</span></a></li>
                         <li><a href="../CustomerReviews/writing-reviews.html"><i class="fas fa-star"></i> <span>Reviews</span></a></li>
                     </ul>
                 </div>
@@ -66,27 +67,14 @@
     <header class="main-header reveal-up">
         <h1 class="hero-title">Explore <span class="text-gold">Historical Locations</span></h1>
         <p class="hero-description">Discover individual monuments, temples, and museums across Egypt.</p>
+        <div class="account-chip" data-account-chip hidden>
+            <div class="account-chip__avatar" data-account-avatar><i class="fas fa-user"></i></div>
+            <div>
+                <span class="account-chip__label">Signed in as</span>
+                <strong class="account-chip__name" data-account-name>Traveler</strong>
+            </div>
+        </div>
     </header>
-
-    <div id="filter-container" class="glass-card reveal-up">
-        <label>Region:
-            <select id="filter-region">
-                <option value="all">All Regions</option>
-                <option value="cairo">Cairo / Giza</option>
-                <option value="luxor">Luxor</option>
-                <option value="aswan">Aswan</option>
-                <option value="alex">Alexandria</option>
-            </select>
-        </label>
-
-        <label>Price Range:
-            <select id="filter-price">
-                <option value="all">All Prices</option>
-                <option value="budget">Under EGP 1000</option>
-                <option value="premium">EGP 1000 and up</option>
-            </select>
-        </label>
-    </div>
 
     <section class="packages-container">
         <!-- Injected dynamically by js/script.js from MockData.packages (type === 'single') -->

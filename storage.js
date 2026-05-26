@@ -89,10 +89,18 @@ window.AppStorage = {
 
     getBookings: function () {
         const b = this.getItem('beyondPyramids_bookings');
-        return b ? JSON.parse(b) : [];
+        const bookings = b ? JSON.parse(b) : [];
+        const normalized = bookings.map(booking => this._normaliseBookingType ? this._normaliseBookingType(booking) : booking);
+        if (JSON.stringify(normalized) !== JSON.stringify(bookings)) {
+            this.setItem('beyondPyramids_bookings', JSON.stringify(normalized));
+        }
+        return normalized;
     },
     setBookings: function (bookings) {
-        this.setItem('beyondPyramids_bookings', JSON.stringify(bookings));
+        const normalized = Array.isArray(bookings)
+            ? bookings.map(booking => this._normaliseBookingType ? this._normaliseBookingType(booking) : booking)
+            : [];
+        this.setItem('beyondPyramids_bookings', JSON.stringify(normalized));
     },
     getCurrentBooking: function () {
         const cb = this.getItem('currentBooking');
@@ -149,13 +157,23 @@ window.AppStorage = {
 
     // --- Package Management ---
     getPackages: function () {
+        const seed = window.MockData && window.MockData.packages ? window.MockData.packages : [];
         const p = this.getItem('beyondPyramids_packages');
-        if (p) return JSON.parse(p);
-        // Fallback to MockData if available
-        if (window.MockData && window.MockData.packages) {
-            return window.MockData.packages;
+        if (!p) {
+            return seed.length ? [...seed] : [];
         }
-        return [];
+
+        const stored = JSON.parse(p);
+        if (!seed.length) return stored;
+
+        // Include seed packages missing from an older saved catalog (e.g. Abu Simbel)
+        const merged = [...stored];
+        seed.forEach(seedPkg => {
+            if (!merged.some(pkg => pkg.id === seedPkg.id)) {
+                merged.push({ ...seedPkg });
+            }
+        });
+        return merged;
     },
     setPackages: function (packages) {
         this.setItem('beyondPyramids_packages', JSON.stringify(packages));
@@ -212,6 +230,52 @@ window.AppStorage = {
         return 'bp_bookings_' + (email || '').toLowerCase().replace(/[^a-z0-9]/g, '_');
     },
 
+    _getPackageForBooking: function (booking) {
+        if (!booking) return null;
+        const packages = this.getPackages ? this.getPackages() : [];
+        return packages.find(p => p.id === booking.packageId)
+            || packages.find(p => p.name === booking.packageName)
+            || null;
+    },
+
+    _resolveBookingType: function (booking) {
+        if (!booking) return 'day';
+        if (booking.isCustom) return 'custom';
+
+        const pkg = this._getPackageForBooking(booking);
+        const rawType = [
+            booking.type,
+            booking.packageType,
+            booking.tripType,
+            pkg && pkg.type,
+            pkg && pkg.category,
+            booking.packageName
+        ].filter(Boolean).join(' ').toLowerCase();
+
+        if (rawType.includes('custom') || rawType.includes('architect')) return 'custom';
+        if (rawType.includes('single') || rawType.includes('location')) return 'single';
+        if (rawType.includes('week') || rawType.includes('weekly') || rawType.includes('multi')) return 'week';
+        return 'day';
+    },
+
+    _normaliseBookingType: function (booking) {
+        if (!booking) return booking;
+        const type = this._resolveBookingType(booking);
+        const labels = {
+            day: 'Day Package',
+            week: 'Week Package',
+            single: 'Single Location',
+            custom: 'Custom Trip'
+        };
+
+        return {
+            ...booking,
+            type,
+            packageType: type,
+            tripType: labels[type] || 'Day Package'
+        };
+    },
+
     getUserBookings: function (email) {
         if (!email) return [];
         const raw = this.getItem(this._bookingKey(email));
@@ -226,11 +290,16 @@ window.AppStorage = {
                 });
             }
         }
-        return stored;
+        const normalized = stored.map(b => this._normaliseBookingType(b));
+        if (JSON.stringify(normalized) !== JSON.stringify(stored)) {
+            this.setItem(this._bookingKey(email), JSON.stringify(normalized));
+        }
+        return normalized;
     },
 
     addBookingToUserHistory: function (email, booking) {
         if (!email || !booking) return;
+        booking = this._normaliseBookingType(booking);
         const key = this._bookingKey(email);
         const existing = this.getItem(key);
         let bookings = existing ? JSON.parse(existing) : [];

@@ -34,6 +34,13 @@
             </nav>
 
             <div class="sidebar-footer">
+                <div class="account-chip account-chip--sidebar" data-account-chip hidden>
+                    <div class="account-chip__avatar" data-account-avatar><i class="fas fa-user"></i></div>
+                    <div>
+                        <span class="account-chip__label">Signed in as</span>
+                        <strong class="account-chip__name" data-account-name>Admin</strong>
+                    </div>
+                </div>
                 <a href="../LoginPage/login.html" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
             </div>
         </aside>
@@ -49,7 +56,6 @@
                     <div class="system-health">
                         <span class="status-dot"></span> System Status: <strong id="health-text">Excellent</strong>
                     </div>
-                    <div id="admin-user-display"></div>
                 </div>
             </header>
 
@@ -68,23 +74,7 @@
                     </div>
                     <span class="trend up">â†‘ 12.1%</span>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-info">
-                        <h3>Total Revenue</h3>
-                        <p class="stat-number">EGP 6,100,500</p>
-                    </div>
-                    <span class="trend up">â†‘ 8.4%</span>
-                </div>
             </section>
-
-            <div class="dashboard-row single-column">
-                <section class="card analytics">
-                    <h2>Analytics (Revenue)</h2>
-                    <div class="chart-placeholder">
-                        <p>[Chart Visualizing Data Will Load Here]</p>
-                    </div>
-                </section>
-            </div>
 
             <div class="dashboard-row">
                 <section class="card popular-packages">

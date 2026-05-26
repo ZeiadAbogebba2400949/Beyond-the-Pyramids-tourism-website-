@@ -48,7 +48,7 @@
                     <span class="group-label">Concierge</span>
                     <ul>
                         <li><a href="../FAQpage/FAQpage.html"><i class="fas fa-question-circle"></i> <span>Help &amp; FAQ</span></a></li>
-
+                        <li><a href="../ContactPage/contact.html"><i class="fas fa-envelope"></i> <span>Contact Us</span></a></li>
                         <li><a href="../CustomerReviews/writing-reviews.html"><i class="fas fa-star"></i> <span>Reviews</span></a></li>
                     </ul>
                 </div>
@@ -67,6 +67,13 @@
     <div class="page-title reveal-up">
         <h1 class="hero-title">Custom <span class="text-gold">Trip Builder</span></h1>
         <p class="hero-description">Design your perfect Egyptian adventure step by step</p>
+        <div class="account-chip" data-account-chip hidden>
+            <div class="account-chip__avatar" data-account-avatar><i class="fas fa-user"></i></div>
+            <div>
+                <span class="account-chip__label">Signed in as</span>
+                <strong class="account-chip__name" data-account-name>Traveler</strong>
+            </div>
+        </div>
     </div>
 
 
@@ -76,7 +83,8 @@
             <div class="stepper-step active">1. Destinations</div>
             <div class="stepper-step">2. Dates</div>
             <div class="stepper-step">3. Accommodation</div>
-            <div class="stepper-step">4. Review</div>
+            <div class="stepper-step">4. Travelers</div>
+            <div class="stepper-step">5. Review</div>
         </div>
     </div>
 
@@ -159,6 +167,25 @@
             
             <div class="wizard-step" id="step-3">
                 <div class="step-card">
+                    <h2>Travelers</h2>
+                    <p>Tell us how many explorers are joining this custom journey</p><br>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="traveler-count">Number of Travelers</label>
+                            <input type="number" id="traveler-count" min="1" max="15" value="1">
+                        </div>
+                    </div>
+                    <div class="error-msg" id="traveler-error"></div>
+                </div>
+                <div class="step-nav">
+                    <button onclick="prevStep()">&larr; Back</button>
+                    <button onclick="nextStep()">Continue &rarr;</button>
+                </div>
+            </div>
+
+            
+            <div class="wizard-step" id="step-4">
+                <div class="step-card">
                     <h2>Review Your Trip</h2>
                     <p>Confirm all details before submitting</p><br>
                     <div id="review-body"></div>
@@ -190,6 +217,10 @@
                 <div class="price-line">
                     <span>Accommodation</span>
                     <span id="price-acc">EGP 0</span>
+                </div>
+                <div class="price-line">
+                    <span>Travelers</span>
+                    <span id="price-travelers">x 1</span>
                 </div>
 
 
@@ -260,7 +291,7 @@
     <script src="../mockData.js"></script>
     <script src="../storage.js"></script>
     <script src="../global.js"></script>
-    <script src="js/CustomTripBuilder.js"></script>
+    <script src="js/CustomTripBuilder.js?v=2"></script>
 </body>
 
 </html>

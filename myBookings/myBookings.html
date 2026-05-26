@@ -46,6 +46,7 @@
                     <span class="group-label">Concierge</span>
                     <ul>
                         <li><a href="../FAQpage/FAQpage.html"><i class="fas fa-question-circle"></i> Help & FAQ</a></li>
+                        <li><a href="../ContactPage/contact.html"><i class="fas fa-envelope"></i> Contact Us</a></li>
                         <li><a href="../CustomerReviews/writing-reviews.html"><i class="fas fa-star"></i> Reviews</a></li>
                     </ul>
                 </div>
@@ -64,6 +65,13 @@
             <div class="page-title reveal-up">
                 <h1>My <span class="text-gold">Reservations</span></h1>
                 <p>Manage your upcoming journeys and historical explorations.</p>
+                <div class="account-chip" data-account-chip hidden>
+                    <div class="account-chip__avatar" data-account-avatar><i class="fas fa-user"></i></div>
+                    <div>
+                        <span class="account-chip__label">Signed in as</span>
+                        <strong class="account-chip__name" data-account-name>Traveler</strong>
+                    </div>
+                </div>
             </div>
 
             <div class="main-container">
@@ -71,16 +79,6 @@
         
         <aside class="filters-sidebar glass-card reveal-up">
             <h3>Refine Journal</h3>
-            
-            <div class="filter-group">
-                <label>Arrival From</label>
-                <input type="date" id="dateFrom">
-            </div>
-            
-            <div class="filter-group">
-                <label>Arrival To</label>
-                <input type="date" id="dateTo">
-            </div>
 
             <div class="filter-group">
                 <label>Journey Status</label>
@@ -92,9 +90,17 @@
                     <option value="cancelled">Cancelled</option>
                 </select>
             </div>
-            
-            <button id="applyDateFilter">Update View</button>
-            <button id="resetDateFilter">Clear Filters</button>
+
+            <div class="filter-group">
+                <label>Journey Type</label>
+                <select id="typeFilter">
+                    <option value="all">All Types</option>
+                    <option value="day">Day Package</option>
+                    <option value="week">Week Package</option>
+                    <option value="single">Single Location</option>
+                    <option value="custom">Custom Trip</option>
+                </select>
+            </div>
         </aside>
 
         

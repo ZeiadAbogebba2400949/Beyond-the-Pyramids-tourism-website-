@@ -4,18 +4,29 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function loadFinalBooking() {
-    const historyRaw = localStorage.getItem('beyondPyramids_bookings');
-    if (!historyRaw) return;
-
     try {
-        const history = JSON.parse(historyRaw);
-        if (history.length === 0) return;
-
-        const finalBooking = history[history.length - 1];
+        const finalBooking = getReceiptBooking();
+        if (!finalBooking) return;
         renderVoucherUI(finalBooking);
     } catch (e) {
         console.error("Error loading final booking", e);
     }
+}
+
+function getReceiptBooking() {
+    const currentRaw = localStorage.getItem('currentBooking');
+    if (currentRaw) {
+        const current = JSON.parse(currentRaw);
+        if (current && (current.id || current.packageName)) return current;
+    }
+
+    const historyRaw = localStorage.getItem('beyondPyramids_bookings');
+    const history = historyRaw ? JSON.parse(historyRaw) : [];
+    if (!Array.isArray(history) || history.length === 0) return null;
+
+    return history
+        .filter(Boolean)
+        .sort((a, b) => new Date(b.timestamp || b.createdAt || 0) - new Date(a.timestamp || a.createdAt || 0))[0];
 }
 
 function renderVoucherUI(booking) {
@@ -42,7 +53,9 @@ function renderVoucherUI(booking) {
         allPkgs = window.MockData.packages;
     }
 
-    const pkg = allPkgs.find(p => p.id === booking.packageId);
+    const pkg = allPkgs.find(p => p.id === booking.packageId)
+        || allPkgs.find(p => p.name === booking.packageName)
+        || allPkgs.find(p => booking.packageName && p.name && p.name.toLowerCase() === booking.packageName.toLowerCase());
     if (itineraryList) {
         if (pkg && pkg.itinerary && pkg.itinerary.length > 0) {
             itineraryList.innerHTML = pkg.itinerary.map(step => `
@@ -67,21 +80,14 @@ function renderVoucherUI(booking) {
     // 4. Receipt Payment Breakdown
     const receiptBody = document.querySelector('.receipt-body');
     if (receiptBody) {
-        // Fallback for older bookings that used price instead of totalPrice
-        const rawPrice = booking.totalPrice || booking.price || 0;
-        
-        // Remove currency symbols or commas if stored as string, then parse
-        const subtotal = typeof rawPrice === 'string' 
-            ? parseFloat(rawPrice.replace(/[^0-9.-]+/g, "")) 
-            : parseFloat(rawPrice);
-
         const travelers = parseInt(booking.travelers) || 1;
+        const subtotal = resolveBookingTotal(booking, pkg, travelers);
         const perPerson = Math.round(subtotal / travelers);
 
         receiptBody.innerHTML = `
             <div class="receipt-line">
-                <span>Base Package (${booking.travelers} Traveler${booking.travelers > 1 ? 's' : ''})</span>
-                <span>EGP ${perPerson.toLocaleString()} &times; ${booking.travelers}</span>
+                <span>Base Package (${travelers} Traveler${travelers > 1 ? 's' : ''})</span>
+                <span>EGP ${perPerson.toLocaleString()} &times; ${travelers}</span>
             </div>
             <div class="receipt-line">
                 <span>Taxes &amp; Service Fees</span>
@@ -100,6 +106,32 @@ function renderVoucherUI(booking) {
             <p class="payment-method">Paid via Secure Wallet &bull; Egyptian Pound (EGP)</p>
         `;
     }
+}
+
+function resolveBookingTotal(booking, pkg, travelers) {
+    const candidates = [
+        booking.totalPrice,
+        booking.price,
+        booking.basePrice ? parseMoney(booking.basePrice) * travelers : null,
+        pkg?.price ? parseMoney(pkg.price) * travelers : null,
+        pkg?.discountedPrice ? parseMoney(pkg.discountedPrice) * travelers : null,
+        pkg?.basePrice ? parseMoney(pkg.basePrice) * travelers : null
+    ];
+
+    for (const candidate of candidates) {
+        const amount = parseMoney(candidate);
+        if (amount > 0) return amount;
+    }
+
+    return 0;
+}
+
+function parseMoney(value) {
+    if (value === null || value === undefined || value === '') return 0;
+    if (typeof value === 'number') return Number.isFinite(value) ? value : 0;
+
+    const parsed = parseFloat(String(value).replace(/[^0-9.-]+/g, ""));
+    return Number.isFinite(parsed) ? parsed : 0;
 }
 
 function initVoucherActions() {
@@ -135,7 +167,7 @@ function initVoucherActions() {
     // Force Light Mode text visibility via JS to bypass any CSS caching
     function enforceLightModeColors() {
         const isLight = document.documentElement.getAttribute("data-theme") === "light";
-        const textElements = document.querySelectorAll('.editorial-title, .editorial-subtitle, .card-title, .info-row .label, .info-row .value, .itinerary-list li, .accordion-btn, .concierge-box h4, .concierge-box p, .concierge-link');
+        const textElements = document.querySelectorAll('.editorial-title, .editorial-title span, .editorial-subtitle, .card-title, .info-row .label, .info-row .value, .itinerary-list li, .accordion-btn, .concierge-box h4, .concierge-box p, .concierge-link');
         
         textElements.forEach(el => {
             if (isLight) {

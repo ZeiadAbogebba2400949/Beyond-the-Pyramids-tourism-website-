@@ -49,6 +49,8 @@
                     <span class="group-label">Concierge</span>
                     <ul>
                         <li><a href="../FAQpage/FAQpage.html"><i class="fas fa-question-circle"></i> Help & FAQ</a></li>
+                        <li><a href="../ContactPage/contact.html"><i class="fas fa-envelope"></i> Contact Us</a></li>
+                        <li><a href="../CustomerReviews/writing-reviews.html"><i class="fas fa-star"></i> Reviews</a></li>
                     </ul>
                 </div>
             </nav>
@@ -69,7 +71,7 @@
                         <button id="mobileSidebarToggle" class="btn btn--outline btn--small" style="display: none;"><i class="fa-solid fa-bars"></i></button>
                         <h1>Profile Settings</h1>
                     </div>
-                    <p class="text-secondary">Manage your personal information and security preferences.</p>
+                    <p class="text-secondary">Manage your personal information and account security.</p>
                 </div>
                 <button id="globalSaveBtn" class="btn btn--primary"><i class="fa-solid fa-save"></i> Save All Changes</button>
             </header>
@@ -80,7 +82,6 @@
                     <nav class="tab-nav">
                         <button class="tab-btn active" data-tab="personal">Personal Info</button>
                         <button class="tab-btn" data-tab="security">Security</button>
-                        <button class="tab-btn" data-tab="preferences">Preferences</button>
                         <button class="tab-btn" data-tab="history">Travel History</button>
                     </nav>
 
@@ -103,6 +104,10 @@
                             <div style="flex: 1; min-width: 200px;">
                                 <h3 id="userNameDisplay" style="margin-bottom: 0.5rem;">—</h3>
                                 <p id="userEmailDisplay" class="text-secondary" style="font-size: var(--text-sm); margin-bottom: 1rem;">—</p>
+                                <input type="file" id="profilePhotoInput" class="hidden" accept="image/*">
+                                <button type="button" id="uploadPhotoBtn" class="btn btn--outline btn--small">
+                                    <i class="fa-solid fa-camera"></i> Upload Photo
+                                </button>
                             </div>
                         </div>
 
@@ -127,10 +132,6 @@
                                 <input type="text" id="nationality" value="" disabled>
                                 <small class="error-msg"></small>
                             </label>
-                            <label>Primary Mailing Address 
-                                <textarea id="address" disabled rows="3"></textarea>
-                                <small class="error-msg"></small>
-                            </label>
                         </form>
                     </section>
 
@@ -141,7 +142,7 @@
                         </div>
                         <form id="securityForm" novalidate>
                             <label>Current Password 
-                                <input type="password" id="currPassword" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" required>
+                                <input type="password" id="currPassword" placeholder="enter your current password" required>
                                 <small class="error-msg"></small>
                             </label>
                             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
@@ -157,50 +158,11 @@
                             <button type="button" id="updatePasswordBtn" class="btn btn--primary" style="margin-top: 1rem;">Update Password</button>
                         </form>
                         <hr style="margin: 2rem 0; opacity: 0.1;">
-                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                            <input type="checkbox" style="width: auto; margin: 0;"> 
-                            <span>Enable Two-Factor Authentication (2FA)</span>
-                        </label>
-                        <hr style="margin: 2rem 0; opacity: 0.1;">
                         <div class="danger-zone">
                             <h3 style="color: var(--color-danger); font-size: var(--text-sm); margin-bottom: 0.5rem;">Danger Zone</h3>
                             <p class="text-secondary" style="font-size: var(--text-xs); margin-bottom: 1rem;">Once you delete your account, there is no going back. Please be certain.</p>
                             <button id="deleteAccountBtn" class="btn btn--outline btn--small" style="color: var(--color-danger); border-color: var(--color-danger);">Delete Account</button>
                         </div>
-                    </section>
-
-                    
-                    <section class="glass-card workspace-card tab-panel hidden" id="tab-preferences">
-                        <div class="section-title-row">
-                            <h2>Travel Preferences</h2>
-                        </div>
-                        <form>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                                <label>Accommodation Preference
-                                    <select>
-                                        <option>Luxury Hotel</option>
-                                        <option>Boutique Guest House</option>
-                                        <option>Dahabiya Nile Boat</option>
-                                    </select>
-                                </label>
-                                <label>Local Transport
-                                    <select>
-                                        <option>Private Chauffeured Car</option>
-                                        <option>First Class Rail</option>
-                                        <option>Domestic Air</option>
-                                    </select>
-                                </label>
-                            </div>
-                            <h3 style="font-size: var(--text-sm); margin: 2rem 0 1rem;">Communication</h3>
-                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; margin-bottom: 0.5rem;">
-                                <input type="checkbox" checked style="width: auto; margin: 0;"> 
-                                <span>Receive travel itineraries via Email</span>
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                                <input type="checkbox" style="width: auto; margin: 0;"> 
-                                <span>Receive urgent updates via SMS</span>
-                            </label>
-                        </form>
                     </section>
 
                     

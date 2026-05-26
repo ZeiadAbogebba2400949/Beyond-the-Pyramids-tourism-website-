@@ -9,11 +9,8 @@ let currentBookings = [];
 let filteredBookings = [];
 
 const bookingsList    = document.getElementById('bookingsList');
-const dateFrom        = document.getElementById('dateFrom');
-const dateTo          = document.getElementById('dateTo');
 const statusFilter    = document.getElementById('statusFilter');
-const applyDateFilter = document.getElementById('applyDateFilter');
-const resetDateFilter = document.getElementById('resetDateFilter');
+const typeFilter      = document.getElementById('typeFilter');
 const modal           = document.getElementById('detailsModal');
 const modalBody       = document.getElementById('modalBody');
 const closeModal      = document.querySelector('.close-modal');
@@ -36,9 +33,12 @@ const statusLabels = {
 
 // ── Authentication & Init ──────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function() {
+    if (window.LoginGate && !LoginGate.requireLogin({ message: 'You must be logged in to view your journeys.' })) {
+        return;
+    }
+
     const session = getSession();
     if (!session || !session.email) {
-        window.location.href = '../LoginPage/login.html';
         return;
     }
 
@@ -91,6 +91,35 @@ function formatDate(dateString) {
     }
 }
 
+function getBookingType(booking) {
+    if (booking.isCustom) return 'custom';
+
+    const rawType = [
+        booking.tripType,
+        booking.packageType,
+        booking.type,
+        booking.category,
+        booking.packageName,
+        booking.tripName
+    ].filter(Boolean).join(' ').toLowerCase();
+
+    if (rawType.includes('custom') || rawType.includes('architect')) return 'custom';
+    if (rawType.includes('single') || rawType.includes('location')) return 'single';
+    if (rawType.includes('week') || rawType.includes('weekly') || rawType.includes('multi')) return 'week';
+    return 'day';
+}
+
+function getBookingTypeLabel(type) {
+    const labels = {
+        day: 'Day Package',
+        week: 'Week Package',
+        single: 'Single Location',
+        custom: 'Custom Trip'
+    };
+
+    return labels[type] || 'Day Package';
+}
+
 // ── Rendering ──────────────────────────────────────────────────────────────
 function renderBookings() {
     if (filteredBookings.length === 0) {
@@ -124,7 +153,7 @@ function createBookingCard(booking) {
     const statusLabel = statusLabels[computedStatus] || computedStatus.toUpperCase();
     
     const title = booking.packageName || booking.tripName || 'Package Booking';
-    const type = booking.tripType || 'Day Package';
+    const type = getBookingTypeLabel(getBookingType(booking));
     const refId = booking.bookingNumber || booking.id || booking.bookingId || 'N/A';
     
     let placesText = booking.location || booking.city;
@@ -172,44 +201,18 @@ function createBookingCard(booking) {
 }
 
 // ── Filtering ──────────────────────────────────────────────────────────────
-function filterByDateRange() {
-    const fromDate = dateFrom.value;
-    const toDate = dateTo.value;
-    const statusValue = statusFilter.value;
-    
-    let filtered = [...currentBookings];
-    
-    if (fromDate !== '') {
-        filtered = filtered.filter(b => {
-            const d = b.date || b.travelDate || b.bookingDate || b.timestamp;
-            return d && d >= fromDate;
-        });
-    }
-    
-    if (toDate !== '') {
-        filtered = filtered.filter(b => {
-            const d = b.date || b.travelDate || b.bookingDate || b.timestamp;
-            return d && d <= toDate;
-        });
-    }
-    
-    if (statusValue !== 'all') {
-        filtered = filtered.filter(b => {
-            const rawDate = b.date || b.travelDate || b.bookingDate || b.timestamp;
-            return getComputedBookingStatus(rawDate, b.status) === statusValue;
-        });
-    }
-    
-    filteredBookings = filtered;
-    renderBookings();
-}
+function filterBookings() {
+    const statusValue = statusFilter?.value || 'all';
+    const typeValue = typeFilter?.value || 'all';
 
-function resetDateFilters() {
-    dateFrom.value = '';
-    dateTo.value = '';
-    statusFilter.value = 'all';
-    
-    filteredBookings = [...currentBookings];
+    filteredBookings = currentBookings.filter(booking => {
+        const rawDate = booking.date || booking.travelDate || booking.bookingDate || booking.timestamp;
+        const matchesStatus = statusValue === 'all' || getComputedBookingStatus(rawDate, booking.status) === statusValue;
+        const matchesType = typeValue === 'all' || getBookingType(booking) === typeValue;
+
+        return matchesStatus && matchesType;
+    });
+
     renderBookings();
 }
 
@@ -229,7 +232,7 @@ function showDetails(bookingId) {
     if (!placesText) placesText = 'Various Locations';
 
     const title = booking.packageName || booking.tripName || 'Package Booking';
-    const type = booking.tripType || 'Day Package';
+    const type = getBookingTypeLabel(getBookingType(booking));
     const refId = booking.bookingNumber || booking.id || booking.bookingId || 'N/A';
     const pCount = booking.travelers || booking.peopleCount || 1;
     const tPrice = booking.totalPrice ? 'EGP ' + Number(booking.totalPrice).toLocaleString() : 'N/A';
@@ -278,9 +281,8 @@ function closeModalWindow() {
 
 // ── Events ─────────────────────────────────────────────────────────────────
 function attachEventListeners() {
-    applyDateFilter?.addEventListener('click', filterByDateRange);
-    resetDateFilter?.addEventListener('click', resetDateFilters);
-    statusFilter?.addEventListener('change', filterByDateRange);
+    statusFilter?.addEventListener('change', filterBookings);
+    typeFilter?.addEventListener('change', filterBookings);
     closeModal?.addEventListener('click', closeModalWindow);
     
     bookingsList?.addEventListener('click', (e) => {

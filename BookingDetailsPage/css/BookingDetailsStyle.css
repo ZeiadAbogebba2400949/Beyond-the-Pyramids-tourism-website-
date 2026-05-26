@@ -42,12 +42,30 @@
     letter-spacing: -0.02em;
     /* Explicit dark color — not inherited from dark dashboard shell */
     color: var(--color-text, #111);
+    background: none;
+    -webkit-background-clip: initial;
+    background-clip: initial;
+    -webkit-text-fill-color: currentColor;
 }
 
 /* Light mode override: ensure title is always dark on a light background */
 [data-theme="light"] .editorial-title,
 :root:not([data-theme="dark"]) .editorial-title {
-    color: #111;
+    color: #111 !important;
+    background: none !important;
+    -webkit-background-clip: initial !important;
+    background-clip: initial !important;
+    -webkit-text-fill-color: #111 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+[data-theme="light"] .editorial-title .text-gold,
+:root:not([data-theme="dark"]) .editorial-title .text-gold {
+    color: var(--gold-primary, #C5A059) !important;
+    -webkit-text-fill-color: var(--gold-primary, #C5A059) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
 }
 
 .editorial-subtitle {
@@ -412,10 +430,33 @@ html[data-theme="light"] .accordion-content strong {
     color: var(--color-gold, #d4af37);
 }
 
-/* ─── Print: fallback @media print (JS printVoucherOnly is primary) ─── */
+/* ─── Print: isolate the physical voucher only ─── */
 @media print {
-    /* Hide the entire app shell — sidebar, topbar, left column, etc. */
-    body > *:not(.dashboard-shell) { display: none !important; }
+    @page {
+        size: A4 portrait;
+        margin: 12mm;
+    }
+
+    html,
+    body {
+        width: 100% !important;
+        min-height: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #fff !important;
+        color: #111 !important;
+        overflow: visible !important;
+    }
+
+    body * {
+        visibility: hidden !important;
+    }
+
+    .voucher-ticket,
+    .voucher-ticket * {
+        visibility: visible !important;
+    }
+
     .dashboard-sidebar,
     .dash-topbar,
     .editorial-booking-main,
@@ -423,7 +464,6 @@ html[data-theme="light"] .accordion-content strong {
     .ticket-actions,
     .noise-overlay { display: none !important; }
 
-    /* Make the shell a plain white page */
     .dashboard-shell,
     .dashboard-main,
     .dash-scroll-area,
@@ -431,26 +471,112 @@ html[data-theme="light"] .accordion-content strong {
     .editorial-booking-sidebar { 
         all: unset;
         display: block !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: auto !important;
+        height: auto !important;
+        overflow: visible !important;
     }
 
-    /* The voucher ticket fills the print page */
     .voucher-ticket {
-        width: 100%;
-        max-width: 800px;
-        margin: 0 auto;
+        position: absolute !important;
+        top: 0 !important;
+        left: 50% !important;
+        width: 120mm !important;
+        max-width: 120mm !important;
+        margin: 0 !important;
+        transform: translateX(-50%) !important;
         box-shadow: none !important;
-        border: 2px solid #000;
-        transform: scale(1.35);
-        transform-origin: top center;
+        border: 1px solid #ddd !important;
+        border-radius: 0 !important;
+        overflow: hidden !important;
+        background-color: #fcfcfc !important;
+        color: #111 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
     }
 
-    /* Hide concierge box when printing */
-    .concierge-box {
-        display: none !important;
+    .ticket-header {
+        background: #050505 !important;
+        color: #fff !important;
+        padding: 18mm 8mm 10mm !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
     }
 
-    @page {
-        size: A4 portrait;
-        margin: 1.5cm;
+    .ticket-logo {
+        color: #d4af37 !important;
+        font-size: 16pt !important;
+    }
+
+    .ticket-status {
+        color: #fff !important;
+        border-color: rgba(255, 255, 255, 0.55) !important;
+        font-size: 9pt !important;
+    }
+
+    .ticket-body {
+        padding: 18mm 8mm 14mm !important;
+    }
+
+    .ticket-ref {
+        margin-bottom: 16mm !important;
+    }
+
+    .receipt-body {
+        color: #111 !important;
+        font-size: 11pt !important;
+    }
+
+    .receipt-line {
+        margin-bottom: 7mm !important;
+    }
+
+    .receipt-divider {
+        margin: 8mm 0 !important;
+        border-top: 1px dashed #bbb !important;
+    }
+
+    .total-line {
+        font-size: 13pt !important;
+    }
+
+    .payment-method {
+        margin-top: 12mm !important;
+        text-align: center !important;
+        color: #777 !important;
+        font-size: 9pt !important;
+    }
+
+    .ticket-barcode {
+        display: block !important;
+        padding: 12mm 8mm 11mm !important;
+        background: #f8f8f8 !important;
+        border-top: 1px dashed #ddd !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    .barcode-lines {
+        width: 86% !important;
+        height: 14mm !important;
+        background: repeating-linear-gradient(
+            90deg,
+            #000,
+            #000 1px,
+            transparent 1px,
+            transparent 2px,
+            #000 2px,
+            #000 3px,
+            transparent 3px,
+            transparent 5px
+        ) !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    .barcode-number {
+        color: #555 !important;
+        font-size: 8pt !important;
     }
 }

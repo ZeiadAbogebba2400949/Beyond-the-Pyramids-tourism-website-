@@ -17,10 +17,67 @@ function loadBookingFromStorage() {
 
     try {
         activeBooking = JSON.parse(raw);
+        repairBookingPrice(activeBooking);
+        localStorage.setItem('currentBooking', JSON.stringify(activeBooking));
         renderSummaryUI();
     } catch (e) {
         console.error("Error parsing booking data", e);
     }
+}
+
+function repairBookingPrice(booking) {
+    if (!booking) return booking;
+
+    const travelers = parseInt(booking.travelers) || 1;
+    const existingTotal = parseMoney(booking.totalPrice);
+    if (existingTotal > 0) {
+        booking.totalPrice = existingTotal;
+        return booking;
+    }
+
+    const pkg = findPackageForBooking(booking);
+    const perPerson = parseMoney(booking.basePrice)
+        || parseMoney(pkg?.discountedPrice)
+        || parseMoney(pkg?.price)
+        || parseMoney(pkg?.basePrice);
+
+    if (perPerson > 0) {
+        booking.basePrice = perPerson;
+        booking.totalPrice = perPerson * travelers;
+    }
+
+    return booking;
+}
+
+function findPackageForBooking(booking) {
+    const packages = getPackageCatalog();
+    return packages.find(p => p.id === booking.packageId)
+        || packages.find(p => p.name === booking.packageName)
+        || packages.find(p => booking.packageName && p.name && p.name.toLowerCase() === booking.packageName.toLowerCase())
+        || null;
+}
+
+function getPackageCatalog() {
+    const packages = [];
+
+    try {
+        if (window.AppStorage && AppStorage.getPackages) packages.push(...(AppStorage.getPackages() || []));
+    } catch (e) {}
+
+    if (window.MockData && Array.isArray(MockData.packages)) {
+        MockData.packages.forEach(pkg => {
+            if (!packages.some(existing => existing.id === pkg.id)) packages.push(pkg);
+        });
+    }
+
+    return packages;
+}
+
+function parseMoney(value) {
+    if (value === null || value === undefined || value === '') return 0;
+    if (typeof value === 'number') return Number.isFinite(value) ? value : 0;
+    const parsed = parseFloat(String(value).replace(/[^0-9.-]+/g, ""));
+    return Number.isFinite(parsed) ? parsed : 0;
 }
 
 function renderSummaryUI() {
@@ -138,13 +195,16 @@ function setupEventListeners() {
             setTimeout(() => {
                 // Show custom modal instead of alert
                 showPaymentSuccessModal(activeBooking.packageName || activeBooking.location || "your destination", () => {
-                    let history = JSON.parse(localStorage.getItem('beyondPyramids_bookings') || '[]');
-                    history.push({
+                    const paidBooking = {
                         ...activeBooking,
-                        status: 'Confirmed',
+                        status: 'confirmed',
                         paymentStatus: 'Paid'
-                    });
+                    };
+
+                    let history = JSON.parse(localStorage.getItem('beyondPyramids_bookings') || '[]');
+                    history.push(paidBooking);
                     localStorage.setItem('beyondPyramids_bookings', JSON.stringify(history));
+                    localStorage.setItem('currentBooking', JSON.stringify(paidBooking));
 
                     window.location.href = "../BookingDetailsPage/booking-details.html";
                 });
@@ -154,12 +214,69 @@ function setupEventListeners() {
 
     if (cancelBtn) {
         cancelBtn.addEventListener("click", () => {
-            if (confirm("Are you sure you want to cancel this selection?")) {
-                localStorage.removeItem('currentBooking');
-                window.location.href = "../LandingPage/LandingPage.html";
-            }
+            showCancelRequestModal();
         });
     }
+}
+
+function showCancelRequestModal() {
+    const existing = document.getElementById('cancel-request-modal');
+    if (existing) existing.remove();
+
+    const overlay = document.createElement('div');
+    overlay.id = 'cancel-request-modal';
+    overlay.className = 'modal-overlay';
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.setAttribute('aria-labelledby', 'cancel-modal-title');
+
+    overlay.innerHTML = `
+        <div class="modal-content login-required-modal">
+            <div class="modal-header">
+                <h2 id="cancel-modal-title"><i class="fas fa-rotate-left"></i> Cancel Request</h2>
+            </div>
+            <p class="login-required-message">This will discard the current booking summary and return you to the package details page.</p>
+            <div class="modal-actions">
+                <button type="button" id="cancel-modal-keep-btn" class="btn btn--outline">Keep Booking</button>
+                <button type="button" id="cancel-modal-confirm-btn" class="btn btn--primary">Return to Package</button>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(overlay);
+    document.body.style.overflow = 'hidden';
+
+    const closeModal = () => {
+        overlay.remove();
+        document.body.style.overflow = '';
+    };
+
+    document.getElementById('cancel-modal-keep-btn')?.addEventListener('click', closeModal);
+    document.getElementById('cancel-modal-confirm-btn')?.addEventListener('click', () => {
+        const targetUrl = getCancelReturnUrl();
+        localStorage.removeItem('currentBooking');
+        window.location.href = targetUrl;
+    });
+
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) closeModal();
+    });
+}
+
+function getCancelReturnUrl() {
+    if (!activeBooking) return "../DayPackages/dayPackages.html";
+
+    if (activeBooking.isCustom) {
+        return "../CustomTripBuilderPage/CustomTripBuilderPage.html";
+    }
+
+    if (activeBooking.packageId) {
+        const params = new URLSearchParams({ id: activeBooking.packageId });
+        if (activeBooking.tier) params.set('tier', activeBooking.tier);
+        return "../PackageDetailsPage/package-details.html?" + params.toString();
+    }
+
+    return "../DayPackages/dayPackages.html";
 }
 
 function showPaymentSuccessModal(location, callback) {

@@ -84,7 +84,6 @@ function formatRelativeTime(ts) {
 function updateStatCards() {
     const bookings  = getAllBookings();
     const users     = getAllUsers();
-    const revenue   = bookings.reduce((sum, b) => sum + (Number(b.totalPrice) || 0), 0);
 
     // Total Users
     const userStatEl = document.querySelector('.stat-card:nth-child(1) .stat-number');
@@ -93,12 +92,6 @@ function updateStatCards() {
     // Total Bookings
     const bookingStatEl = document.querySelector('.stat-card:nth-child(2) .stat-number');
     if (bookingStatEl) bookingStatEl.textContent = bookings.length.toLocaleString();
-
-    // Total Revenue
-    const revenueStatEl = document.querySelector('.stat-card:nth-child(3) .stat-number');
-    if (revenueStatEl && revenue > 0) {
-        revenueStatEl.textContent = 'EGP ' + revenue.toLocaleString();
-    }
 }
 
 // ── Populate Recent Activities table with real bookings ───────────────────

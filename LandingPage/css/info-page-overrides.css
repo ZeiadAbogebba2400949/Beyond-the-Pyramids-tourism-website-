@@ -1,0 +1,46 @@
+/**
+ * Shared overrides for Terms, About Us, and FAQ when using landing navbar styles.
+ * Restores default cursor and keeps page hero titles centered.
+ */
+
+body.info-page,
+body.info-page a,
+body.info-page button {
+    cursor: auto;
+}
+
+body.info-page a,
+body.info-page button,
+body.info-page .btn,
+body.info-page .theme-toggle,
+body.info-page input,
+body.info-page textarea,
+body.info-page select {
+    cursor: pointer;
+}
+
+body.info-page input[type="text"],
+body.info-page input[type="email"],
+body.info-page input[type="search"],
+body.info-page textarea {
+    cursor: text;
+}
+
+body.info-page .page-title {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+}
+
+body.info-page .page-title .hero-title,
+body.info-page .page-title .hero-description {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+body.luxury-aesthetic .theme-toggle {
+    cursor: none;
+}

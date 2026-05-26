@@ -233,41 +233,6 @@ body {
     box-shadow: 0 0 0 2px rgba(197, 160, 89, 0.1);
 }
 
-#applyDateFilter,
-#resetDateFilter {
-    padding: var(--space-md);
-    border-radius: var(--radius-sm);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    font-size: var(--text-xs);
-    cursor: pointer;
-    transition: var(--transition-base);
-}
-
-#applyDateFilter {
-    background: var(--gold-primary);
-    color: white;
-    border: none;
-}
-
-#applyDateFilter:hover {
-    background: var(--gold-hover);
-    transform: translateY(-2px);
-}
-
-#resetDateFilter {
-    background: transparent;
-    border: 1px solid var(--color-border-light);
-    color: var(--text-secondary);
-}
-
-#resetDateFilter:hover {
-    border-color: var(--gold-primary);
-    color: var(--gold-primary);
-}
-
-
 #bookingsList {
     display: grid;
     grid-template-columns: 1fr;

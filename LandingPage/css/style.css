@@ -55,14 +55,29 @@ body {
     line-height: 1.6;
     overflow-x: hidden;
     transition: background-color 0.5s ease, color 0.5s ease;
-    cursor: none; 
+}
+
+/* Custom pyramid cursor — landing page only (see index.html body.luxury-aesthetic) */
+body.luxury-aesthetic {
+    cursor: none;
 }
 
 a {
     transition: var(--transition-base);
     text-decoration: none;
     color: inherit;
+}
+
+body.luxury-aesthetic a {
     cursor: none;
+}
+
+body.luxury-aesthetic button,
+body.luxury-aesthetic .theme-toggle,
+body.luxury-aesthetic .admin-user-chip,
+body.luxury-aesthetic .admin-user-chip *,
+body.luxury-aesthetic .admin-logout-btn {
+    cursor: none !important;
 }
 
 
@@ -147,6 +162,14 @@ h1, h2, h3, h4 {
 
 .align-center { text-align: center; }
 
+.section-footer {
+    margin-top: 3rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+}
+
 
 .navbar {
     position: fixed;
@@ -179,13 +202,36 @@ h1, h2, h3, h4 {
 
 .nav-container {
     display: flex;
-    justify-content: space-between;
+    flex-wrap: nowrap;
     align-items: center;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    justify-content: flex-start;
     padding: 1.2rem 2rem;
+    gap: 1.25rem;
+}
+
+.navbar .nav-menu {
+    flex: 1 1 auto;
+    justify-content: center;
+    gap: 2rem;
+    min-width: 0;
+}
+
+.navbar .nav-actions {
+    margin-left: auto;
+}
+
+.navbar .logo,
+.nav-container .logo {
+    flex-shrink: 0;
 }
 
 .logo img {
     height: 45px;
+    width: auto;
+    max-width: none;
     filter: brightness(0.9) contrast(1.1);
     transition: var(--transition-base);
 }
@@ -196,8 +242,14 @@ h1, h2, h3, h4 {
 
 .nav-menu {
     display: flex;
+    flex-wrap: nowrap;
     list-style: none;
     gap: 3rem;
+    flex-shrink: 0;
+}
+
+.nav-menu li {
+    flex-shrink: 0;
 }
 
 .nav-link {
@@ -207,6 +259,7 @@ h1, h2, h3, h4 {
     text-transform: uppercase;
     color: var(--text-primary);
     position: relative;
+    white-space: nowrap;
 }
 
 .nav-link::after {
@@ -226,8 +279,22 @@ h1, h2, h3, h4 {
 
 .nav-actions {
     display: flex;
+    flex-wrap: nowrap;
     align-items: center;
     gap: 2rem;
+    flex-shrink: 0;
+}
+
+.nav-buttons {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 1rem;
+    flex-shrink: 0;
+}
+
+.nav-buttons .btn {
+    white-space: nowrap;
 }
 
 .theme-toggle {
@@ -235,7 +302,7 @@ h1, h2, h3, h4 {
     border: 1px solid var(--border-color);
     padding: 8px;
     border-radius: 50%;
-    cursor: none;
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;

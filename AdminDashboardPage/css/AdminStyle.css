@@ -17,12 +17,14 @@ body {
 
 .dashboard-sidebar {
     width: var(--sidebar-width);
+    height: 100vh;
     background: var(--bg-alt); 
     border-right: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
     padding: var(--space-xl) 0;
     z-index: 100;
+    overflow: hidden;
 }
 
 .sidebar-header {
@@ -42,7 +44,7 @@ body {
 
 .sidebar-nav {
     flex: 1;
-    overflow-y: auto;
+    overflow: visible;
     padding: 0 var(--space-md);
 }
 
@@ -95,6 +97,7 @@ body {
 }
 
 .sidebar-footer {
+    margin-top: auto;
     padding: var(--space-xl) var(--space-xl) 0;
     border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
@@ -120,7 +123,7 @@ body {
 .dashboard-main {
     flex: 1;
     overflow-y: auto;
-    padding: var(--space-2xl);
+    padding: var(--space-xl) var(--space-2xl);
     background-color: var(--bg-primary);
 }
 
@@ -129,8 +132,8 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: var(--space-2xl);
-    padding-bottom: var(--space-lg);
+    margin-bottom: var(--space-xl);
+    padding-bottom: var(--space-md);
     border-bottom: 1px solid var(--color-border-light);
 }
 
@@ -179,14 +182,14 @@ body {
 
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--space-xl);
-    margin-bottom: var(--space-2xl);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-lg);
+    margin-bottom: var(--space-xl);
 }
 
 .stat-card {
     background: var(--color-surface);
-    padding: var(--space-xl);
+    padding: var(--space-lg) var(--space-xl);
     border-radius: var(--radius-md);
     border: 1px solid var(--color-border-light);
     transition: transform 0.3s ease, border-color 0.3s ease;
@@ -226,8 +229,8 @@ body {
 .dashboard-row {
     display: grid;
     grid-template-columns: 1fr 1.5fr;
-    gap: var(--space-xl);
-    margin-bottom: var(--space-2xl);
+    gap: var(--space-lg);
+    margin-bottom: var(--space-xl);
 }
 
 .dashboard-row.single-column {
@@ -236,7 +239,7 @@ body {
 
 .card {
     background: var(--color-surface);
-    padding: var(--space-xl);
+    padding: var(--space-lg) var(--space-xl);
     border-radius: var(--radius-lg);
     border: 1px solid var(--color-border-light);
 }

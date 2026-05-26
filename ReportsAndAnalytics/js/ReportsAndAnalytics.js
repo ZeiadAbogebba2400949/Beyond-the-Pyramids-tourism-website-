@@ -21,18 +21,41 @@ const MUTED = 'rgba(150,150,150,0.6)';
 const MD = window.MockData || {};
 
 // Convenience accessors — fallback to [] if data isn't loaded
-const getUsers = () => MD.users || [];
-const getPackages = () => MD.packages || [];
-const getBookings = () => MD.bookings || [];   // package bookings
-const getHotels = () => MD.hotels || [];
-const getHotelRes = () => MD.hotelReservations || [];
-const getTransport = () => MD.transportBookings || [];
-const getReviews = () => MD.websiteReviews || [];
+function mergeBy(items, keyFn) {
+    const seen = new Set();
+    return items.filter(item => {
+        const key = keyFn(item);
+        if (!key || seen.has(key)) return false;
+        seen.add(key);
+        return true;
+    });
+}
 
+const getUsers = () => {
+    const stored = window.AppStorage && window.AppStorage.getRegisteredUsers
+        ? window.AppStorage.getRegisteredUsers()
+        : [];
+    return mergeBy([...stored, ...(MD.users || [])], u => (u.email || u.id || '').toLowerCase())
+        .map(u => ({
+            status: 'active',
+            role: String(u.role || 'user').toLowerCase() === 'admin' ? 'admin' : 'user',
+            ...u
+        }));
+};
+const getPackages = () => window.AppStorage && window.AppStorage.getPackages ? window.AppStorage.getPackages() : (MD.packages || []);
+const getBookings = () => {
+    const globalBookings = window.AppStorage && window.AppStorage.getBookings
+        ? window.AppStorage.getBookings()
+        : [];
+    const users = window.AppStorage && window.AppStorage.getRegisteredUsers
+        ? window.AppStorage.getRegisteredUsers()
+        : [];
+    const userBookings = users.flatMap(u => Array.isArray(u.bookings) ? u.bookings : []);
+    return mergeBy([...globalBookings, ...userBookings, ...(MD.bookings || [])], b => b.id || b.bookingId || b.bookingNumber)
+        .map(b => ({ status: 'confirmed', ...b }));
+};
 // ── Chart instances (kept for .destroy() on re-render) ─
 let usersChart, pkgStatusChart, pkgRevenueChart;
-let hotelStatusChart, hotelRevenueChart;
-let transportStatusChart, transportVehicleChart;
 let ratingChart;
 
 // ── Review filter state ────────────────────────────────
@@ -41,11 +64,11 @@ let reviewFilters = { startDate: '', endDate: '' };
 // ── Review data (static, not in MockData) ─────────────
 const websiteReviews = [
     { user: 'Emily Carter', rating: 5, review: 'Incredible experience, seamless booking!', date: '2026-01-20' },
-    { user: 'Hans Müller', rating: 4, review: 'Very professional guides and drivers.', date: '2026-02-15' },
+    { user: 'Hans Müller', rating: 4, review: 'Very professional guides and planning.', date: '2026-02-15' },
     { user: 'Fatima Al-Rashid', rating: 5, review: 'Best travel platform I have used.', date: '2026-02-28' },
     { user: 'Ahmed Traveler', rating: 4, review: 'Great value packages, loved Luxor tour.', date: '2026-03-01' },
     { user: 'Yuki Tanaka', rating: 5, review: 'Flawless organisation, highly recommend.', date: '2026-03-15' },
-    { user: 'Liam O\'Brien', rating: 3, review: 'Good overall, minor hiccups with transport.', date: '2026-04-01' },
+    { user: 'Liam O\'Brien', rating: 3, review: 'Good overall, minor hiccups with timing.', date: '2026-04-01' },
     { user: 'Sofia Martínez', rating: 5, review: 'Magical — Egypt exceeded all expectations!', date: '2026-04-05' },
     { user: 'James Okafor', rating: 4, review: 'Beautiful country, great team.', date: '2026-04-10' }
 ];
@@ -84,6 +107,7 @@ function destroyChart(chartRef) {
 }
 
 function donutChart(ctx, labels, data, colors) {
+    if (typeof Chart === 'undefined' || !ctx) return null;
     return new Chart(ctx, {
         type: 'doughnut',
         data: { labels, datasets: [{ data, backgroundColor: colors, borderWidth: 2 }] },
@@ -92,6 +116,7 @@ function donutChart(ctx, labels, data, colors) {
 }
 
 function barChart(ctx, labels, data, label, color = GOLD, borderColor = GOLD_B) {
+    if (typeof Chart === 'undefined' || !ctx) return null;
     return new Chart(ctx, {
         type: 'bar',
         data: {
@@ -113,25 +138,15 @@ function barChart(ctx, labels, data, label, color = GOLD, borderColor = GOLD_B) 
 function renderKPIRow() {
     const users = getUsers();
     const bookings = getBookings();
-    const hotelRes = getHotelRes();
-    const transport = getTransport();
 
     const totalUsers = users.length;
     const confirmedPkg = bookings.filter(b => b.status !== 'cancelled').length;
-    const confirmedHotel = hotelRes.filter(r => r.status !== 'cancelled').length;
-    const confirmedTrans = transport.filter(t => t.status === 'confirmed').length;
-
-    // Revenue from hotel reservations
-    const hotelRevenue = hotelRes
-        .filter(r => r.status !== 'cancelled')
-        .reduce((sum, r) => sum + (r.totalPrice || 0), 0);
+    const cancelledPkg = bookings.filter(b => b.status === 'cancelled').length;
 
     document.getElementById('kpiRow').innerHTML = `
         ${statCard('Total Users', totalUsers, 'fas fa-users', 'color:#C5A059;background:rgba(197,160,89,0.1)')}
         ${statCard('Active Pkg Bookings', confirmedPkg, 'fas fa-boxes-packing', 'color:#27AE60;background:rgba(39,174,96,0.1)')}
-        ${statCard('Hotel Reservations', confirmedHotel, 'fas fa-hotel', 'color:#2980B9;background:rgba(41,128,185,0.1)')}
-        ${statCard('Transport Bookings', confirmedTrans, 'fas fa-shuttle-van', 'color:#8e44ad;background:rgba(142,68,173,0.1)')}
-        ${statCard('Hotel Revenue (EGP)', `EGP ${hotelRevenue.toLocaleString()}`, 'fas fa-coins', 'color:#C5A059;background:rgba(197,160,89,0.1)')}
+        ${statCard('Cancelled Packages', cancelledPkg, 'fas fa-ban', 'color:#dc3545;background:rgba(220,53,69,0.1)')}
     `;
 }
 
@@ -172,6 +187,7 @@ function renderUsers() {
         if (u.role === 'admin') adminCounts[m]++;
         else userCounts[m]++;
     });
+    if (typeof Chart !== 'undefined' && ctx) {
     usersChart = new Chart(ctx, {
         type: 'bar',
         data: {
@@ -183,6 +199,7 @@ function renderUsers() {
         },
         options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'top' } }, scales: { y: { beginAtZero: true, stacked: true }, x: { stacked: true } } }
     });
+    }
 
     // Table
     const tbody = document.getElementById('usersTableBody');
@@ -273,131 +290,7 @@ function renderPackages() {
 }
 
 // ═══════════════════════════════════════════════════════
-//  SECTION 3 — Hotel Reservations
-// ═══════════════════════════════════════════════════════
-
-function populateHotelFilter() {
-    const sel = document.getElementById('hotelFilter');
-    sel.innerHTML = '<option value="all">All Hotels</option>';
-    getHotels().forEach(h => {
-        sel.innerHTML += `<option value="${h.id}">${h.name}</option>`;
-    });
-}
-
-function renderHotels() {
-    const hotelFilter = document.getElementById('hotelFilter').value;
-    const statusFilter = document.getElementById('hotelStatusFilter').value;
-
-    let reservations = getHotelRes().filter(r =>
-        (hotelFilter === 'all' || r.hotelId === hotelFilter) &&
-        (statusFilter === 'all' || r.status === statusFilter)
-    );
-
-    const counts = { confirmed: 0, 'checked-in': 0, 'checked-out': 0, cancelled: 0 };
-    reservations.forEach(r => { if (counts[r.status] !== undefined) counts[r.status]++; });
-
-    // Revenue by hotel
-    const revenueByHotel = {};
-    getHotels().forEach(h => { revenueByHotel[h.name] = 0; });
-    reservations.filter(r => r.status !== 'cancelled').forEach(r => {
-        const hotel = getHotels().find(h => h.id === r.hotelId);
-        if (!hotel) return;
-        revenueByHotel[hotel.name] = (revenueByHotel[hotel.name] || 0) + (r.totalPrice || 0);
-    });
-    const totalRevenue = Object.values(revenueByHotel).reduce((s, v) => s + v, 0);
-
-    document.getElementById('hotelStatsGrid').innerHTML = `
-        ${statCard('Total Reservations', reservations.length, 'fas fa-bed', 'color:#2980B9;background:rgba(41,128,185,0.1)')}
-        ${statCard('Confirmed', counts['confirmed'], 'fas fa-check-circle', 'color:#27AE60;background:rgba(39,174,96,0.1)')}
-        ${statCard('Checked-In', counts['checked-in'], 'fas fa-door-open', 'color:#C5A059;background:rgba(197,160,89,0.1)')}
-        ${statCard('Checked-Out', counts['checked-out'], 'fas fa-door-closed', 'color:#8e44ad;background:rgba(142,68,173,0.1)')}
-        ${statCard('Cancelled', counts['cancelled'], 'fas fa-ban', 'color:#dc3545;background:rgba(220,53,69,0.1)')}
-        ${statCard('Revenue (EGP)', `EGP ${totalRevenue.toLocaleString()}`, 'fas fa-coins', 'color:#C5A059;background:rgba(197,160,89,0.1)')}
-    `;
-
-    destroyChart(hotelStatusChart);
-    hotelStatusChart = donutChart(
-        document.getElementById('hotelStatusChart').getContext('2d'),
-        ['Confirmed', 'Checked-In', 'Checked-Out', 'Cancelled'],
-        [counts['confirmed'], counts['checked-in'], counts['checked-out'], counts['cancelled']],
-        [GREEN, GOLD, BLUE, RED]
-    );
-
-    destroyChart(hotelRevenueChart);
-    const hotelNames = Object.keys(revenueByHotel).filter(k => revenueByHotel[k] > 0);
-    hotelRevenueChart = barChart(
-        document.getElementById('hotelRevenueChart').getContext('2d'),
-        hotelNames,
-        hotelNames.map(k => revenueByHotel[k]),
-        'Revenue per Hotel (EGP)', BLUE, BLUE_B
-    );
-
-    // Table
-    const tbody = document.getElementById('hotelTableBody');
-    tbody.innerHTML = reservations.length === 0
-        ? '<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--color-text-muted);">No reservations match filter.</td></tr>'
-        : reservations.map(r => {
-            const hotel = getHotels().find(h => h.id === r.hotelId);
-            const total = r.totalPrice || 0;
-            return `<tr>
-                <td><strong>${r.id}</strong></td>
-                <td>${r.guestName || '—'}</td>
-                <td>${hotel ? hotel.name : r.hotelId}</td>
-                <td>${r.checkIn || '—'}</td>
-                <td>${r.checkOut || '—'}</td>
-                <td style="font-weight:600;color:var(--color-success);">EGP ${total.toLocaleString()}</td>
-                <td>${badgePill(r.status, r.status)}</td>
-            </tr>`;
-        }).join('');
-}
-
-// ═══════════════════════════════════════════════════════
-//  SECTION 4 — Transportation Bookings
-// ═══════════════════════════════════════════════════════
-
-function renderTransport() {
-    const statusFilter = document.getElementById('transportStatusFilter').value;
-
-    let bookings = getTransport().filter(b =>
-        statusFilter === 'all' || b.status === statusFilter
-    );
-
-    const confirmed = bookings.filter(b => b.status === 'confirmed').length;
-    const cancelled = bookings.filter(b => b.status === 'cancelled').length;
-
-    // Bookings by vehicle type
-    const byType = {};
-    getTransport().forEach(b => {
-        const t = b.vehicleType || 'Unknown';
-        byType[t] = (byType[t] || 0) + 1;
-    });
-
-    document.getElementById('transportStatsGrid').innerHTML = `
-        ${statCard('Total Bookings', bookings.length, 'fas fa-list', 'color:#8e44ad;background:rgba(142,68,173,0.1)')}
-        ${statCard('Confirmed', confirmed, 'fas fa-check-circle', 'color:#27AE60;background:rgba(39,174,96,0.1)')}
-        ${statCard('Cancelled', cancelled, 'fas fa-ban', 'color:#dc3545;background:rgba(220,53,69,0.1)')}
-    `;
-
-    destroyChart(transportStatusChart);
-    transportStatusChart = donutChart(
-        document.getElementById('transportStatusChart').getContext('2d'),
-        ['Confirmed', 'Cancelled'],
-        [getTransport().filter(b => b.status === 'confirmed').length, getTransport().filter(b => b.status === 'cancelled').length],
-        [GREEN, RED]
-    );
-
-    destroyChart(transportVehicleChart);
-    transportVehicleChart = barChart(
-        document.getElementById('transportVehicleChart').getContext('2d'),
-        Object.keys(byType),
-        Object.values(byType),
-        'Bookings by Vehicle Type',
-        'rgba(142,68,173,0.75)', '#8e44ad'
-    );
-}
-
-// ═══════════════════════════════════════════════════════
-//  SECTION 5 — Reviews
+//  SECTION 3 - Reviews
 // ═══════════════════════════════════════════════════════
 
 function renderReviews() {
@@ -438,6 +331,7 @@ function renderReviews() {
     filtered.forEach(r => { if (r.rating >= 1 && r.rating <= 5) starCounts[r.rating - 1]++; });
 
     destroyChart(ratingChart);
+    if (typeof Chart !== 'undefined') {
     ratingChart = new Chart(document.getElementById('ratingChart').getContext('2d'), {
         type: 'bar',
         data: {
@@ -451,6 +345,7 @@ function renderReviews() {
         },
         options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
     });
+    }
 }
 
 // ═══════════════════════════════════════════════════════
@@ -460,10 +355,8 @@ function renderReviews() {
 function setDefaultDates() {
     const today = new Date();
     const sixAgo = new Date(); sixAgo.setMonth(sixAgo.getMonth() - 6);
-    const threeAgo = new Date(); threeAgo.setMonth(threeAgo.getMonth() - 3);
-
-    document.getElementById('pkgStartDate').value = threeAgo.toISOString().split('T')[0];
-    document.getElementById('pkgEndDate').value = today.toISOString().split('T')[0];
+    document.getElementById('pkgStartDate').value = '';
+    document.getElementById('pkgEndDate').value = '';
     document.getElementById('reviewStartDate').value = sixAgo.toISOString().split('T')[0];
     document.getElementById('reviewEndDate').value = today.toISOString().split('T')[0];
 }
@@ -481,14 +374,6 @@ function attachListeners() {
         document.getElementById('packageStatusFilter').value = 'all';
         renderPackages();
     });
-
-    // Hotels
-    document.getElementById('hotelFilter').addEventListener('change', renderHotels);
-    document.getElementById('hotelStatusFilter').addEventListener('change', renderHotels);
-
-    // Transport
-    document.getElementById('transportStatusFilter').addEventListener('change', renderTransport);
-
     // Reviews
     document.querySelector('.apply-review-btn').addEventListener('click', renderReviews);
     document.querySelector('.reset-review-btn').addEventListener('click', () => {
@@ -502,13 +387,10 @@ function attachListeners() {
 
 document.addEventListener('DOMContentLoaded', () => {
     setDefaultDates();
-    populateHotelFilter();
     attachListeners();
 
     renderKPIRow();
     renderUsers();
     renderPackages();
-    renderHotels();
-    renderTransport();
     renderReviews();
 });

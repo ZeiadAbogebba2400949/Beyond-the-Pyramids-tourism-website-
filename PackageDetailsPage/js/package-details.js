@@ -102,8 +102,8 @@ function normalise(p) {
     const isAdmin = p.id && p.id.startsWith('PKG');
 
     // Price — admin uses `price` / `discountedPrice`, legacy uses `basePrice`
-    let basePrice = p.basePrice ?? p.discountedPrice ?? p.price ?? 0;
-    let fullPrice = p.price ? p.price : Math.round(basePrice * 1.3);
+    let basePrice = parsePackageMoney(p.basePrice ?? p.discountedPrice ?? p.price ?? 0);
+    let fullPrice = p.price ? parsePackageMoney(p.price) : Math.round(basePrice * 1.3);
 
     // Duration string
     let duration = p.duration ||
@@ -637,6 +637,9 @@ function initBookingAction() {
             bookingNumber: 'EG-' + new Date().getFullYear() + '-' + Math.floor(Math.random() * 90000 + 10000),
             packageName: selectedPkg.name,
             packageId: selectedPkg.id,
+            type: selectedPkg.type || 'day',
+            tripType: selectedPkg._category || selectedPkg.category || selectedPkg.type || 'Day Package',
+            packageType: selectedPkg.type || selectedPkg._category || selectedPkg.category || 'day',
             location: selectedPkg.location || selectedPkg.city,
             image: selectedPkg.image,
             timestamp: new Date().toISOString(),
@@ -688,4 +691,11 @@ function initTimelineReveal() {
     }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
 
     items.forEach(el => obs.observe(el));
+}
+
+function parsePackageMoney(value) {
+    if (value === null || value === undefined || value === '') return 0;
+    if (typeof value === 'number') return Number.isFinite(value) ? value : 0;
+    const parsed = parseFloat(String(value).replace(/[^0-9.-]+/g, ""));
+    return Number.isFinite(parsed) ? parsed : 0;
 }

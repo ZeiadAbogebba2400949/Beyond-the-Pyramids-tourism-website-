@@ -61,7 +61,6 @@ function populatePersonalInfo(session, userRecord) {
     const phone = userRecord?.phone || userRecord?.phoneNumber || '';
     const dob   = userRecord?.dob   || userRecord?.dateOfBirth || '';
     const nat   = userRecord?.nationality || '';
-    const addr  = userRecord?.address || '';
 
     // Header display
     const nameDisplay  = document.getElementById('userNameDisplay');
@@ -85,7 +84,6 @@ function populatePersonalInfo(session, userRecord) {
     setVal('email',       email);
     setVal('phoneNumber', phone);
     setVal('nationality', nat);
-    setVal('address',     addr);
 
     // Date of birth: must be YYYY-MM-DD for <input type="date">
     if (dob) {
@@ -178,11 +176,10 @@ function savePersonalInfo(session) {
     const phone = document.getElementById('phoneNumber')?.value.trim();
     const dob   = document.getElementById('dob')?.value;
     const nat   = document.getElementById('nationality')?.value.trim();
-    const addr  = document.getElementById('address')?.value.trim();
 
     if (!name) { showAlert('Full name is required.', 'error'); return false; }
 
-    const updates = { name, phone, dob, nationality: nat, address: addr };
+    const updates = { name, phone, dob, nationality: nat };
 
     if (window.AppStorage && window.AppStorage.updateRegisteredUser) {
         window.AppStorage.updateRegisteredUser(session.email, updates);
@@ -251,6 +248,70 @@ function initPersonalInfo(session) {
             showAlert('Profile updated successfully!', 'success');
             hasUnsavedChanges = false;
         }
+    });
+}
+
+function initProfilePhotoUpload(session) {
+    const uploadBtn = document.getElementById('uploadPhotoBtn');
+    const fileInput = document.getElementById('profilePhotoInput');
+    const imgEl = document.getElementById('profileAvatarImg');
+    const iconEl = document.getElementById('profileAvatarIcon');
+
+    if (!uploadBtn || !fileInput) return;
+
+    uploadBtn.addEventListener('click', () => fileInput.click());
+
+    fileInput.addEventListener('change', () => {
+        const file = fileInput.files && fileInput.files[0];
+        if (!file) return;
+
+        if (!file.type.startsWith('image/')) {
+            showAlert('Please choose an image file.', 'error');
+            fileInput.value = '';
+            return;
+        }
+
+        if (file.size > 2 * 1024 * 1024) {
+            showAlert('Profile photo must be smaller than 2 MB.', 'error');
+            fileInput.value = '';
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = () => {
+            const image = reader.result;
+
+            if (imgEl) {
+                imgEl.src = image;
+                imgEl.alt = document.getElementById('fullName')?.value || 'Profile photo';
+                imgEl.style.display = 'block';
+            }
+            if (iconEl) iconEl.style.display = 'none';
+
+            if (window.AppStorage && window.AppStorage.updateRegisteredUser) {
+                window.AppStorage.updateRegisteredUser(session.email, { image });
+            }
+
+            try {
+                const sLocal = localStorage.getItem('userSession');
+                if (sLocal) {
+                    const parsed = JSON.parse(sLocal);
+                    parsed.image = image;
+                    localStorage.setItem('userSession', JSON.stringify(parsed));
+                }
+                const sSession = sessionStorage.getItem('userSession');
+                if (sSession) {
+                    const parsed = JSON.parse(sSession);
+                    parsed.image = image;
+                    sessionStorage.setItem('userSession', JSON.stringify(parsed));
+                }
+            } catch (e) {}
+
+            showAlert('Profile photo updated successfully!', 'success');
+            fileInput.value = '';
+        };
+
+        reader.readAsDataURL(file);
     });
 }
 
@@ -352,7 +413,7 @@ function initGlobalSave(session) {
     const btn = document.getElementById('globalSaveBtn');
     if (!btn) return;
 
-    document.querySelectorAll('input:not([type="password"]), textarea, select').forEach(inp => {
+    document.querySelectorAll('input:not([type="password"]):not([type="file"]), textarea, select').forEach(inp => {
         inp.addEventListener('input', () => { hasUnsavedChanges = true; });
         inp.addEventListener('change', () => { hasUnsavedChanges = true; });
     });
@@ -414,11 +475,12 @@ function initValidation() {
 
 // ── MAIN ───────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-    const session = getSession();
+    if (window.LoginGate && !LoginGate.requireLogin({ message: 'You must be logged in to view profile settings.' })) {
+        return;
+    }
 
-    // Redirect to login if not logged in
+    const session = getSession();
     if (!session || !session.email) {
-        window.location.href = '../LoginPage/login.html';
         return;
     }
 
@@ -427,6 +489,7 @@ document.addEventListener('DOMContentLoaded', () => {
     populatePersonalInfo(session, userRecord);
     initTabs(session.email);
     initPersonalInfo(session);
+    initProfilePhotoUpload(session);
     initSecurity(session);
     initModals(session);
     initSidebar();

@@ -8,6 +8,7 @@
 let users = [];
 let editingId = null;
 let deletingId = null;
+let pendingProfileImage = '';
 
 // ─── Data Loading ─────────────────────────────────────────────────────────────
 
@@ -36,6 +37,42 @@ function loadAllUsers() {
     });
 
     users = combined;
+}
+
+function getCurrentSession() {
+    try {
+        if (window.AppStorage && AppStorage.getUserSession) {
+            const session = AppStorage.getUserSession();
+            if (session && session.email) return session;
+        }
+
+        const raw = localStorage.getItem('userSession') || sessionStorage.getItem('userSession');
+        return raw ? JSON.parse(raw) : null;
+    } catch (e) {
+        return null;
+    }
+}
+
+function isAdminRole(user) {
+    return (user?.role || '').toLowerCase() === 'admin';
+}
+
+function isCurrentSessionUser(user) {
+    const session = getCurrentSession();
+    if (!session || !user) return false;
+
+    const sessionEmail = (session.email || '').toLowerCase();
+    const userEmail = (user.email || '').toLowerCase();
+    const sessionUsername = (session.username || '').toLowerCase();
+    const userUsername = (user.username || '').toLowerCase();
+    const sessionId = String(session.id || session.userId || '').toLowerCase();
+    const userId = String(user.id || user.userId || '').toLowerCase();
+
+    return !!(
+        (sessionEmail && userEmail && sessionEmail === userEmail) ||
+        (sessionUsername && userUsername && sessionUsername === userUsername) ||
+        (sessionId && userId && sessionId === userId)
+    );
 }
 
 // ─── Stats ────────────────────────────────────────────────────────────────────
@@ -107,7 +144,7 @@ function displayUsers() {
             <td>${statusBadge}</td>
             <td>
                 <div class="actions-cell">
-                    <button class="btn-action-edit" onclick="openEditModal('${u.id}')" title="Edit"><i class="fas fa-edit"></i></button>
+                    <button class="btn-action-edit" onclick="openEditModal('${u.id}')" title="${isAdminRole(u) && !isCurrentSessionUser(u) ? 'Admins cannot edit other admins' : 'Edit'}" ${isAdminRole(u) && !isCurrentSessionUser(u) ? 'disabled' : ''}><i class="fas fa-edit"></i></button>
                     <button class="btn-action-delete" onclick="openDeleteModal('${u.id}', '${name.replace(/'/g, "\\'")}')" title="Delete"><i class="fas fa-trash"></i></button>
                 </div>
             </td>
@@ -122,17 +159,26 @@ function closeModal(id) { document.getElementById(id).classList.remove('open'); 
 
 function openAddModal() {
     editingId = null;
+    pendingProfileImage = '';
     document.getElementById('modalTitle').textContent = 'Add New User';
     document.getElementById('userForm').reset();
     document.getElementById('userId').value = '';
     document.getElementById('userJoinDate').value = new Date().toISOString().split('T')[0];
+    updateProfilePhotoEditor(null);
     openModal('userModal');
 }
 
 function openEditModal(id) {
     const u = users.find(u => u.id === id);
     if (!u) return;
+
+    if (isAdminRole(u) && !isCurrentSessionUser(u)) {
+        alert("Access Denied: Admins cannot edit other admins' information.");
+        return;
+    }
+
     editingId = id;
+    pendingProfileImage = u.image || '';
     document.getElementById('modalTitle').textContent = 'Edit User';
     document.getElementById('userId').value = u.id;
     document.getElementById('userName').value = u.name || '';
@@ -143,7 +189,26 @@ function openEditModal(id) {
     document.getElementById('userStatus').value = u.status || 'active';
     document.getElementById('userJoinDate').value = u.joinDate || u.timestamp?.substring(0, 10) || '';
     document.getElementById('userPassword').value = u.password || '';
+    updateProfilePhotoEditor(u);
     openModal('userModal');
+}
+
+function updateProfilePhotoEditor(user) {
+    const editor = document.getElementById('profilePhotoEditor');
+    const preview = document.getElementById('profilePhotoPreview');
+    const input = document.getElementById('userImage');
+    const canEditPhoto = !!(user && isAdminRole(user) && isCurrentSessionUser(user));
+
+    if (!editor || !preview || !input) return;
+
+    editor.classList.toggle('hidden', !canEditPhoto);
+    input.value = '';
+
+    if (canEditPhoto && pendingProfileImage) {
+        preview.innerHTML = `<img src="${pendingProfileImage}" alt="${user.name || 'Profile picture'}">`;
+    } else {
+        preview.innerHTML = '<i class="fas fa-user"></i>';
+    }
 }
 
 function openDeleteModal(id, name) {
@@ -163,6 +228,12 @@ function saveUser() {
     const status = document.getElementById('userStatus').value;
     const joinDate = document.getElementById('userJoinDate').value;
     const password = document.getElementById('userPassword').value.trim();
+    const originalUser = editingId ? users.find(u => u.id === editingId) : null;
+
+    if (originalUser && isAdminRole(originalUser) && !isCurrentSessionUser(originalUser)) {
+        alert("Access Denied: Admins cannot edit other admins' information.");
+        return;
+    }
 
     if (!name || !email || !role) {
         alert('Name, Email, and Role are required.');
@@ -187,7 +258,6 @@ function saveUser() {
         alert('Nationality must be at least 2 characters.');
         return;
     }
-    const joinDate = document.getElementById('userJoinDate').value;
     if (joinDate) {
         const selected = new Date(joinDate);
         const today = new Date();
@@ -197,7 +267,6 @@ function saveUser() {
             return;
         }
     }
-    const password = document.getElementById('userPassword').value.trim();
     if (password && password.length < 6) {
         alert('Password must be at least 6 characters if provided.');
         return;
@@ -205,18 +274,11 @@ function saveUser() {
 
     // RBAC Checks for role changes
     if (editingId) {
-        const originalUser = users.find(u => u.id === editingId);
         if (originalUser && originalUser.role !== role) {
-            let session = null;
-            if (window.AppStorage && window.AppStorage.getUserSession) {
-                session = window.AppStorage.getUserSession();
-            } else {
-                const s = localStorage.getItem('userSession') || sessionStorage.getItem('userSession');
-                if (s) session = JSON.parse(s);
-            }
+            let session = getCurrentSession();
 
             if (session) {
-                const isSelf = session.email.toLowerCase() === originalUser.email.toLowerCase();
+                const isSelf = isCurrentSessionUser(originalUser);
                 if (!isSelf) {
                     if (session.role === 'admin' && originalUser.role === 'admin') {
                         alert("Access Denied: An admin cannot change the role of another admin.");
@@ -239,6 +301,7 @@ function saveUser() {
             users[idx] = {
                 ...users[idx],
                 name, email, phone, nationality, role, status, joinDate,
+                ...(pendingProfileImage ? { image: pendingProfileImage } : {}),
                 ...(password ? { password } : {})
             };
             updatedUser = users[idx];
@@ -264,9 +327,32 @@ function saveUser() {
         localStorage.setItem('bp_registered_users', JSON.stringify(existingLocal));
     }
 
+    syncCurrentSessionUser(updatedUser);
+
     closeModal('userModal');
     updateStats();
     displayUsers();
+}
+
+function syncCurrentSessionUser(updatedUser) {
+    const session = getCurrentSession();
+    if (!updatedUser || !session?.email || session.email.toLowerCase() !== updatedUser.email.toLowerCase()) return;
+
+    try {
+        ['localStorage', 'sessionStorage'].forEach(storeName => {
+            const store = window[storeName];
+            const raw = store.getItem('userSession');
+            if (!raw) return;
+            const parsed = JSON.parse(raw);
+            parsed.name = updatedUser.name;
+            parsed.email = updatedUser.email;
+            parsed.role = updatedUser.role;
+            if (updatedUser.image) parsed.image = updatedUser.image;
+            store.setItem('userSession', JSON.stringify(parsed));
+        });
+    } catch (e) {}
+
+    if (window.AccountChip) window.AccountChip.init();
 }
 
 // ─── Delete User ──────────────────────────────────────────────────────────────
@@ -306,6 +392,33 @@ function init() {
     document.getElementById('searchInput').addEventListener('input', displayUsers);
     document.getElementById('roleFilter').addEventListener('change', displayUsers);
     document.getElementById('statusFilter').addEventListener('change', displayUsers);
+    document.getElementById('userImage')?.addEventListener('change', handleProfilePhotoUpload);
+}
+
+function handleProfilePhotoUpload(e) {
+    const file = e.target.files && e.target.files[0];
+    const user = editingId ? users.find(u => u.id === editingId) : null;
+
+    if (!file || !user || !isAdminRole(user) || !isCurrentSessionUser(user)) return;
+
+    if (!file.type.startsWith('image/')) {
+        alert('Please choose an image file.');
+        e.target.value = '';
+        return;
+    }
+
+    if (file.size > 2 * 1024 * 1024) {
+        alert('Profile picture must be smaller than 2 MB.');
+        e.target.value = '';
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+        pendingProfileImage = reader.result;
+        updateProfilePhotoEditor(user);
+    };
+    reader.readAsDataURL(file);
 }
 
 // Expose for inline onclick handlers
