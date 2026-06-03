@@ -318,42 +318,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     updateAuthUI();
 
-    document.querySelectorAll('.newsletter-form').forEach(form => {
-        let feedbackEl = form.querySelector('.newsletter-feedback');
-        if (!feedbackEl) {
-            feedbackEl = document.createElement('p');
-            feedbackEl.className = 'newsletter-feedback';
-            form.appendChild(feedbackEl);
-        }
-
-        const input = form.querySelector('input[type="email"]');
-        if (input) {
-            input.addEventListener('input', () => {
-                feedbackEl.textContent = '';
-                feedbackEl.className = 'newsletter-feedback';
-            });
-        }
-
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            if (!input) return;
-            const email = input.value.trim();
-            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailPattern.test(email)) {
-                feedbackEl.textContent = 'Please enter a valid email address.';
-                feedbackEl.className = 'newsletter-feedback newsletter-feedback--error';
-                return;
-            }
-            form.reset();
-            feedbackEl.textContent = 'Confirmed';
-            feedbackEl.className = 'newsletter-feedback newsletter-feedback--success';
-            setTimeout(() => {
-                feedbackEl.textContent = '';
-                feedbackEl.className = 'newsletter-feedback';
-            }, 4000);
-        });
-    });
-
     populateDashboardAvatar();
     initGlobalThemeToggle();
 });
