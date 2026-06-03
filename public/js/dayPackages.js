@@ -1,14 +1,8 @@
 
 
-let allPackages = [];
-if (window.AppStorage) {
-    allPackages = window.AppStorage.getPackages().filter(p => p.type === "day");
-} else if (window.MockData && window.MockData.packages) {
-    allPackages = window.MockData.packages.filter(p => p.type === "day");
-}
+const allPackages = (window.SERVER_PACKAGES || []).filter(p => p.type === "day");
 const packagesGrid = document.getElementById('packagesGrid');
 
-// Execute immediately since the script is at the bottom of the body
 renderPackages(allPackages);
 
 function renderPackages(packagesToShow) {
@@ -17,7 +11,6 @@ function renderPackages(packagesToShow) {
 
     packagesToShow.forEach(pkg => {
         const card = document.createElement('div');
-        // Removed reveal-up just in case it's causing opacity issues
         card.className = 'package-card glass-card';
 
         const typeDisplay = {
@@ -29,6 +22,7 @@ function renderPackages(packagesToShow) {
             week: 'Weekly Package'
         };
 
+        const pkgId = pkg._id || pkg.id;
         card.innerHTML = `
             <div class="package-meta">
                 <span><i class="fas fa-location-dot"></i> ${pkg.city || 'Egypt'}</span>
@@ -41,8 +35,8 @@ function renderPackages(packagesToShow) {
             <p class="package-description">${pkg.description}</p>
             <div class="package-price-tag">EGP ${pkg.price} <small>/ explorer</small></div>
             <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
-                <button class="btn btn--secondary btn--small" style="flex: 1; padding: 0.5rem;" onclick="selectPackage('${pkg.id}', 'standard')">Standard (Inc. Transport)</button>
-                <button class="btn btn--primary btn--small" style="flex: 2; padding: 0.5rem;" onclick="selectPackage('${pkg.id}', 'deluxe')">Deluxe (Inc. Guide)</button>
+                <button class="btn btn--secondary btn--small" style="flex: 1; padding: 0.5rem;" onclick="selectPackage('${pkgId}', 'standard')">Standard (Inc. Transport)</button>
+                <button class="btn btn--primary btn--small" style="flex: 2; padding: 0.5rem;" onclick="selectPackage('${pkgId}', 'deluxe')">Deluxe (Inc. Guide)</button>
             </div>
         `;
 
@@ -51,16 +45,6 @@ function renderPackages(packagesToShow) {
 }
 
 function selectPackage(packageId, tier = 'standard') {
-    window.location.href = `../PackageDetailsPage/package-details.html?id=${packageId}&tier=${tier}`;
+    window.location.href = `/packages/${packageId}?tier=${tier}`;
 }
 
-function initTheme() {
-    const themeToggle = document.getElementById('theme-toggle');
-    if (!themeToggle) return;
-    themeToggle.addEventListener('click', () => {
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        document.documentElement.setAttribute('data-theme', newTheme);
-        if (window.AppStorage) window.AppStorage.setTheme(newTheme);
-    });
-}

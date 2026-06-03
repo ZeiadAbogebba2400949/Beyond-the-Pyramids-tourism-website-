@@ -1,0 +1,255 @@
+/* ==========================================================================
+   Luxury Editorial Itinerary - Booking Summary
+   ========================================================================== */
+
+/* Page Level container */
+.editorial-page {
+    padding: var(--space-xl);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100%;
+}
+
+/* The core document wrapper */
+.itinerary-document {
+    width: 100%;
+    max-width: 1000px;
+    background-color: var(--bg-alt); /* slightly elevated neutral */
+    position: relative;
+    border-left: 2px solid var(--gold-primary);
+    padding: var(--space-2xl);
+    box-shadow: 20px 20px 60px rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2xl);
+    /* Subtle noise texture for a physical paper feel */
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+}
+
+[data-theme="light"] .itinerary-document {
+    background-color: #fdfbf7;
+    box-shadow: 20px 20px 60px rgba(0, 0, 0, 0.05);
+}
+
+/* Header Section */
+.itinerary-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: var(--space-xl);
+}
+
+.itinerary-header h2 {
+    font-family: var(--font-display);
+    font-size: var(--text-4xl);
+    color: var(--text-primary);
+    margin: 0;
+    max-width: 60%;
+    line-height: 1.1;
+}
+
+/* Meta Data overlapping */
+.itinerary-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    background: rgba(0, 0, 0, 0.03);
+    padding: var(--space-md) var(--space-xl);
+    transform: translateY(-40px); /* Breaking the grid intentionally */
+    border-bottom: 1px solid var(--gold-primary);
+}
+
+[data-theme="dark"] .itinerary-meta {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.meta-label {
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-xs);
+}
+
+.ref-value {
+    font-family: monospace;
+    font-size: var(--text-xl);
+    color: var(--gold-primary);
+    letter-spacing: 0.1em;
+    margin-bottom: var(--space-sm);
+}
+
+.status-badge {
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 4px 12px;
+    border: 1px solid currentColor;
+    font-weight: bold;
+}
+
+.status-badge.pending { color: #f59e0b; }
+.status-badge.confirmed { color: #10b981; }
+
+/* Body Layout */
+.itinerary-body {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--space-3xl);
+}
+
+/* Typography & Sections */
+.editorial-section {
+    margin-bottom: var(--space-2xl);
+}
+
+.editorial-section h3 {
+    font-family: var(--font-sans);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--gold-primary);
+    margin-bottom: var(--space-lg);
+}
+
+/* Grid for Details */
+.editorial-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-lg);
+}
+
+.grid-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.grid-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+.grid-value {
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    color: var(--text-primary);
+}
+
+/* List for Policy */
+.editorial-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.editorial-list li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    font-size: var(--text-sm);
+    color: var(--text-primary);
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px dashed var(--border-color);
+}
+
+.editorial-list i {
+    color: var(--gold-primary);
+    width: 20px;
+}
+
+/* Pricing Sidebar */
+.editorial-price {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--border-color);
+}
+
+.price-line {
+    display: flex;
+    justify-content: space-between;
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+}
+
+.price-line.total {
+    margin-top: var(--space-md);
+    padding-top: var(--space-md);
+    border-top: 2px solid var(--gold-primary);
+    font-size: var(--text-xl);
+    font-family: var(--font-display);
+    color: var(--gold-primary);
+}
+
+/* Action Buttons */
+.concierge-action {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    margin-top: var(--space-2xl);
+}
+
+.btn-editorial {
+    padding: 16px 24px;
+    font-family: var(--font-sans);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    text-align: center;
+}
+
+.btn-editorial.primary {
+    background-color: var(--gold-primary);
+    color: var(--bg-primary);
+}
+
+.btn-editorial.primary:hover {
+    background-color: var(--text-primary);
+    color: var(--bg-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+.btn-editorial.secondary {
+    background-color: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+}
+
+.btn-editorial.secondary:hover {
+    color: var(--text-primary);
+    border-color: var(--text-primary);
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+    .itinerary-body {
+        grid-template-columns: 1fr;
+    }
+    
+    .itinerary-meta {
+        transform: translateY(0);
+    }
+    
+    .itinerary-header {
+        flex-direction: column;
+        gap: var(--space-lg);
+    }
+    
+    .itinerary-header h2 {
+        max-width: 100%;
+    }
+}
