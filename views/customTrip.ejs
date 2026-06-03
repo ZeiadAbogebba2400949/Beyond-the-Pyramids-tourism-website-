@@ -1,0 +1,276 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Trip Builder - Beyond the Pyramids</title>
+
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/customTrip.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="noise-overlay"></div>
+
+    <div class="page-shell">
+
+        <aside class="page-sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <a href="/"><img src="/images/WebsiteLogo.png" alt="Beyond the Pyramids"></a>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-group">
+                    <span class="group-label">Discovery</span>
+                    <ul>
+                        <li><a href="/"><i class="fas fa-home"></i> <span>Home Sanctuary</span></a></li>
+                        <li><a href="/packages/day"><i class="fas fa-sun"></i> <span>Day Packages</span></a></li>
+                        <li><a href="/packages/week"><i class="fas fa-calendar-week"></i> <span>Week Packages</span></a></li>
+                        <li><a href="/packages/single"><i class="fas fa-location-dot"></i> <span>Single Locations</span></a></li>
+                        <li class="active"><a href="/custom-trip"><i class="fas fa-compass"></i> <span>Trip Architect</span></a></li>
+                    </ul>
+                </div>
+
+                <div class="nav-group">
+                    <span class="group-label">Personal Desk</span>
+                    <ul>
+                        <li><a href="/dashboard"><i class="fas fa-columns"></i> <span>Dashboard</span></a></li>
+                        <li><a href="/my-bookings"><i class="fas fa-suitcase-rolling"></i> <span>My Journeys</span></a></li>
+                        <li><a href="/profile"><i class="fas fa-user-circle"></i> <span>Profile Settings</span></a></li>
+                    </ul>
+                </div>
+
+                <div class="nav-group">
+                    <span class="group-label">Concierge</span>
+                    <ul>
+                        <li><a href="/faq"><i class="fas fa-question-circle"></i> <span>Help &amp; FAQ</span></a></li>
+                        <li><a href="/contact"><i class="fas fa-envelope"></i> <span>Contact Us</span></a></li>
+                        <li><a href="/reviews/write"><i class="fas fa-star"></i> <span>Reviews</span></a></li>
+                    </ul>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button id="theme-toggle" class="theme-toggle-btn">
+                    <i class="fas fa-moon"></i> <span>Dark Mode</span>
+                </button>
+                <a href="#" id="logout-link" class="logout-link"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a>
+            </div>
+        </aside>
+
+        <div class="page-content">
+
+            <div class="page-title reveal-up">
+                <h1 class="hero-title">Custom <span class="text-gold">Trip Builder</span></h1>
+                <p class="hero-description">Design your perfect Egyptian adventure step by step</p>
+                <div class="account-chip" style="display:flex;align-items:center;gap:10px;margin-top:10px;">
+                    <div class="account-chip__avatar"><i class="fas fa-user"></i></div>
+                    <div>
+                        <span class="account-chip__label">Signed in as</span>
+                        <strong class="account-chip__name"><%= user.name %></strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container reveal-up">
+                <div class="stepper">
+                    <div class="stepper-step active">1. Destinations</div>
+                    <div class="stepper-step">2. Dates</div>
+                    <div class="stepper-step">3. Accommodation</div>
+                    <div class="stepper-step">4. Travelers</div>
+                    <div class="stepper-step">5. Review</div>
+                </div>
+            </div>
+
+            <div class="builder-layout">
+
+                <div class="wizard-panel">
+
+                    <div class="wizard-step active" id="step-0">
+                        <div class="step-card">
+                            <h2>Choose Your Destinations</h2>
+                            <p>Select 1 to 5 Egyptian locations to visit</p><br>
+                            <div class="dest-grid" id="dest-grid"></div>
+                            <p id="dest-counter">0 of 5 selected (min 1)</p>
+                            <div class="error-msg" id="dest-error"></div>
+                        </div>
+                        <div class="step-nav">
+                            <span></span>
+                            <button onclick="nextStep()">Continue &rarr;</button>
+                        </div>
+                    </div>
+
+                    <div class="wizard-step" id="step-1">
+                        <div class="step-card">
+                            <h2>Select Trip Dates</h2>
+                            <p>Maximum trip duration is 14 days</p><br>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="trip-start">Start Date</label>
+                                    <input type="date" id="trip-start">
+                                </div>
+                                <div class="form-group">
+                                    <label for="trip-end">End Date</label>
+                                    <input type="date" id="trip-end">
+                                </div>
+                                <div class="form-group">
+                                    <label>Duration</label>
+                                    <div id="duration-display">Select dates above</div>
+                                </div>
+                            </div>
+                            <div class="error-msg" id="date-error"></div>
+                        </div>
+                        <div class="step-nav">
+                            <button onclick="prevStep()">&larr; Back</button>
+                            <button onclick="nextStep()">Continue &rarr;</button>
+                        </div>
+                    </div>
+
+                    <div class="wizard-step" id="step-2">
+                        <div class="step-card">
+                            <h2>Accommodation (optional)</h2>
+                            <p>Choose where you'll stay during your trip</p><br>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="acc-type">Accommodation Type</label>
+                                    <select id="acc-type"></select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="acc-room">Room Type</label>
+                                    <select id="acc-room"></select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="acc-requests">Special Requests (optional)</label>
+                                <textarea id="acc-requests" placeholder="e.g. sea view, ground floor, extra pillows..."></textarea>
+                            </div>
+                            <div class="error-msg" id="acc-error"></div>
+                        </div>
+                        <div class="step-nav">
+                            <button onclick="prevStep()">&larr; Back</button>
+                            <button onclick="nextStep()">Continue &rarr;</button>
+                        </div>
+                    </div>
+
+                    <div class="wizard-step" id="step-3">
+                        <div class="step-card">
+                            <h2>Travelers</h2>
+                            <p>Tell us how many explorers are joining this custom journey</p><br>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="traveler-count">Number of Travelers</label>
+                                    <input type="number" id="traveler-count" min="1" max="15" value="1">
+                                </div>
+                            </div>
+                            <div class="error-msg" id="traveler-error"></div>
+                        </div>
+                        <div class="step-nav">
+                            <button onclick="prevStep()">&larr; Back</button>
+                            <button onclick="nextStep()">Continue &rarr;</button>
+                        </div>
+                    </div>
+
+                    <div class="wizard-step" id="step-4">
+                        <div class="step-card">
+                            <h2>Review Your Trip</h2>
+                            <p>Confirm all details before submitting</p><br>
+                            <div id="review-body"></div>
+                            <hr><br>
+                            <div class="checkbox-row">
+                                <input type="checkbox" id="terms-check">
+                                <label for="terms-check">I accept the <a href="/terms">Terms &amp; Conditions</a> and <a href="/terms">Cancellation Policy</a></label>
+                            </div>
+                            <div class="error-msg" id="review-error"></div>
+                        </div>
+                        <div class="step-nav">
+                            <button onclick="prevStep()">&larr; Back</button>
+                            <button onclick="submitTrip()">Confirm Your Purchase</button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="price-panel">
+                    <div class="price-card">
+                        <h3>Price Summary</h3><br>
+
+                        <div class="price-line">
+                            <span>Destinations</span>
+                            <span id="price-dest">EGP 0</span>
+                        </div>
+                        <div class="price-line">
+                            <span>Accommodation</span>
+                            <span id="price-acc">EGP 0</span>
+                        </div>
+                        <div class="price-line">
+                            <span>Travelers</span>
+                            <span id="price-travelers">x 1</span>
+                        </div>
+
+                        <div class="price-total">
+                            <span>Total</span>
+                            <span id="price-total">EGP 0</span>
+                        </div>
+
+                        <br>
+                        <p><small>Prices are estimates. Final price confirmed upon booking approval.</small></p>
+                    </div>
+                </div>
+
+            </div>
+
+            <footer class="main-footer reveal-up">
+                <div class="container footer-grid">
+                    <div class="footer-brand">
+                        <h3 class="footer-logo">Beyond the Pyramids</h3>
+                        <p>Curating the eternal legacy of Egypt since 2012.</p>
+                    </div>
+                    <nav class="footer-nav">
+                        <div class="footer-group">
+                            <h4>Explore</h4>
+                            <ul>
+                                <li><a href="/#destinations">Destinations</a></li>
+                                <li><a href="/#packages">Tour Packages</a></li>
+                                <li><a href="/custom-trip">Custom Trips</a></li>
+                            </ul>
+                        </div>
+                        <div class="footer-group">
+                            <h4>Company</h4>
+                            <ul>
+                                <li><a href="/about">Our Story</a></li>
+                                <li><a href="/faq">Common Questions</a></li>
+                            </ul>
+                        </div>
+                        <div class="footer-group">
+                            <h4>Legal</h4>
+                            <ul>
+                                <li><a href="/terms">Terms of Service</a></li>
+                            </ul>
+                        </div>
+                    </nav>
+                </div>
+                <div class="footer-bottom container">
+                    <p>&copy; 2026 Beyond the Pyramids. All rights reserved.</p>
+                    <div class="credit">Designed for the modern explorer.</div>
+                </div>
+            </footer>
+
+        </div>
+    </div>
+
+    <script>
+        const SERVER_DATA = {
+            user: <%- JSON.stringify(user) %>,
+            packages: <%- JSON.stringify(packages) %>
+        };
+        window.SERVER_USER = SERVER_DATA.user;
+        window.SERVER_PACKAGES = SERVER_DATA.packages;
+
+</script>
+    <script src="/js/global.js"></script>
+    <script src="/js/customTrip.js"></script>
+</body>
+
+</html>
