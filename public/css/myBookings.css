@@ -340,8 +340,15 @@ body {
     font-size: var(--text-sm);
 }
 
-.view-details-btn {
+.booking-footer {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    align-items: center;
     margin-top: var(--space-xl);
+}
+
+.view-details-btn {
     padding: var(--space-sm) var(--space-lg);
     background: transparent;
     border: 1px solid var(--color-border-light);
@@ -357,6 +364,18 @@ body {
 .view-details-btn:hover {
     border-color: var(--gold-primary);
     color: var(--gold-primary);
+    transform: translateY(-2px);
+}
+
+.btn--cancel {
+    color: #e53e3e;
+    border-color: #e53e3e;
+}
+
+.btn--cancel:hover {
+    background-color: rgba(229, 62, 62, 0.08);
+    border-color: #c53030;
+    color: #c53030;
     transform: translateY(-2px);
 }
 
