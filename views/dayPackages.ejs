@@ -1,0 +1,150 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day Packages - Beyond the Pyramids</title>
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/dayPackages.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="noise-overlay"></div>
+    <div class="page-shell">
+
+        <aside class="page-sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <a href="/"><img src="/images/WebsiteLogo.png" alt="Beyond the Pyramids"></a>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-group">
+                    <span class="group-label">Discovery</span>
+                    <ul>
+                        <li><a href="/"><i class="fas fa-home"></i> <span>Home Sanctuary</span></a></li>
+                        <li class="active"><a href="/packages/day"><i class="fas fa-sun"></i> <span>Day Packages</span></a></li>
+                        <li><a href="/packages/week"><i class="fas fa-calendar-week"></i> <span>Week Packages</span></a></li>
+                        <li><a href="/packages/single"><i class="fas fa-location-dot"></i> <span>Single Locations</span></a></li>
+                        <li><a href="/custom-trip"><i class="fas fa-compass"></i> <span>Trip Architect</span></a></li>
+                    </ul>
+                </div>
+                <div class="nav-group">
+                    <span class="group-label">Personal Desk</span>
+                    <ul>
+                        <li><a href="/dashboard"><i class="fas fa-columns"></i> <span>Dashboard</span></a></li>
+                        <li><a href="/my-bookings"><i class="fas fa-suitcase-rolling"></i> <span>My Journeys</span></a></li>
+                        <li><a href="/profile"><i class="fas fa-user-circle"></i> <span>Profile Settings</span></a></li>
+                    </ul>
+                </div>
+                <div class="nav-group">
+                    <span class="group-label">Concierge</span>
+                    <ul>
+                        <li><a href="/faq"><i class="fas fa-question-circle"></i> <span>Help & FAQ</span></a></li>
+                        <li><a href="/contact"><i class="fas fa-envelope"></i> <span>Contact Us</span></a></li>
+                        <li><a href="/reviews/write"><i class="fas fa-star"></i> <span>Reviews</span></a></li>
+                    </ul>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <button id="theme-toggle" class="theme-toggle-btn"><i class="fas fa-moon"></i> <span>Dark Mode</span></button>
+                <% if (user) { %>
+                <a href="#" id="logout-link" class="logout-link"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a>
+                <% } else { %>
+                <a href="/login" class="logout-link"><i class="fas fa-sign-in-alt"></i> <span>Login</span></a>
+                <% } %>
+            </div>
+        </aside>
+
+        <div class="page-content">
+            <div class="page-title reveal-up">
+                <h1 class="hero-title">Day <span class="text-gold">Packages</span></h1>
+                <p class="hero-description">Discover Egypt's most amazing destinations in one day</p>
+                <% if (user) { %>
+                <div class="account-chip" style="display:flex;align-items:center;gap:10px;margin-top:10px;">
+                    <div class="account-chip__avatar"><img src="<%= user.image %>" alt="<%= user.name %>" style="width:36px;height:36px;border-radius:50%;object-fit:cover;"></div>
+                    <div><span class="account-chip__label">Signed in as</span><strong class="account-chip__name"><%= user.name %></strong></div>
+                </div>
+                <% } %>
+            </div>
+
+            <div class="main-container">
+                <div id="listView" class="view-container active">
+                    <div id="packagesGrid" class="packages-grid reveal-up"></div>
+                </div>
+                <div id="selectionView" class="view-container">
+                    <div class="selection-grid reveal-up">
+                        <div class="selection-identity">
+                            <button class="back-link" id="backToGrid"><i class="fas fa-arrow-left"></i> Back to All Packages</button>
+                            <div id="selected-package-hero" class="glass-card"></div>
+                        </div>
+                        <div class="selection-config">
+                            <div id="bookingOptions" class="booking-options glass-card">
+                                <h3>Customise Your Day</h3>
+                                <div class="config-section">
+                                    <h4 class="config-label">Enhancements</h4>
+                                    <div class="config-row"><label class="checkbox-container"><input type="checkbox" id="overnightCheckbox"><span class="checkmark"></span>Add Overnight Stay</label></div>
+                                    <div class="config-row"><label class="checkbox-container"><input type="checkbox" id="mealCheckbox"><span class="checkmark"></span>Add Heritage Meal</label></div>
+                                </div>
+                                <div class="config-section">
+                                    <h4 class="config-label">Party Size</h4>
+                                    <select id="peopleCount" class="luxury-select">
+                                        <option value="1">1 Explorer</option><option value="2">2 Explorers</option><option value="3">3 Explorers</option><option value="4">4 Explorers</option><option value="5">5 Explorers</option><option value="6">Large Party (6+)</option>
+                                    </select>
+                                </div>
+                                <div class="config-section">
+                                    <h4 class="config-label">Expert Guidance</h4>
+                                    <div class="config-row"><label class="checkbox-container"><input type="checkbox" id="translatorCheckbox"><span class="checkmark"></span>Multilingual Guide</label></div>
+                                    <div id="languageSelect" class="sub-config" style="display:none;"><select id="translatorLanguage" class="luxury-select"><option value="">Choose Language</option><option value="English">English</option><option value="Spanish">Spanish</option><option value="French">French</option><option value="German">German</option></select></div>
+                                </div>
+                                <div class="config-section">
+                                    <h4 class="config-label">Privacy Level</h4>
+                                    <div class="radio-group">
+                                        <label class="radio-container"><input type="radio" name="groupType" value="small" checked><span class="radio-mark"></span>Private Master Tour</label>
+                                        <label class="radio-container"><input type="radio" name="groupType" value="large"><span class="radio-mark"></span>Classic Group Experience</label>
+                                    </div>
+                                </div>
+                                <div class="price-receipt glass-card">
+                                    <div class="receipt-row"><span>Base Experience</span><span class="price">EGP <span id="basePriceDisplay">0</span></span></div>
+                                    <div class="receipt-row addon" id="overnightDisplay" style="display:none;"><span>Overnight Enhancement</span><span class="price">+EGP <span id="overnightPriceDisplay">0</span></span></div>
+                                    <div class="receipt-row addon" id="mealDisplay" style="display:none;"><span>Heritage Dining</span><span class="price">+EGP <span id="mealPriceDisplay">0</span></span></div>
+                                    <div class="receipt-row addon" id="translatorDisplay" style="display:none;"><span>Personal Translator</span><span class="price">+EGP 30</span></div>
+                                    <div class="receipt-row addon" id="groupDisplay" style="display:none;"><span>Private Access</span><span class="price">+EGP 50</span></div>
+                                    <hr class="receipt-divider">
+                                    <div class="receipt-total"><span>Total Price</span><span class="total-value">EGP <span id="totalFinal">0</span></span></div>
+                                    <p class="per-person-note">Approx. EGP <span id="totalPerPerson">0</span> per explorer</p>
+                                </div>
+                                <div class="config-actions">
+                                    <button id="bookNowBtn" class="btn btn--primary btn--full btn--large">Confirm Journey</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="main-footer reveal-up">
+                <div class="container footer-grid">
+                    <div class="footer-brand"><h3 class="footer-logo">Beyond the Pyramids</h3><p>Curating the eternal legacy of Egypt since 2012.</p></div>
+                    <nav class="footer-nav">
+                        <div class="footer-group"><h4>Explore</h4><ul><li><a href="/#destinations">Destinations</a></li><li><a href="/#packages">Tour Packages</a></li><li><a href="/custom-trip">Custom Trips</a></li></ul></div>
+                        <div class="footer-group"><h4>Company</h4><ul><li><a href="/about">Our Story</a></li><li><a href="/faq">Common Questions</a></li></ul></div>
+                        <div class="footer-group"><h4>Legal</h4><ul><li><a href="/terms">Terms of Service</a></li></ul></div>
+                    </nav>
+                    <div class="footer-newsletter"><h4>Join the Inner Circle</h4><form class="newsletter-form"><input type="email" placeholder="Your email address" required><button type="submit" class="btn btn--primary">Join</button></form></div>
+                </div>
+                <div class="footer-bottom container"><p>&copy; 2026 Beyond the Pyramids. All rights reserved.</p></div>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        const SERVER_DATA = {
+            user: <%- JSON.stringify(user) %>,
+            packages: <%- JSON.stringify(packages) %>
+        };
+        window.SERVER_PACKAGES = SERVER_DATA.packages;
+        window.SERVER_USER = SERVER_DATA.user;
+    </script>
+    <script src="/js/global.js"></script>
+    <script src="/js/dayPackages.js"></script>
+</body>
+</html>
