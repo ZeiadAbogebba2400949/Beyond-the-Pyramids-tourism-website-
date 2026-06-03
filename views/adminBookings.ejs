@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Management - Beyond the Pyramids</title>
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0">
+    <link rel="stylesheet" href="/css/adminBookings.css">
+</head>
+
+<body>
+    <div class="dashboard-shell">
+        <aside class="dashboard-sidebar">
+            <div class="sidebar-header">
+                <h2>Agency Admin</h2>
+                <button id="admin-theme-toggle" class="admin-theme-btn" title="Switch Theme">
+                    <span class="material-symbols-rounded">light_mode</span>
+                </button>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="/admin"><i class="fas fa-chart-line"></i> Overview</a></li>
+                    <li class="active"><a href="/admin/bookings"><i class="fas fa-calendar-check"></i> Booking
+                            Management</a></li>
+                    <li><a href="/admin/packages"><i class="fas fa-cubes"></i> Package Management</a></li>
+                    <li><a href="/admin/contact"><i class="fas fa-headset"></i> Support Tickets</a></li>
+                    <li><a href="/admin/users"><i class="fas fa-user-shield"></i> User Management</a></li>
+                    <li><a href="/admin/reports"><i class="fas fa-file-invoice-dollar"></i> Reports &amp; Analytics</a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="account-chip account-chip--sidebar">
+                    <div class="account-chip__avatar">
+                        <img src="<%= user.image %>" alt="<%= user.name %>"
+                            style="width:36px;height:36px;border-radius:50%;object-fit:cover;">
+                    </div>
+                    <div>
+                        <span class="account-chip__label">Signed in as</span>
+                        <strong class="account-chip__name">
+                            <%= user.name %>
+                        </strong>
+                    </div>
+                </div>
+                <a href="#" id="logout-link" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+        </aside>
+
+        <main class="dashboard-main">
+            <header class="top-bar">
+                <div class="welcome-text">
+                    <h1>Booking Management</h1>
+                    <p>Manage all customer bookings and reservations</p>
+                </div>
+                <div class="top-bar-actions" style="display:flex;gap:1rem;align-items:center;">
+                    <select id="status-filter"
+                        style="background:var(--color-surface);border:1px solid var(--color-border);color:var(--color-text);padding:0.5rem;border-radius:6px;">
+                        <option value="">All Statuses</option>
+                        <option value="confirmed">Confirmed</option>
+                        <option value="cancelled">Cancelled</option>
+                        <option value="checked-in">Checked In</option>
+                        <option value="checked-out">Checked Out</option>
+                    </select>
+                    <input type="text" id="search-input" placeholder="Search by booking #, guest..."
+                        style="background:var(--color-surface);border:1px solid var(--color-border);color:var(--color-text);padding:0.5rem;border-radius:6px;width:220px;">
+                </div>
+            </header>
+
+            <!-- Stats Row -->
+            <section class="stats-grid" style="grid-template-columns:repeat(4,1fr);">
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <h3>Total</h3>
+                        <p class="stat-number">
+                            <%= stats.total %>
+                        </p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <h3>Confirmed</h3>
+                        <p class="stat-number" style="color:var(--color-success);">
+                            <%= stats.confirmed %>
+                        </p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <h3>Cancelled</h3>
+                        <p class="stat-number" style="color:var(--color-danger);">
+                            <%= stats.cancelled %>
+                        </p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <h3>Revenue</h3>
+                        <p class="stat-number" style="color:var(--gold-primary);">EGP <%= stats.revenue ?
+                                stats.revenue.toLocaleString() : '0' %>
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Bookings Table -->
+            <section class="card" style="margin-top:1.5rem;">
+                <div id="bookings-table-container" style="overflow-x:auto;">
+                    <table class="activity-table" style="width:100%;border-collapse:collapse;">
+                        <thead>
+                            <tr style="border-bottom:2px solid var(--color-border);">
+                                <th style="text-align:left;padding:1rem;color:var(--color-text-muted);">Booking #</th>
+                                <th style="text-align:left;padding:1rem;color:var(--color-text-muted);">Guest</th>
+                                <th style="text-align:left;padding:1rem;color:var(--color-text-muted);">Package</th>
+                                <th style="text-align:left;padding:1rem;color:var(--color-text-muted);">Date</th>
+                                <th style="text-align:left;padding:1rem;color:var(--color-text-muted);">Amount</th>
+                                <th style="text-align:left;padding:1rem;color:var(--color-text-muted);">Status</th>
+                                <th style="text-align:left;padding:1rem;color:var(--color-text-muted);">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookings-tbody">
+                            <% bookings.forEach(booking=> { %>
+                                <tr class="booking-row" data-id="<%= booking._id %>" data-status="<%= booking.status %>"
+                                    data-search="<%= booking.bookingNumber.toLowerCase() %> <%= (booking.userId ? booking.userId.name : booking.userEmail || '').toLowerCase() %>"
+                                    style="border-bottom:1px solid var(--color-border);">
+                                    <td style="padding:0.8rem 1rem;"><strong style="color:var(--gold-primary);">
+                                            <%= booking.bookingNumber %>
+                                        </strong></td>
+                                    <td style="padding:0.8rem 1rem;">
+                                        <div style="display:flex;align-items:center;gap:0.5rem;">
+                                            <% if (booking.userId && booking.userId.image) { %><img
+                                                    src="<%= booking.userId.image %>" alt=""
+                                                    style="width:32px;height:32px;border-radius:50%;object-fit:cover;">
+                                                <% } %>
+                                                    <div>
+                                                        <div style="color:var(--color-text);font-size:0.9rem;">
+                                                            <%= booking.userId ? booking.userId.name : booking.userEmail
+                                                                %>
+                                                        </div>
+                                                        <div style="color:var(--color-text-muted);font-size:0.8rem;">
+                                                            <%= booking.userId ? booking.userId.email : '' %>
+                                                        </div>
+                                                    </div>
+                                        </div>
+                                    </td>
+                                    <td style="padding:0.8rem 1rem;color:var(--color-text-secondary);font-size:0.9rem;">
+                                        <%= booking.packageName %>
+                                    </td>
+                                    <td style="padding:0.8rem 1rem;color:var(--color-text-secondary);font-size:0.9rem;">
+                                        <%= booking.date || new Date(booking.createdAt).toLocaleDateString() %>
+                                    </td>
+                                    <td style="padding:0.8rem 1rem;"><strong style="color:var(--gold-primary);">EGP <%=
+                                                booking.totalPrice ? booking.totalPrice.toLocaleString() : '-' %>
+                                                </strong></td>
+                                    <td style="padding:0.8rem 1rem;">
+                                        <span class="status-badge status-<%= booking.status %>"
+                                            data-db-status="<%= booking.status %>"
+                                            data-date="<%= booking.date || '' %>">
+                                            <%= booking.status %>
+                                        </span>
+                                    </td>
+                                    <td style="padding:0.8rem 1rem;">
+                                        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+                                            <% if (booking.status !=='cancelled' ) { %>
+                                                <button class="status-btn btn btn--small" data-id="<%= booking._id %>"
+                                                    data-status="cancelled"
+                                                    style="color:var(--color-danger);border-color:var(--color-danger);background:transparent;border:1px solid;padding:0.3rem 0.7rem;border-radius:4px;cursor:pointer;font-size:0.8rem;">Cancel</button>
+                                                <% } %>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        const SERVER_DATA = { user: <% - JSON.stringify(user) %>, bookings: <% - JSON.stringify(bookings) %>, stats: <% - JSON.stringify(stats) %> };
+        window.SERVER_USER = SERVER_DATA.user;
+
+        function computeStatus(dbStatus, dateStr) {
+            if (dbStatus === 'cancelled') return 'cancelled';
+            if (!dateStr || dateStr.includes(' to ')) return dbStatus;
+            const today = new Date(); today.setHours(0, 0, 0, 0);
+            const d = new Date(dateStr); d.setHours(0, 0, 0, 0);
+            if (isNaN(d)) return dbStatus;
+            if (today < d) return 'confirmed';
+            if (today.getTime() === d.getTime()) return 'checked-in';
+            return 'checked-out';
+        }
+
+        // Auto-compute statuses on load
+        document.querySelectorAll('.status-badge[data-db-status]').forEach(badge => {
+            const computed = computeStatus(badge.dataset.dbStatus, badge.dataset.date);
+            badge.textContent = computed.replace('-', ' ');
+            badge.className = 'status-badge status-' + computed;
+            badge.closest('.booking-row').dataset.status = computed;
+        });
+
+        document.getElementById('status-filter').addEventListener('change', (e) => {
+            const val = e.target.value;
+            document.querySelectorAll('.booking-row').forEach(row => {
+                row.style.display = (!val || row.dataset.status === val) ? '' : 'none';
+            });
+        });
+
+        document.getElementById('search-input').addEventListener('input', (e) => {
+            const q = e.target.value.toLowerCase();
+            document.querySelectorAll('.booking-row').forEach(row => {
+                row.style.display = (row.dataset.search || '').includes(q) ? '' : 'none';
+            });
+        });
+
+        document.querySelectorAll('.status-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const id = btn.dataset.id;
+                const status = btn.dataset.status;
+                if (status === 'cancelled' && !confirm('Cancel this booking?')) return;
+                try {
+                    const res = await fetch('/api/admin/bookings/' + id + '/status', {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ status })
+                    });
+                    if (res.ok) window.location.reload();
+                    else { const d = await res.json(); alert(d.message || 'Update failed'); }
+                } catch (err) { alert('An error occurred'); }
+            });
+        });
+
+    </script>
+    <script src="/js/admin-theme.js"></script>
+    <script src="/js/adminBookings.js"></script>
+</body>
+
+</html>
