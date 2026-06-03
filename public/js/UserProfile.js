@@ -1,13 +1,7 @@
-/* ═══════════════════════════════════════════════════════════
-   UserProfile.js — Loads real session data into all fields
-   and populates Travel History from per-user booking store.
-═══════════════════════════════════════════════════════════ */
-
-'use strict';
+﻿'use strict';
 
 let hasUnsavedChanges = false;
 
-// ── Helpers ────────────────────────────────────────────────────────────────
 function showAlert(message, type = 'success') {
     const container = document.getElementById('alertContainer');
     if (!container) return;
@@ -34,27 +28,9 @@ function setVal(id, value) {
 }
 
 function getSession() {
-    try {
-        const s = localStorage.getItem('userSession') || sessionStorage.getItem('userSession');
-        return s ? JSON.parse(s) : null;
-    } catch (e) { return null; }
+    return window.SERVER_USER || null;
 }
 
-function getFullUserRecord(email) {
-    if (!email) return null;
-    // 1. Registered users (highest priority)
-    if (window.AppStorage && window.AppStorage.getUserByEmail) {
-        const u = window.AppStorage.getUserByEmail(email);
-        if (u) return u;
-    }
-    // 2. MockData.users
-    if (window.MockData && window.MockData.users) {
-        return window.MockData.users.find(u => u.email.toLowerCase() === email.toLowerCase()) || null;
-    }
-    return null;
-}
-
-// ── Populate personal info fields from session + user record ───────────────
 function populatePersonalInfo(session, userRecord) {
     const name  = userRecord?.name  || session?.name  || '';
     const email = userRecord?.email || session?.email || '';
@@ -62,13 +38,11 @@ function populatePersonalInfo(session, userRecord) {
     const dob   = userRecord?.dob   || userRecord?.dateOfBirth || '';
     const nat   = userRecord?.nationality || '';
 
-    // Header display
     const nameDisplay  = document.getElementById('userNameDisplay');
     const emailDisplay = document.getElementById('userEmailDisplay');
     if (nameDisplay)  nameDisplay.textContent  = name  || '—';
     if (emailDisplay) emailDisplay.textContent = email || '—';
 
-    // Avatar
     const imgEl  = document.getElementById('profileAvatarImg');
     const iconEl = document.getElementById('profileAvatarIcon');
     const photoUrl = userRecord?.image || null;
@@ -79,22 +53,16 @@ function populatePersonalInfo(session, userRecord) {
         if (iconEl) iconEl.style.display = 'none';
     }
 
-    // Form fields
     setVal('fullName',    name);
     setVal('email',       email);
     setVal('phoneNumber', phone);
     setVal('nationality', nat);
 
-    // Date of birth: must be YYYY-MM-DD for <input type="date">
     if (dob) {
         const dobInput = document.getElementById('dob');
-        if (dobInput) {
-            // Handle ISO strings like "1995-05-15" or full timestamps
-            dobInput.value = dob.substring(0, 10);
-        }
+        if (dobInput) dobInput.value = dob.substring(0, 10);
     }
 
-    // Member since
     const joinDate = userRecord?.joinDate || session?.loginTime?.substring(0, 10) || '';
     const memberSince = document.getElementById('memberSince');
     if (memberSince && joinDate) {
@@ -104,73 +72,6 @@ function populatePersonalInfo(session, userRecord) {
     }
 }
 
-// ── Travel History tab ─────────────────────────────────────────────────────
-function populateTravelHistory(email) {
-    const container = document.getElementById('historyList');
-    if (!container) return;
-
-    let bookings = [];
-    if (window.AppStorage && window.AppStorage.getUserBookings) {
-        bookings = window.AppStorage.getUserBookings(email);
-    }
-
-    if (!bookings || bookings.length === 0) {
-        container.innerHTML = `
-            <div style="text-align:center; padding:3rem 1rem; color:var(--color-text-muted);">
-                <i class="fas fa-suitcase-rolling" style="font-size:3rem;margin-bottom:1rem;display:block;opacity:0.4;"></i>
-                <p>No journeys recorded yet.</p>
-                <a href="../DayPackages/dayPackages.html" class="btn btn--outline" style="margin-top:1rem;display:inline-flex;">
-                    <i class="fas fa-compass"></i> Explore Packages
-                </a>
-            </div>`;
-        return;
-    }
-
-    container.innerHTML = bookings.map(b => {
-        const title    = b.packageName || b.title || 'Package Booking';
-        const location = b.location || b.city || '';
-        const date     = b.date || b.travelDate || b.timestamp?.substring(0, 10) || '';
-        const status   = b.status || 'confirmed';
-        const price    = b.totalPrice ? 'EGP ' + Number(b.totalPrice).toLocaleString() : '';
-        const statusCls = status.toLowerCase();
-
-        // Format display date
-        let dateLabel = date;
-        if (date) {
-            try { dateLabel = new Date(date).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }); }
-            catch (e) {}
-        }
-
-        return `
-            <div class="history-item" style="
-                display:flex; align-items:center; gap:1rem; justify-content:space-between;
-                padding:1.2rem; border-radius:12px; margin-bottom:12px;
-                background:var(--color-surface-alt); border:1px solid var(--color-border-light);
-                transition:all 0.3s ease; flex-wrap:wrap;">
-                <div style="display:flex;align-items:center;gap:1rem;flex:1;min-width:200px;">
-                    <div style="
-                        width:48px;height:48px;border-radius:10px;
-                        background:rgba(197,160,89,0.12);
-                        display:flex;align-items:center;justify-content:center;
-                        flex-shrink:0;">
-                        <i class="fas fa-map-marked-alt" style="color:var(--gold-primary);font-size:1.2rem;"></i>
-                    </div>
-                    <div>
-                        <h4 style="margin-bottom:4px;font-size:var(--text-base);">${title}</h4>
-                        <p style="margin:0;font-size:var(--text-sm);color:var(--color-text-muted);">
-                            ${location ? location + ' · ' : ''}${dateLabel}
-                            ${price ? ' · <strong style="color:var(--gold-primary);">' + price + '</strong>' : ''}
-                        </p>
-                    </div>
-                </div>
-                <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
-                    <span class="badge badge-${statusCls}">${status}</span>
-                </div>
-            </div>`;
-    }).join('');
-}
-
-// ── Save personal info back to registered users ────────────────────────────
 function savePersonalInfo(session) {
     const name  = document.getElementById('fullName')?.value.trim();
     const phone = document.getElementById('phoneNumber')?.value.trim();
@@ -181,67 +82,111 @@ function savePersonalInfo(session) {
 
     const updates = { name, phone, dob, nationality: nat };
 
-    if (window.AppStorage && window.AppStorage.updateRegisteredUser) {
-        window.AppStorage.updateRegisteredUser(session.email, updates);
-    }
+    fetch('/api/users/profile', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(updates),
+    }).catch(() => {});
 
-    // Update session name
-    try {
-        const sLocal = localStorage.getItem('userSession');
-        if (sLocal) {
-            const parsed = JSON.parse(sLocal);
-            parsed.name = name;
-            localStorage.setItem('userSession', JSON.stringify(parsed));
-        }
-        const sSession = sessionStorage.getItem('userSession');
-        if (sSession) {
-            const parsed = JSON.parse(sSession);
-            parsed.name = name;
-            sessionStorage.setItem('userSession', JSON.stringify(parsed));
-        }
-    } catch (e) {}
-
-    // Update header display
     const nameDisplay = document.getElementById('userNameDisplay');
     if (nameDisplay) nameDisplay.textContent = name;
 
     return true;
 }
 
-// ── Personal info edit/save/cancel ─────────────────────────────────────────
+const PI_LETTERS_ONLY = /^[a-zA-Z\s'-]+$/;
+
+function piErr(id, msg) {
+    const inp = document.getElementById(id);
+    const span = inp?.nextElementSibling;
+    if (span?.classList.contains('error-msg')) { span.textContent = msg; span.classList.add('visible'); }
+    inp?.classList.add('invalid');
+}
+function piClear(id) {
+    const inp = document.getElementById(id);
+    const span = inp?.nextElementSibling;
+    if (span?.classList.contains('error-msg')) { span.textContent = ''; span.classList.remove('visible'); }
+    inp?.classList.remove('invalid');
+}
+
+function piValidateName() {
+    const val = (document.getElementById('fullName')?.value || '').trim();
+    if (val.length < 2)             { piErr('fullName', 'Name must be at least 2 characters'); return false; }
+    if (!PI_LETTERS_ONLY.test(val)) { piErr('fullName', 'Name must contain letters only');     return false; }
+    piClear('fullName'); return true;
+}
+
+function piValidatePhone() {
+    const digits = (document.getElementById('phoneNumber')?.value || '').replace(/\D/g, '');
+    if (digits.length < 7) { piErr('phoneNumber', 'Phone number must be at least 7 digits'); return false; }
+    piClear('phoneNumber'); return true;
+}
+
+function piValidateDob() {
+    const val = document.getElementById('dob')?.value || '';
+    if (!val) { piClear('dob'); return true; }
+    const age = (Date.now() - new Date(val)) / (1000 * 60 * 60 * 24 * 365.25);
+    if (age < 18)  { piErr('dob', 'You must be at least 18 years old'); return false; }
+    if (age > 100) { piErr('dob', 'Age cannot exceed 100 years');       return false; }
+    piClear('dob'); return true;
+}
+
+function piValidateNationality() {
+    const val = document.getElementById('nationality')?.value || '';
+    if (!val) { piErr('nationality', 'Please select your nationality'); return false; }
+    piClear('nationality'); return true;
+}
+
+function piValidateAll() {
+    return [piValidateName(), piValidatePhone(), piValidateDob(), piValidateNationality()].every(Boolean);
+}
+
 function initPersonalInfo(session) {
     const editBtn   = document.getElementById('editPersonalBtn');
     const saveBtn   = document.getElementById('savePersonalBtn');
     const cancelBtn = document.getElementById('cancelPersonalBtn');
-    const inputs    = document.querySelectorAll('#personalInfoForm input:not(#email), #personalInfoForm textarea');
+    const allFields = document.querySelectorAll('#personalInfoForm input:not(#email), #personalInfoForm select, #personalInfoForm textarea');
 
     if (!editBtn) return;
 
     let snapshot = {};
 
+    const nameEl   = document.getElementById('fullName');
+    const phoneEl  = document.getElementById('phoneNumber');
+    const dobEl    = document.getElementById('dob');
+    const natEl    = document.getElementById('nationality');
+
+    nameEl?.addEventListener('input', () => piValidateName());
+    phoneEl?.addEventListener('input', () => {
+        phoneEl.value = phoneEl.value.replace(/[a-zA-Z]/g, '');
+        piValidatePhone();
+    });
+    dobEl?.addEventListener('change', () => piValidateDob());
+    natEl?.addEventListener('change', () => piValidateNationality());
+
     editBtn.addEventListener('click', () => {
-        // Snapshot current values for cancel
-        inputs.forEach(inp => { snapshot[inp.id] = inp.value; });
-        inputs.forEach(inp => { inp.disabled = false; });
+        allFields.forEach(f => { snapshot[f.id] = f.value; f.disabled = false; });
         editBtn.classList.add('hidden');
         saveBtn.classList.remove('hidden');
         cancelBtn.classList.remove('hidden');
     });
 
     cancelBtn.addEventListener('click', () => {
-        // Restore snapshot
-        inputs.forEach(inp => {
-            if (snapshot[inp.id] !== undefined) inp.value = snapshot[inp.id];
-            inp.disabled = true;
+        allFields.forEach(f => {
+            if (snapshot[f.id] !== undefined) f.value = snapshot[f.id];
+            f.disabled = true;
         });
+        ['fullName', 'phoneNumber', 'dob', 'nationality'].forEach(piClear);
         editBtn.classList.remove('hidden');
         saveBtn.classList.add('hidden');
         cancelBtn.classList.add('hidden');
     });
 
     saveBtn.addEventListener('click', () => {
+        if (!piValidateAll()) return;
         if (savePersonalInfo(session)) {
-            inputs.forEach(inp => { inp.disabled = true; });
+            allFields.forEach(f => { f.disabled = true; });
             editBtn.classList.remove('hidden');
             saveBtn.classList.add('hidden');
             cancelBtn.classList.add('hidden');
@@ -279,43 +224,29 @@ function initProfilePhotoUpload(session) {
 
         const reader = new FileReader();
         reader.onload = () => {
-            const image = reader.result;
-
             if (imgEl) {
-                imgEl.src = image;
+                imgEl.src = reader.result;
                 imgEl.alt = document.getElementById('fullName')?.value || 'Profile photo';
                 imgEl.style.display = 'block';
             }
             if (iconEl) iconEl.style.display = 'none';
-
-            if (window.AppStorage && window.AppStorage.updateRegisteredUser) {
-                window.AppStorage.updateRegisteredUser(session.email, { image });
-            }
-
-            try {
-                const sLocal = localStorage.getItem('userSession');
-                if (sLocal) {
-                    const parsed = JSON.parse(sLocal);
-                    parsed.image = image;
-                    localStorage.setItem('userSession', JSON.stringify(parsed));
-                }
-                const sSession = sessionStorage.getItem('userSession');
-                if (sSession) {
-                    const parsed = JSON.parse(sSession);
-                    parsed.image = image;
-                    sessionStorage.setItem('userSession', JSON.stringify(parsed));
-                }
-            } catch (e) {}
-
-            showAlert('Profile photo updated successfully!', 'success');
-            fileInput.value = '';
         };
-
         reader.readAsDataURL(file);
+
+        const formData = new FormData();
+        formData.append('avatar', file);
+        fetch('/api/users/avatar', { method: 'PUT', credentials: 'include', body: formData })
+            .then(r => r.json())
+            .then(data => {
+                if (data.status === 'success' && imgEl) imgEl.src = data.data.imageUrl;
+                showAlert('Profile photo updated successfully!', 'success');
+            })
+            .catch(() => showAlert('Failed to upload photo.', 'error'));
+
+        fileInput.value = '';
     });
 }
 
-// ── Tabs ───────────────────────────────────────────────────────────────────
 function initTabs(email) {
     const tabNavs   = document.querySelectorAll('.tab-btn');
     const tabPanels = document.querySelectorAll('.tab-panel');
@@ -327,16 +258,10 @@ function initTabs(email) {
             tabPanels.forEach(p => p.classList.add('hidden'));
             e.currentTarget.classList.add('active');
             document.getElementById(`tab-${targetTab}`)?.classList.remove('hidden');
-
-            // Populate history on first visit to that tab
-            if (targetTab === 'history') {
-                populateTravelHistory(email);
-            }
         });
     });
 }
 
-// ── Modals ─────────────────────────────────────────────────────────────────
 function initModals(session) {
     const deleteBtn    = document.getElementById('deleteAccountBtn');
     const deleteModal  = document.getElementById('deleteModal');
@@ -346,22 +271,15 @@ function initModals(session) {
     if (deleteBtn && deleteModal) {
         deleteBtn.addEventListener('click', () => deleteModal.classList.remove('hidden'));
         cancelDelete?.addEventListener('click', () => deleteModal.classList.add('hidden'));
-        confirmDel?.addEventListener('click', () => {
-            // Remove from registered users
-            if (window.AppStorage && window.AppStorage.getRegisteredUsers) {
-                const users = window.AppStorage.getRegisteredUsers().filter(
-                    u => u.email.toLowerCase() !== session.email.toLowerCase()
-                );
-                localStorage.setItem('bp_registered_users', JSON.stringify(users));
-            }
-            localStorage.removeItem('userSession');
-            sessionStorage.removeItem('userSession');
-            window.location.href = '../LandingPage/LandingPage.html';
+        confirmDel?.addEventListener('click', async () => {
+            try {
+                await fetch('/api/users/account', { method: 'DELETE', credentials: 'include' });
+            } catch (e) {}
+            window.location.href = '/';
         });
     }
 }
 
-// ── Mobile sidebar ──────────────────────────────────────────────────────────
 function initSidebar() {
     const toggle  = document.getElementById('mobileSidebarToggle');
     const sidebar = document.getElementById('sidebar');
@@ -370,45 +288,86 @@ function initSidebar() {
     }
 }
 
-// ── Security form ───────────────────────────────────────────────────────────
+function showFieldError(inputEl, msg) {
+    const span = inputEl?.nextElementSibling;
+    if (span?.classList.contains('error-msg')) {
+        span.textContent = msg;
+        span.classList.add('visible');
+        inputEl.classList.add('invalid');
+    }
+}
+function clearFieldError(inputEl) {
+    const span = inputEl?.nextElementSibling;
+    if (span?.classList.contains('error-msg')) {
+        span.textContent = '';
+        span.classList.remove('visible');
+        inputEl.classList.remove('invalid');
+    }
+}
+
+function validateNewPassword(val) {
+    if (val.length < 6)                    return 'Password must be at least 6 characters.';
+    if (!/[a-zA-Z]/.test(val))             return 'Password must contain at least one letter.';
+    if (!/\d/.test(val))                   return 'Password must contain at least one number.';
+    if (!/[!@#$%^&*()\-+_=]/.test(val))   return 'Password must contain at least one special character (!@#$%^&*-+_=).';
+    return '';
+}
+
 function initSecurity(session) {
-    const updateBtn = document.getElementById('updatePasswordBtn');
+    const updateBtn  = document.getElementById('updatePasswordBtn');
+    const newPassEl  = document.getElementById('newPassword');
+    const confPassEl = document.getElementById('confirmPassword');
     if (!updateBtn) return;
 
-    updateBtn.addEventListener('click', () => {
+    newPassEl?.addEventListener('input', () => {
+        const err = validateNewPassword(newPassEl.value);
+        if (err) showFieldError(newPassEl, err);
+        else     clearFieldError(newPassEl);
+        if (confPassEl.value) {
+            if (confPassEl.value !== newPassEl.value) showFieldError(confPassEl, 'Passwords do not match.');
+            else clearFieldError(confPassEl);
+        }
+    });
+
+    confPassEl?.addEventListener('input', () => {
+        if (confPassEl.value !== newPassEl.value) showFieldError(confPassEl, 'Passwords do not match.');
+        else clearFieldError(confPassEl);
+    });
+
+    updateBtn.addEventListener('click', async () => {
         const currPassEl = document.getElementById('currPassword');
-        const newPassEl  = document.getElementById('newPassword');
-        const confPassEl = document.getElementById('confirmPassword');
 
-        if (!currPassEl?.value || !newPassEl?.value || !confPassEl?.value) {
-            showAlert('Please fill in all password fields.', 'error'); return;
-        }
+        if (!currPassEl?.value) { showAlert('Please enter your current password.', 'error'); return; }
+
+        const newErr = validateNewPassword(newPassEl.value);
+        if (newErr) { showFieldError(newPassEl, newErr); return; }
+
         if (newPassEl.value !== confPassEl.value) {
-            showAlert('New passwords do not match.', 'error'); return;
-        }
-        if (newPassEl.value.length < 6) {
-            showAlert('Password must be at least 6 characters.', 'error'); return;
+            showFieldError(confPassEl, 'Passwords do not match.'); return;
         }
 
-        // Verify current password against stored record
-        if (window.AppStorage && window.AppStorage.getUserByEmail) {
-            const record = window.AppStorage.getUserByEmail(session.email);
-            if (record && record.password && record.password !== currPassEl.value) {
-                showAlert('Current password is incorrect.', 'error'); return;
-            }
+        updateBtn.disabled = true;
+        try {
+            const res = await fetch('/api/auth/update-password', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ currentPassword: currPassEl.value, newPassword: newPassEl.value }),
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message || 'Password update failed');
+            document.getElementById('securityForm')?.reset();
+            clearFieldError(newPassEl);
+            clearFieldError(confPassEl);
+            showAlert('Password updated successfully!', 'success');
+        } catch (err) {
+            showAlert(err.message, 'error');
+        } finally {
+            updateBtn.disabled = false;
         }
-
-        // Update password in registered users
-        if (window.AppStorage && window.AppStorage.updateRegisteredUser) {
-            window.AppStorage.updateRegisteredUser(session.email, { password: newPassEl.value });
-        }
-
-        document.getElementById('securityForm')?.reset();
-        showAlert('Password updated successfully!', 'success');
     });
 }
 
-// ── Global Save button ──────────────────────────────────────────────────────
 function initGlobalSave(session) {
     const btn = document.getElementById('globalSaveBtn');
     if (!btn) return;
@@ -430,7 +389,6 @@ function initGlobalSave(session) {
     });
 }
 
-// ── Validation helpers ─────────────────────────────────────────────────────
 function validateField(input) {
     const errorSpan = input.nextElementSibling;
     let isValid = input.checkValidity();
@@ -465,7 +423,9 @@ function validateField(input) {
 }
 
 function initValidation() {
+    const customValidated = new Set(['fullName', 'phoneNumber', 'dob', 'nationality']);
     document.querySelectorAll('input, textarea').forEach(inp => {
+        if (customValidated.has(inp.id)) return;
         inp.addEventListener('blur', () => validateField(inp));
         inp.addEventListener('input', () => {
             if (inp.classList.contains('invalid')) validateField(inp);
@@ -473,18 +433,15 @@ function initValidation() {
     });
 }
 
-// ── MAIN ───────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
     if (window.LoginGate && !LoginGate.requireLogin({ message: 'You must be logged in to view profile settings.' })) {
         return;
     }
 
     const session = getSession();
-    if (!session || !session.email) {
-        return;
-    }
+    if (!session) return;
 
-    const userRecord = getFullUserRecord(session.email);
+    const userRecord = getSession();
 
     populatePersonalInfo(session, userRecord);
     initTabs(session.email);
@@ -494,5 +451,4 @@ document.addEventListener('DOMContentLoaded', () => {
     initModals(session);
     initSidebar();
     initValidation();
-    initGlobalSave(session);
 });
