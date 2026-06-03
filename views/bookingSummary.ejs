@@ -155,10 +155,6 @@
                                         <strong>Total</strong>
                                         <strong style="color:var(--gold-primary);font-size:1.3rem;">EGP <%= booking.totalPrice.toLocaleString() %></strong>
                                     </div>
-                                    <div class="price-row" id="currency-row" style="border-top:1px dashed var(--color-border,rgba(128,128,128,0.18));padding-top:0.5rem;margin-top:0.25rem;font-size:1rem;color:var(--color-text-muted,#888);opacity:0;transition:opacity 0.3s;">
-                                        <span><i class="fas fa-coins"></i> Approx.</span>
-                                        <span id="currency-values">Loading…</span>
-                                    </div>
                                 </div>
                             </div>
 
@@ -184,6 +180,11 @@
                         <div class="footer-group"><h4>Company</h4><ul><li><a href="/about">Our Story</a></li><li><a href="/faq">Common Questions</a></li></ul></div>
                         <div class="footer-group"><h4>Legal</h4><ul><li><a href="/terms">Terms of Service</a></li></ul></div>
                     </nav>
+                    <div class="footer-newsletter">
+                        <h4>Join the Inner Circle</h4>
+                        <p>Receive exclusive travel insights and early access to new tours.</p>
+                        <form class="newsletter-form"><input type="email" placeholder="Your email address" required><button type="submit" class="btn btn--primary">Join</button></form>
+                    </div>
                 </div>
                 <div class="footer-bottom container">
                     <p>&copy; 2026 Beyond the Pyramids. All rights reserved.</p>
@@ -226,23 +227,6 @@
         });
 
 </script>
-    <script>
-        (async function loadCurrencyConversion() {
-            const totalEGP = <%= booking.totalPrice %>;
-            try {
-                const res = await fetch('/api/external/currency?amount=' + totalEGP + '&from=EGP');
-                const data = await res.json();
-                if (!res.ok || data.status !== 'success') return;
-                const d = data.data;
-                const row = document.getElementById('currency-row');
-                const val = document.getElementById('currency-values');
-                if (row && val) {
-                    val.textContent = '$' + d.USD.toLocaleString() + ' · €' + d.EUR.toLocaleString() + ' · £' + d.GBP.toLocaleString();
-                    row.style.opacity = '1';
-                }
-            } catch (e) { /* silently fail if Frankfurter is unreachable */ }
-        })();
-    </script>
     <script src="/js/global.js"></script>
     <script src="/js/bookingSummary.js"></script>
 </body>
