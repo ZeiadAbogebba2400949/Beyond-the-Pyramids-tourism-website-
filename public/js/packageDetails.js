@@ -128,6 +128,7 @@ function renderPage() {
     initTravellerCounter();
     initBookingAction();
     updateTotalDisplay();
+    initWeatherWidget(pkg.city || pkg.location);
 }
 
 function buildPageHTML(pkg) {
@@ -577,4 +578,38 @@ function parsePackageMoney(value) {
     if (typeof value === 'number') return Number.isFinite(value) ? value : 0;
     const parsed = parseFloat(String(value).replace(/[^0-9.-]+/g, ""));
     return Number.isFinite(parsed) ? parsed : 0;
+}
+
+async function initWeatherWidget(city) {
+    if (!city) return;
+
+    const tiers = document.getElementById('pkg-tiers');
+    if (!tiers) return;
+
+    const widget = document.createElement('div');
+    widget.id = 'weather-widget';
+    widget.className = 'pkg-weather-widget';
+    widget.innerHTML = '<span class="weather-loading"><i class="fas fa-spinner fa-spin"></i> Checking weather…</span>';
+    tiers.insertAdjacentElement('afterend', widget);
+
+    try {
+        const res = await fetch('/api/external/weather?city=' + encodeURIComponent(city));
+        const data = await res.json();
+
+        if (!res.ok || data.status !== 'success') { widget.remove(); return; }
+
+        const w = data.data;
+        widget.innerHTML = `
+            <div class="weather-content">
+                <img src="https://openweathermap.org/img/wn/${w.icon}.png" alt="${w.description}" class="weather-icon">
+                <div class="weather-info">
+                    <span class="weather-city"><i class="fas fa-map-pin"></i> ${w.city}</span>
+                    <span class="weather-temp">${w.temp}&deg;C</span>
+                    <span class="weather-desc">${w.description}</span>
+                </div>
+            </div>
+        `;
+    } catch (e) {
+        widget.remove();
+    }
 }

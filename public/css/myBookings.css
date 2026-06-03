@@ -145,10 +145,10 @@ body {
 }
 
 .dashboard-main .main-footer {
+    width: calc(100% + 2 * var(--space-2xl));
     margin-left: calc(-1 * var(--space-2xl));
-    margin-right: calc(-1 * var(--space-2xl));
     margin-bottom: calc(-1 * var(--space-2xl));
-    margin-top: var(--space-4xl, 80px); /* Space above the footer */
+    margin-top: var(--space-4xl, 80px);
     border-radius: 0;
 }
 

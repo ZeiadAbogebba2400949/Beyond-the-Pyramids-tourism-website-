@@ -1161,7 +1161,7 @@ footer {
 
 .footer-grid {
     display: grid;
-    grid-template-columns: 1.5fr 3fr 1.5fr;
+    grid-template-columns: 1fr 2fr;
     gap: 4rem;
     margin-bottom: 80px;
     padding: 0 var(--space-xl);
@@ -1220,41 +1220,6 @@ footer {
     color: var(--gold-primary);
 }
 
-.footer-newsletter h4 {
-    font-size: 1.2rem;
-    margin-bottom: 1.5rem;
-    color: var(--text-primary);
-    font-family: var(--font-heading);
-    font-weight: 600;
-}
-
-.footer-newsletter p {
-    color: var(--text-secondary);
-    font-size: 0.95rem;
-    margin-bottom: 1rem;
-}
-
-.footer-newsletter .newsletter-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.newsletter-feedback {
-    font-size: 0.85rem;
-    min-height: 1.2em;
-}
-
-.newsletter-feedback--error   { color: #e53e3e; }
-.newsletter-feedback--success { color: #38a169; }
-
-.footer-newsletter input {
-    background: var(--bg-primary);
-    border: 1px solid var(--border-color);
-    padding: 1rem;
-    color: var(--text-primary);
-    font-family: var(--font-body);
-}
 
 .footer-bottom {
     display: flex;

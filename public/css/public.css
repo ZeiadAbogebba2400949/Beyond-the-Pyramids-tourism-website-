@@ -924,7 +924,7 @@ h1, h2, h3, h4 {
 
 .footer-grid {
     display: grid;
-    grid-template-columns: 1.5fr 3fr 1.5fr;
+    grid-template-columns: 1fr 2fr;
     gap: 4rem;
     margin-bottom: 80px;
 }
@@ -942,14 +942,6 @@ h1, h2, h3, h4 {
 .footer-group a { font-size: 0.95rem; color: var(--text-secondary); }
 .footer-group a:hover { color: var(--gold-primary); }
 
-.footer-newsletter h4 { font-size: 1.2rem; margin-bottom: 1.5rem; }
-.footer-newsletter .newsletter-form { display: flex; flex-direction: column; gap: 1rem; }
-.footer-newsletter input {
-    background: var(--bg-primary);
-    border: 1px solid var(--border-color);
-    padding: 1rem;
-    color: var(--text-primary);
-}
 
 .footer-bottom {
     display: flex;
