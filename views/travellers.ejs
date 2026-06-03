@@ -1,0 +1,222 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travelers Details — Beyond the Pyramids</title>
+    <meta name="description" content="Enter details for all travelers in your party before confirming your Egyptian journey.">
+
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/userDashboard.css">
+    <link rel="stylesheet" href="/css/travellers.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="noise-overlay"></div>
+
+    <div class="dashboard-shell">
+
+        <aside class="dashboard-sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <a href="/"><img src="/images/WebsiteBanner.png" alt="Beyond the Pyramids"></a>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-group">
+                    <span class="group-label">Discovery</span>
+                    <ul>
+                        <li><a href="/"><i class="fas fa-home"></i> Home Sanctuary</a></li>
+                        <li><a href="/packages/day"><i class="fas fa-sun"></i> Day Packages</a></li>
+                        <li><a href="/packages/week"><i class="fas fa-calendar-week"></i> Week Packages</a></li>
+                        <li><a href="/packages/single"><i class="fas fa-location-dot"></i> Single Locations</a></li>
+                        <li><a href="/custom-trip"><i class="fas fa-compass"></i> Trip Architect</a></li>
+                    </ul>
+                </div>
+
+                <div class="nav-group">
+                    <span class="group-label">Personal Desk</span>
+                    <ul>
+                        <li><a href="/dashboard"><i class="fas fa-columns"></i> Dashboard</a></li>
+                        <li><a href="/my-bookings"><i class="fas fa-suitcase-rolling"></i> My Journeys</a></li>
+                        <li><a href="/profile"><i class="fas fa-user-circle"></i> Profile Settings</a></li>
+                    </ul>
+                </div>
+
+                <div class="nav-group">
+                    <span class="group-label">Concierge</span>
+                    <ul>
+                        <li><a href="/faq"><i class="fas fa-question-circle"></i> Help &amp; FAQ</a></li>
+                        <li><a href="/contact"><i class="fas fa-envelope"></i> Contact Us</a></li>
+                        <li><a href="/reviews/write"><i class="fas fa-star"></i> Reviews</a></li>
+                    </ul>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button id="theme-toggle" class="theme-toggle-btn">
+                    <i class="fas fa-moon"></i> <span>Dark Mode</span>
+                </button>
+                <a href="#" id="logout-link" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+        </aside>
+
+        <main class="dashboard-main">
+
+            <header class="dash-topbar" id="dash-topbar">
+                <div class="topbar-left">
+                    <div class="greeting-stack">
+                        <span class="greeting-label">Additional Guests</span>
+                        <h1 class="greeting-name">Traveler Details</h1>
+                    </div>
+                </div>
+                <div class="topbar-right">
+                    <div class="topbar-avatar" id="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+            </header>
+
+            <div class="td-scroll-area">
+
+                <div class="td-page-header reveal-up">
+                    <div class="td-page-header__eyebrow">
+                        <span class="td-step-badge"><i class="fas fa-users"></i> Step 1 of 2</span>
+                    </div>
+                    <h2 class="td-page-header__title">Who is traveling with you?</h2>
+                    <p class="td-page-header__subtitle">Please provide details for each additional traveler in your party. All fields marked with an asterisk are required.</p>
+                    <p style="color:var(--gold-primary);margin-top:0.5rem;">Booking: <strong><%= booking.packageName %></strong> — <%= booking.travelers %> Traveler<%= booking.travelers > 1 ? 's' : '' %></p>
+                    <div class="td-page-header__rule"></div>
+                </div>
+
+                <div class="td-form-wrap reveal-up">
+                    <form id="travelers-form" class="editorial-section">
+
+                        <!-- Primary traveler (read-only) -->
+                        <div style="background:var(--color-surface);padding:1.5rem;border-radius:var(--radius-md);border:1px solid var(--color-border);margin-bottom:1.5rem;">
+                            <h3 style="color:var(--gold-primary);margin-bottom:1rem;"><i class="fas fa-user"></i> Primary Traveler (You)</h3>
+                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+                                <div>
+                                    <label style="color:var(--color-text-muted);display:block;margin-bottom:0.3rem;">Name</label>
+                                    <input type="text" value="<%= user.name %>" readonly style="width:100%;background:var(--color-surface-alt);border:1px solid var(--color-border);color:var(--color-text-muted);padding:0.7rem;border-radius:var(--radius-sm);cursor:not-allowed;box-sizing:border-box;">
+                                </div>
+                                <div>
+                                    <label style="color:var(--color-text-muted);display:block;margin-bottom:0.3rem;">Email</label>
+                                    <input type="text" value="<%= user.email %>" readonly style="width:100%;background:var(--color-surface-alt);border:1px solid var(--color-border);color:var(--color-text-muted);padding:0.7rem;border-radius:var(--radius-sm);cursor:not-allowed;box-sizing:border-box;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="travelers-container">
+                            <% for(let i = 1; i < booking.travelers; i++) { %>
+                            <div class="traveller-card" style="background:var(--color-surface);padding:1.5rem;border-radius:var(--radius-md);border:1px solid var(--color-border);margin-bottom:1.5rem;">
+                                <h3 style="color:var(--gold-primary);margin-bottom:1rem;">Traveler <%= i+1 %></h3>
+                                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+                                    <div>
+                                        <label style="color:var(--color-text-muted);display:block;margin-bottom:0.3rem;">First Name *</label>
+                                        <input type="text" name="firstName_<%= i %>" data-index="<%= i %>" data-field="firstName" required placeholder="Letters only" style="width:100%;background:var(--color-surface-alt);border:1px solid var(--color-border);color:var(--color-text);padding:0.7rem;border-radius:var(--radius-sm);box-sizing:border-box;">
+                                        <span class="traveller-error" id="firstName_error_<%= i %>"></span>
+                                    </div>
+                                    <div>
+                                        <label style="color:var(--color-text-muted);display:block;margin-bottom:0.3rem;">Last Name *</label>
+                                        <input type="text" name="lastName_<%= i %>" data-index="<%= i %>" data-field="lastName" required placeholder="Letters only" style="width:100%;background:var(--color-surface-alt);border:1px solid var(--color-border);color:var(--color-text);padding:0.7rem;border-radius:var(--radius-sm);box-sizing:border-box;">
+                                        <span class="traveller-error" id="lastName_error_<%= i %>"></span>
+                                    </div>
+                                    <div>
+                                        <label style="color:var(--color-text-muted);display:block;margin-bottom:0.3rem;">Date of Birth *</label>
+                                        <input type="date" name="dob_<%= i %>" data-index="<%= i %>" data-field="dob" required style="width:100%;background:var(--color-surface-alt);border:1px solid var(--color-border);color:var(--color-text);padding:0.7rem;border-radius:var(--radius-sm);box-sizing:border-box;">
+                                        <span class="traveller-error" id="dob_error_<%= i %>"></span>
+                                    </div>
+                                    <div>
+                                        <label style="color:var(--color-text-muted);display:block;margin-bottom:0.3rem;">Nationality *</label>
+                                        <select name="nationality_<%= i %>" data-index="<%= i %>" data-field="nationality" required style="width:100%;background:var(--color-surface-alt);border:1px solid var(--color-border);color:var(--color-text);padding:0.7rem;border-radius:var(--radius-sm);box-sizing:border-box;">
+                                            <option value="" disabled selected>Select nationality</option>
+                                            <option>Afghanistan</option><option>Albania</option><option>Algeria</option><option>Argentina</option><option>Australia</option><option>Austria</option><option>Bangladesh</option><option>Belgium</option><option>Brazil</option><option>Canada</option><option>China</option><option>Denmark</option><option>Egypt</option><option>Finland</option><option>France</option><option>Germany</option><option>Greece</option><option>India</option><option>Indonesia</option><option>Iran</option><option>Iraq</option><option>Ireland</option><option>Italy</option><option>Japan</option><option>Jordan</option><option>Kenya</option><option>Kuwait</option><option>Lebanon</option><option>Malaysia</option><option>Mexico</option><option>Morocco</option><option>Netherlands</option><option>Nigeria</option><option>Norway</option><option>Pakistan</option><option>Philippines</option><option>Poland</option><option>Portugal</option><option>Qatar</option><option>Russia</option><option>Saudi Arabia</option><option>Singapore</option><option>South Africa</option><option>South Korea</option><option>Spain</option><option>Sweden</option><option>Switzerland</option><option>Thailand</option><option>Tunisia</option><option>Turkey</option><option>UAE</option><option>United Kingdom</option><option>United States</option><option>Vietnam</option><option>Yemen</option>
+                                        </select>
+                                        <span class="traveller-error" id="nationality_error_<%= i %>"></span>
+                                    </div>
+                                    <div style="grid-column:1/-1;">
+                                        <label style="color:var(--color-text-muted);display:block;margin-bottom:0.3rem;">Identity Number * <span style="font-size:0.8rem;opacity:0.7;">(passport / national ID — digits only, min 9)</span></label>
+                                        <input type="text" inputmode="numeric" name="idNumber_<%= i %>" data-index="<%= i %>" data-field="idNumber" required placeholder="e.g. 123456789" style="width:100%;background:var(--color-surface-alt);border:1px solid var(--color-border);color:var(--color-text);padding:0.7rem;border-radius:var(--radius-sm);box-sizing:border-box;">
+                                        <span class="traveller-error" id="idNumber_error_<%= i %>"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <% } %>
+                        </div>
+
+                        <div id="form-error" style="display:none;color:var(--color-danger);margin-bottom:1rem;"></div>
+
+                        <div class="td-actions">
+                            <button type="button" id="back-btn" class="btn-editorial secondary" onclick="history.back()">
+                                <i class="fas fa-arrow-left"></i> Go Back
+                            </button>
+                            <button type="submit" id="continue-btn" class="btn-editorial primary">
+                                Continue to Summary <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <footer class="td-footer">
+                    <div class="td-footer__inner">
+                        <div class="td-footer__brand">
+                            <span class="td-footer__logo">Beyond the Pyramids</span>
+                            <p class="td-footer__tagline">Curating the eternal legacy of Egypt since 2012.</p>
+                        </div>
+                        <div class="td-footer__bottom">
+                            <span>&copy; 2026 Beyond the Pyramids. All rights reserved.</span>
+                            <span class="td-footer__credit">Designed for the modern explorer.</span>
+                        </div>
+                    </div>
+                </footer>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const SERVER_DATA = {
+            user: <%- JSON.stringify(user) %>,
+            booking: <%- JSON.stringify(booking) %>
+        };
+        window.SERVER_USER = SERVER_DATA.user;
+        const DRAFT_ID = '<%= booking._id %>';
+        const TRAVELERS = <%= booking.travelers %>;
+        window.TRAVELERS = TRAVELERS;
+
+        document.getElementById('travelers-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const errDiv = document.getElementById('form-error');
+            if (typeof validateAllTravellers === 'function' && !validateAllTravellers(TRAVELERS)) return;
+            const additionalTravelers = [];
+            for (let i = 1; i < TRAVELERS; i++) {
+                additionalTravelers.push({
+                    firstName: e.target['firstName_' + i]?.value || '',
+                    lastName: e.target['lastName_' + i]?.value || '',
+                    dob: e.target['dob_' + i]?.value || '',
+                    nationality: e.target['nationality_' + i]?.value || '',
+                    idNumber: e.target['idNumber_' + i]?.value || '',
+                });
+            }
+            try {
+                const res = await fetch('/api/bookings/draft/' + DRAFT_ID, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ additionalTravelers })
+                });
+                if (!res.ok) { const d = await res.json(); throw new Error(d.message); }
+                window.location.href = '/booking/summary?draftId=' + DRAFT_ID;
+            } catch (err) {
+                errDiv.style.display = 'block';
+                errDiv.textContent = err.message || 'An error occurred. Please try again.';
+            }
+        });
+
+</script>
+    <script src="/js/global.js"></script>
+    <script src="/js/travellers.js"></script>
+</body>
+
+</html>
