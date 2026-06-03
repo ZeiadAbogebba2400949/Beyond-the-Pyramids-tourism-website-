@@ -1,0 +1,234 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Summary - Beyond the Pyramids</title>
+
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/userDashboard.css">
+    <link rel="stylesheet" href="/css/bookingSummary.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="noise-overlay"></div>
+
+    <div class="dashboard-shell">
+
+        <aside class="dashboard-sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <a href="/"><img src="/images/WebsiteBanner.png" alt="Beyond the Pyramids"></a>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-group">
+                    <span class="group-label">Discovery</span>
+                    <ul>
+                        <li><a href="/"><i class="fas fa-home"></i> Home Sanctuary</a></li>
+                        <li><a href="/packages/day"><i class="fas fa-sun"></i> Day Packages</a></li>
+                        <li><a href="/packages/week"><i class="fas fa-calendar-week"></i> Week Packages</a></li>
+                        <li><a href="/packages/single"><i class="fas fa-location-dot"></i> Single Locations</a></li>
+                        <li><a href="/custom-trip"><i class="fas fa-compass"></i> Trip Architect</a></li>
+                    </ul>
+                </div>
+
+                <div class="nav-group">
+                    <span class="group-label">Personal Desk</span>
+                    <ul>
+                        <li><a href="/dashboard"><i class="fas fa-columns"></i> Dashboard</a></li>
+                        <li><a href="/my-bookings"><i class="fas fa-suitcase-rolling"></i> My Journeys</a></li>
+                        <li><a href="/profile"><i class="fas fa-user-circle"></i> Profile Settings</a></li>
+                    </ul>
+                </div>
+
+                <div class="nav-group">
+                    <span class="group-label">Concierge</span>
+                    <ul>
+                        <li><a href="/faq"><i class="fas fa-question-circle"></i> Help &amp; FAQ</a></li>
+                        <li><a href="/contact"><i class="fas fa-envelope"></i> Contact Us</a></li>
+                        <li><a href="/reviews/write"><i class="fas fa-star"></i> Reviews</a></li>
+                    </ul>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button id="theme-toggle" class="theme-toggle-btn">
+                    <i class="fas fa-moon"></i> <span>Dark Mode</span>
+                </button>
+                <a href="#" id="logout-link" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+        </aside>
+
+        <main class="dashboard-main">
+
+            <header class="dash-topbar" id="dash-topbar">
+                <div class="topbar-left">
+                    <div class="greeting-stack">
+                        <span class="greeting-label">Review Your Journey</span>
+                        <h1 class="greeting-name">Booking Summary</h1>
+                    </div>
+                </div>
+                <div class="topbar-right">
+                    <div class="topbar-avatar" id="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+            </header>
+
+            <div class="page-content editorial-page">
+                <div class="itinerary-document reveal-up">
+                    <div class="itinerary-header">
+                        <h2>Your Journey Itinerary</h2>
+                        <div class="itinerary-meta">
+                            <span class="meta-label">Booking Reference</span>
+                            <span class="ref-value"><%= booking.bookingNumber %></span>
+                            <span class="status-badge pending"><%= booking.status %></span>
+                        </div>
+                    </div>
+
+                    <div class="itinerary-body">
+                        <div class="itinerary-main">
+                            <div class="editorial-section">
+                                <h3>Travelers</h3>
+                                <div class="editorial-grid">
+                                    <div class="editorial-field">
+                                        <span class="field-label">Primary Guest</span>
+                                        <span class="field-value"><%= user.name %></span>
+                                    </div>
+                                    <div class="editorial-field">
+                                        <span class="field-label">Total Travelers</span>
+                                        <span class="field-value"><%= booking.travelers %></span>
+                                    </div>
+                                </div>
+                                <% if (booking.additionalTravelers && booking.additionalTravelers.length > 0) { %>
+                                <div style="margin-top:1rem;">
+                                    <% booking.additionalTravelers.forEach((t, i) => { %>
+                                    <p style="color:var(--color-text-muted);font-size:0.9rem;"><%= i+2 %>. <%= t.firstName %> <%= t.lastName %> — <%= t.nationality %></p>
+                                    <% }) %>
+                                </div>
+                                <% } %>
+                            </div>
+
+                            <div class="editorial-section">
+                                <h3>Trip Specifications</h3>
+                                <div class="editorial-grid">
+                                    <div class="editorial-field">
+                                        <span class="field-label">Package</span>
+                                        <span class="field-value"><%= booking.packageName %></span>
+                                    </div>
+                                    <div class="editorial-field">
+                                        <span class="field-label">Travel Date</span>
+                                        <span class="field-value"><%= booking.date %></span>
+                                    </div>
+                                    <div class="editorial-field">
+                                        <span class="field-label">Tier</span>
+                                        <span class="field-value" style="text-transform:capitalize;"><%= booking.tier %></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="editorial-section">
+                                <h3>Cancellation Policy</h3>
+                                <ul class="editorial-list">
+                                    <li><i class="fas fa-check"></i> Free cancellation up to 48 hours before the trip</li>
+                                    <li><i class="fas fa-exclamation"></i> 50% refund for cancellations within 48 hours</li>
+                                    <li><i class="fas fa-xmark"></i> No refund for no-show</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <aside class="itinerary-sidebar">
+                            <div class="editorial-section">
+                                <h3>Investment</h3>
+                                <div class="editorial-price">
+                                    <div class="price-row">
+                                        <span>Base Price</span>
+                                        <span>EGP <%= (booking.basePrice || Math.round(booking.totalPrice / booking.travelers)).toLocaleString() %></span>
+                                    </div>
+                                    <div class="price-row">
+                                        <span>Travelers</span>
+                                        <span>&times; <%= booking.travelers %></span>
+                                    </div>
+                                    <div class="price-row price-row--total">
+                                        <strong>Total</strong>
+                                        <strong style="color:var(--gold-primary);font-size:1.3rem;">EGP <%= booking.totalPrice.toLocaleString() %></strong>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="concierge-action">
+                                <div id="payment-error" style="display:none;color:var(--color-danger);margin-bottom:1rem;text-align:center;"></div>
+                                <div id="payment-success" style="display:none;color:var(--color-success);margin-bottom:1rem;text-align:center;"><i class="fas fa-check-circle"></i> Payment Successful!</div>
+                                <button id="payment-booking" class="btn-editorial primary">Proceed to Payment</button>
+                                <a href="/packages/day" class="btn-editorial secondary">Cancel Request</a>
+                            </div>
+                        </aside>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="main-footer reveal-up">
+                <div class="container footer-grid">
+                    <div class="footer-brand">
+                        <h3 class="footer-logo">Beyond the Pyramids</h3>
+                        <p>Curating the eternal legacy of Egypt since 2012.</p>
+                    </div>
+                    <nav class="footer-nav">
+                        <div class="footer-group"><h4>Explore</h4><ul><li><a href="/#destinations">Destinations</a></li><li><a href="/#packages">Tour Packages</a></li><li><a href="/custom-trip">Custom Trips</a></li></ul></div>
+                        <div class="footer-group"><h4>Company</h4><ul><li><a href="/about">Our Story</a></li><li><a href="/faq">Common Questions</a></li></ul></div>
+                        <div class="footer-group"><h4>Legal</h4><ul><li><a href="/terms">Terms of Service</a></li></ul></div>
+                    </nav>
+                    <div class="footer-newsletter">
+                        <h4>Join the Inner Circle</h4>
+                        <p>Receive exclusive travel insights and early access to new tours.</p>
+                        <form class="newsletter-form"><input type="email" placeholder="Your email address" required><button type="submit" class="btn btn--primary">Join</button></form>
+                    </div>
+                </div>
+                <div class="footer-bottom container">
+                    <p>&copy; 2026 Beyond the Pyramids. All rights reserved.</p>
+                    <div class="credit">Designed for the modern explorer.</div>
+                </div>
+            </footer>
+
+        </main>
+    </div>
+
+    <script>
+        const SERVER_DATA = {
+            user: <%- JSON.stringify(user) %>,
+            booking: <%- JSON.stringify(booking) %>
+        };
+        window.SERVER_USER = SERVER_DATA.user;
+        const DRAFT_ID = '<%= booking._id %>';
+
+        document.getElementById('payment-booking').addEventListener('click', async () => {
+            const payBtn = document.getElementById('payment-booking');
+            const errDiv = document.getElementById('payment-error');
+            const successDiv = document.getElementById('payment-success');
+            payBtn.textContent = 'Processing...';
+            payBtn.disabled = true;
+            try {
+                const res = await fetch('/api/bookings/draft/' + DRAFT_ID + '/confirm', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.message || 'Payment failed');
+                successDiv.style.display = 'block';
+                setTimeout(() => { window.location.href = '/booking/' + data.data.booking._id; }, 1500);
+            } catch (err) {
+                errDiv.style.display = 'block';
+                errDiv.textContent = err.message;
+                payBtn.textContent = 'Proceed to Payment';
+                payBtn.disabled = false;
+            }
+        });
+
+</script>
+    <script src="/js/global.js"></script>
+    <script src="/js/bookingSummary.js"></script>
+</body>
+
+</html>

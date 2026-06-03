@@ -1,0 +1,249 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings - Beyond the Pyramids</title>
+
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/myBookings.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="noise-overlay"></div>
+
+    <div class="dashboard-shell">
+        <aside class="dashboard-sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <a href="/"><img src="/images/WebsiteLogo.png" alt="Beyond the Pyramids"></a>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-group">
+                    <span class="group-label">Discovery</span>
+                    <ul>
+                        <li><a href="/"><i class="fas fa-home"></i> Home Sanctuary</a></li>
+                        <li><a href="/packages/day"><i class="fas fa-sun"></i> Day Packages</a></li>
+                        <li><a href="/packages/week"><i class="fas fa-calendar-week"></i> Week Packages</a></li>
+                        <li><a href="/packages/single"><i class="fas fa-location-dot"></i> Single Locations</a></li>
+                        <li><a href="/custom-trip"><i class="fas fa-compass"></i> Trip Architect</a></li>
+                    </ul>
+                </div>
+
+                <div class="nav-group">
+                    <span class="group-label">Personal Desk</span>
+                    <ul>
+                        <li><a href="/dashboard"><i class="fas fa-columns"></i> Dashboard</a></li>
+                        <li class="active"><a href="/my-bookings"><i class="fas fa-suitcase-rolling"></i> My Journeys</a></li>
+                        <li><a href="/profile"><i class="fas fa-user-circle"></i> Profile Settings</a></li>
+                    </ul>
+                </div>
+
+                <div class="nav-group">
+                    <span class="group-label">Concierge</span>
+                    <ul>
+                        <li><a href="/faq"><i class="fas fa-question-circle"></i> Help &amp; FAQ</a></li>
+                        <li><a href="/contact"><i class="fas fa-envelope"></i> Contact Us</a></li>
+                        <li><a href="/reviews/write"><i class="fas fa-star"></i> Reviews</a></li>
+                    </ul>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button id="theme-toggle" class="theme-toggle-btn">
+                    <i class="fas fa-moon"></i> <span>Dark Mode</span>
+                </button>
+                <a href="#" id="logout-link" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+        </aside>
+
+        <main class="dashboard-main">
+
+            <div class="page-title reveal-up">
+                <h1>My <span class="text-gold">Reservations</span></h1>
+                <p>Manage your upcoming journeys and historical explorations.</p>
+                <div class="account-chip" style="display:flex;align-items:center;gap:10px;margin-top:10px;">
+                    <div class="account-chip__avatar">
+                        <% if (user.image) { %>
+                        <img src="<%= user.image %>" alt="<%= user.name %>" style="width:36px;height:36px;border-radius:50%;object-fit:cover;">
+                        <% } else { %>
+                        <i class="fas fa-user"></i>
+                        <% } %>
+                    </div>
+                    <div>
+                        <span class="account-chip__label">Signed in as</span>
+                        <strong class="account-chip__name"><%= user.name %></strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="main-container">
+
+                <aside class="filters-sidebar glass-card reveal-up">
+                    <h3>Refine Journal</h3>
+
+                    <div class="filter-group">
+                        <label>Journey Status</label>
+                        <select id="statusFilter">
+                            <option value="all">All Statuses</option>
+                            <option value="confirmed">Confirmed</option>
+                            <option value="checked-in">Checked In</option>
+                            <option value="checked-out">Checked Out</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label>Journey Type</label>
+                        <select id="typeFilter">
+                            <option value="all">All Types</option>
+                            <option value="day">Day Package</option>
+                            <option value="week">Week Package</option>
+                            <option value="single">Single Location</option>
+                            <option value="custom">Custom Trip</option>
+                        </select>
+                    </div>
+                </aside>
+
+                <section class="bookings-container reveal-up">
+                    <div id="bookingsList">
+                        <% if (bookings.length === 0) { %>
+                        <div style="text-align:center;padding:4rem;color:var(--color-text-muted);">
+                            <i class="fas fa-suitcase-rolling" style="font-size:4rem;color:var(--gold-primary);margin-bottom:1rem;display:block;"></i>
+                            <h3>No journeys yet</h3>
+                            <p>Your travel history will appear here once you make your first booking.</p>
+                            <a href="/packages/day" class="btn btn--primary" style="display:inline-block;margin-top:1rem;">Browse Packages</a>
+                        </div>
+                        <% } else { %>
+                        <% bookings.forEach(booking => { %>
+                        <div class="booking-card reveal-up" data-status="<%= booking.status %>" data-type="<%= booking.packageId ? booking.packageId.type : 'day' %>">
+                            <div class="booking-card__image">
+                                <% if (booking.packageId && booking.packageId.image) { %>
+                                <img src="<%= booking.packageId.image %>" alt="<%= booking.packageName %>">
+                                <% } else { %>
+                                <i class="fas fa-landmark"></i>
+                                <% } %>
+                            </div>
+                            <div class="booking-card__info">
+                                <div class="booking-card__header">
+                                    <h3><%= booking.packageName %></h3>
+                                    <span class="status-badge status-<%= booking.status %>">
+                                        <%= booking.status.charAt(0).toUpperCase() + booking.status.slice(1) %>
+                                    </span>
+                                </div>
+                                <p><i class="fas fa-hashtag" style="color:var(--gold-primary);"></i> <%= booking.bookingNumber %></p>
+                                <p><i class="fas fa-calendar" style="color:var(--gold-primary);"></i> <%= booking.date || new Date(booking.createdAt).toLocaleDateString() %></p>
+                                <p><i class="fas fa-users" style="color:var(--gold-primary);"></i> <%= booking.travelers %> Traveler<%= booking.travelers > 1 ? 's' : '' %> &middot; <strong class="text-gold">EGP <%= booking.totalPrice.toLocaleString() %></strong></p>
+                            </div>
+                            <div class="booking-card__actions">
+                                <a href="/booking/<%= booking._id %>" class="btn btn--primary btn--small">View Details</a>
+                                <% if (booking.status === 'confirmed') { %>
+                                <button class="btn btn--outline btn--small cancel-btn" data-id="<%= booking._id %>" style="color:var(--color-danger);border-color:var(--color-danger);">Cancel</button>
+                                <% } %>
+                            </div>
+                        </div>
+                        <% }) %>
+                        <% } %>
+                    </div>
+                </section>
+            </div>
+
+            <div id="detailsModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>Journey Manifesto</h2>
+                        <span class="close-modal">&times;</span>
+                    </div>
+                    <div id="modalBody"></div>
+                </div>
+            </div>
+
+            <footer class="main-footer reveal-up">
+                <div class="container footer-grid">
+                    <div class="footer-brand">
+                        <h3 class="footer-logo">Beyond the Pyramids</h3>
+                        <p>Curating the eternal legacy of Egypt since 2012.</p>
+                    </div>
+                    <nav class="footer-nav">
+                        <div class="footer-group">
+                            <h4>Explore</h4>
+                            <ul>
+                                <li><a href="/#destinations">Destinations</a></li>
+                                <li><a href="/#packages">Tour Packages</a></li>
+                                <li><a href="/custom-trip">Custom Trips</a></li>
+                            </ul>
+                        </div>
+                        <div class="footer-group">
+                            <h4>Company</h4>
+                            <ul>
+                                <li><a href="/about">Our Story</a></li>
+                                <li><a href="/faq">Common Questions</a></li>
+                            </ul>
+                        </div>
+                        <div class="footer-group">
+                            <h4>Legal</h4>
+                            <ul>
+                                <li><a href="/terms">Terms of Service</a></li>
+                            </ul>
+                        </div>
+                    </nav>
+                    <div class="footer-newsletter">
+                        <h4>Join the Inner Circle</h4>
+                        <p>Receive exclusive travel insights and early access to new tours.</p>
+                        <form class="newsletter-form">
+                            <input type="email" placeholder="Your email address" required>
+                            <button type="submit" class="btn btn--primary">Join</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="footer-bottom container">
+                    <p>&copy; 2026 Beyond the Pyramids. All rights reserved.</p>
+                    <div class="credit">Designed for the modern explorer.</div>
+                </div>
+            </footer>
+
+        </main>
+    </div>
+
+    <script>
+        const SERVER_DATA = {
+            user: <%- JSON.stringify(user) %>,
+            bookings: <%- JSON.stringify(bookings) %>
+        };
+        window.SERVER_USER = SERVER_DATA.user;
+        window.SERVER_BOOKINGS = SERVER_DATA.bookings;
+
+        document.querySelectorAll('.cancel-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const id = btn.dataset.id;
+                if (!confirm('Are you sure you want to cancel this booking?')) return;
+                try {
+                    const res = await fetch('/api/bookings/' + id + '/cancel', {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ reason: 'Cancelled by user' })
+                    });
+                    if (res.ok) { window.location.reload(); }
+                    else { const d = await res.json(); alert(d.message || 'Cancellation failed'); }
+                } catch (err) { alert('An error occurred. Please try again.'); }
+            });
+        });
+
+        // Filters
+        function applyFilters() {
+            const status = document.getElementById('statusFilter').value;
+            const type = document.getElementById('typeFilter').value;
+            document.querySelectorAll('.booking-card').forEach(card => {
+                const matchStatus = status === 'all' || card.dataset.status === status;
+                const matchType = type === 'all' || card.dataset.type === type;
+                card.style.display = matchStatus && matchType ? '' : 'none';
+            });
+        }
+        document.getElementById('statusFilter').addEventListener('change', applyFilters);
+        document.getElementById('typeFilter').addEventListener('change', applyFilters);
+
+</script>
+    <script src="/js/global.js"></script>
+    <script src="/js/myBookings.js"></script>
+</body>
+</html>
