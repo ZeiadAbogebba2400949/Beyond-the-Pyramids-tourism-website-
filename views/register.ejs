@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Beyond the Pyramids</title>
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/register.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="neon-border-wrap">
+            <main class="layout">
+                <div class="image-panel reveal-item">
+                    <div class="image-inner">
+                        <img src="/images/layoutImage.jpg" alt="Ancient Egypt" class="backdrop-img">
+                        <div class="overlay-text">
+                            <span class="tag">The Adventure Awaits</span>
+                            <h2>Beyond the Pyramids</h2>
+                            <p>Join the inner circle of elite travelers and unlock the secrets of the ancient world.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-panel">
+                    <div class="form-header reveal-item">
+                        <img src="/images/WebsiteBanner.png" alt="Logo" class="logo">
+                        <h1>Begin Your Journey</h1>
+                        <p>Create your profile to access custom itineraries and concierge services.</p>
+                    </div>
+
+                    <form id="registrationForm" class="editorial-form">
+                        <div class="form-section reveal-item">
+                            <h3 class="section-title">Personal Identity</h3>
+                            <div class="input-group">
+                                <div class="field">
+                                    <label for="firstname">First Name</label>
+                                    <input type="text" id="firstname" name="firstname" placeholder="Letters only, e.g. Ahmed" required>
+                                    <span class="error" id="firstname_error"></span>
+                                </div>
+                                <div class="field">
+                                    <label for="lastname">Last Name</label>
+                                    <input type="text" id="lastname" name="lastname" placeholder="Letters only, e.g. Hassan" required>
+                                    <span class="error" id="lastname_error"></span>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <div class="field">
+                                    <label for="dob">Date of Birth</label>
+                                    <input type="date" id="dob" name="dob" required>
+                                    <span class="error" id="dob_error"></span>
+                                </div>
+                                <div class="field">
+                                    <label for="nationality">Nationality</label>
+                                    <select name="nationality" id="nationality" required>
+                                        <option value="" disabled selected>Select your nationality</option>
+                                        <option value="Afghanistan">Afghanistan</option><option value="Albania">Albania</option><option value="Algeria">Algeria</option><option value="Argentina">Argentina</option><option value="Australia">Australia</option><option value="Austria">Austria</option><option value="Bangladesh">Bangladesh</option><option value="Belgium">Belgium</option><option value="Brazil">Brazil</option><option value="Canada">Canada</option><option value="China">China</option><option value="Denmark">Denmark</option><option value="Egypt">Egypt</option><option value="Finland">Finland</option><option value="France">France</option><option value="Germany">Germany</option><option value="Greece">Greece</option><option value="India">India</option><option value="Indonesia">Indonesia</option><option value="Iran">Iran</option><option value="Iraq">Iraq</option><option value="Ireland">Ireland</option><option value="Italy">Italy</option><option value="Japan">Japan</option><option value="Jordan">Jordan</option><option value="Kenya">Kenya</option><option value="Kuwait">Kuwait</option><option value="Lebanon">Lebanon</option><option value="Malaysia">Malaysia</option><option value="Mexico">Mexico</option><option value="Morocco">Morocco</option><option value="Netherlands">Netherlands</option><option value="Nigeria">Nigeria</option><option value="Norway">Norway</option><option value="Pakistan">Pakistan</option><option value="Philippines">Philippines</option><option value="Poland">Poland</option><option value="Portugal">Portugal</option><option value="Qatar">Qatar</option><option value="Russia">Russia</option><option value="Saudi Arabia">Saudi Arabia</option><option value="Singapore">Singapore</option><option value="South Africa">South Africa</option><option value="South Korea">South Korea</option><option value="Spain">Spain</option><option value="Sweden">Sweden</option><option value="Switzerland">Switzerland</option><option value="Thailand">Thailand</option><option value="Tunisia">Tunisia</option><option value="Turkey">Turkey</option><option value="UAE">UAE</option><option value="UK">United Kingdom</option><option value="USA">United States</option><option value="Vietnam">Vietnam</option><option value="Yemen">Yemen</option>
+                                    </select>
+                                    <span class="error" id="nationality_error"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section reveal-item">
+                            <h3 class="section-title">Contact Channels</h3>
+                            <div class="input-group">
+                                <div class="field phone-field">
+                                    <label for="phone">Phone Number</label>
+                                    <div class="phone-row">
+                                        <select name="country_code" id="country_code" required>
+                                            <option value="" disabled selected>Code</option>
+                                            <option value="+20">Egypt (+20)</option><option value="+1">USA/Canada (+1)</option><option value="+44">UK (+44)</option><option value="+49">Germany (+49)</option><option value="+33">France (+33)</option><option value="+81">Japan (+81)</option><option value="+86">China (+86)</option><option value="+91">India (+91)</option><option value="+966">Saudi Arabia (+966)</option><option value="+971">UAE (+971)</option><option value="+962">Jordan (+962)</option><option value="+961">Lebanon (+961)</option><option value="+970">Palestine (+970)</option><option value="+974">Qatar (+974)</option><option value="+965">Kuwait (+965)</option><option value="+34">Spain (+34)</option><option value="+39">Italy (+39)</option><option value="+7">Russia (+7)</option><option value="+55">Brazil (+55)</option><option value="+61">Australia (+61)</option><option value="+234">Nigeria (+234)</option>
+                                        </select>
+                                        <input type="tel" id="phone" name="phone" placeholder="123 456 789" required>
+                                    </div>
+                                    <span class="error" id="phone_error"></span>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label for="email">Email Address</label>
+                                <input type="email" id="email" name="email" placeholder="name@egypt.com" required>
+                                <span class="error" id="email_error"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-section reveal-item">
+                            <h3 class="section-title">Digital Vault</h3>
+                            <div class="field">
+                                <label for="password">Security Password</label>
+                                <div class="pass-wrapper">
+                                    <input type="password" id="password" name="password" placeholder="Min. 6 characters" required>
+                                    <span class="eye-icon" onclick="togglePassword('password')"><i class="fas fa-eye" id="eye-password"></i></span>
+                                </div>
+                                <span class="error" id="password_error"></span>
+                            </div>
+                            <div class="field">
+                                <label for="confirm_password">Verify Password</label>
+                                <div class="pass-wrapper">
+                                    <input type="password" id="confirm_password" name="confirm_password" placeholder="Re-enter your password" required>
+                                    <span class="eye-icon" onclick="togglePassword('confirm_password')"><i class="fas fa-eye" id="eye-confirm_password"></i></span>
+                                </div>
+                                <span class="error" id="confirm_password_error"></span>
+                            </div>
+                        </div>
+
+                        <div id="register-error" class="error-message" style="display:none;color:#e74c3c;margin-bottom:10px;"></div>
+
+                        <div class="form-actions reveal-item">
+                            <button type="submit" class="submit-btn primary-btn">Create Account</button>
+                            <button type="reset" class="reset-btn">Reset</button>
+                        </div>
+                    </form>
+
+                    <div class="login-prompt reveal-item">
+                        <p>Already a member? <a href="/login">Sign In</a></p>
+                    </div>
+
+                    <footer class="form-footer reveal-item">
+                        <p>&copy; 2026 Beyond the Pyramids. All rights reserved.</p>
+                    </footer>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        function togglePassword(fieldId) {
+            const field = document.getElementById(fieldId);
+            const icon = document.getElementById('eye-' + fieldId);
+            if (!field || !icon) return;
+            if (field.type === 'password') { field.type = 'text'; icon.className = 'fas fa-eye-slash'; }
+            else { field.type = 'password'; icon.className = 'fas fa-eye'; }
+        }
+        const SERVER_USER = <%- JSON.stringify(user) %>;
+    </script>
+    <script src="/js/register.js"></script>
+</body>
+</html>

@@ -1,0 +1,283 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Sanctuary | Beyond the Pyramids</title>
+
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/userProfile.css">
+</head>
+
+<body>
+    <div id="alertContainer" class="hidden"></div>
+    <div class="noise-overlay"></div>
+
+    <div class="dashboard-shell">
+
+        <aside class="dashboard-sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <a href="/"><img src="/images/WebsiteLogo.png" alt="Beyond the Pyramids"></a>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-group">
+                    <span class="group-label">Discovery</span>
+                    <ul>
+                        <li><a href="/"><i class="fas fa-home"></i> Home Sanctuary</a></li>
+                        <li><a href="/packages/day"><i class="fas fa-sun"></i> Day Packages</a></li>
+                        <li><a href="/packages/week"><i class="fas fa-calendar-week"></i> Week Packages</a></li>
+                        <li><a href="/packages/single"><i class="fas fa-location-dot"></i> Single Locations</a></li>
+                        <li><a href="/custom-trip"><i class="fas fa-compass"></i> Trip Architect</a></li>
+                    </ul>
+                </div>
+
+                <div class="nav-group">
+                    <span class="group-label">Personal Desk</span>
+                    <ul>
+                        <li><a href="/dashboard"><i class="fas fa-columns"></i> Dashboard</a></li>
+                        <li><a href="/my-bookings"><i class="fas fa-suitcase-rolling"></i> My Journeys</a></li>
+                        <li class="active"><a href="/profile"><i class="fas fa-user-circle"></i> Profile Settings</a></li>
+                    </ul>
+                </div>
+
+                <div class="nav-group">
+                    <span class="group-label">Concierge</span>
+                    <ul>
+                        <li><a href="/faq"><i class="fas fa-question-circle"></i> Help &amp; FAQ</a></li>
+                        <li><a href="/contact"><i class="fas fa-envelope"></i> Contact Us</a></li>
+                        <li><a href="/reviews/write"><i class="fas fa-star"></i> Reviews</a></li>
+                    </ul>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button id="theme-toggle" class="theme-toggle-btn">
+                    <i class="fas fa-moon"></i> <span>Dark Mode</span>
+                </button>
+                <a href="#" id="logout-link" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+        </aside>
+
+        <main class="dashboard-main">
+            <header class="profile-header reveal-up" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+                <div>
+                    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:0.5rem;">
+                        <button id="mobileSidebarToggle" class="btn btn--outline btn--small" style="display:none;"><i class="fa-solid fa-bars"></i></button>
+                        <h1>Profile Settings</h1>
+                    </div>
+                    <p class="text-secondary">Manage your personal information and account security.</p>
+                </div>
+            </header>
+
+            <div class="profile-grid">
+
+                <div class="profile-workspace-pane reveal-up">
+                    <nav class="tab-nav">
+                        <button class="tab-btn active" data-tab="personal">Personal Info</button>
+                        <button class="tab-btn" data-tab="security">Security</button>
+                    </nav>
+
+                    <section class="glass-card workspace-card tab-panel" id="tab-personal">
+                        <div class="section-title-row">
+                            <h2>Identity Details</h2>
+                            <div class="action-buttons">
+                                <button id="editPersonalBtn" class="btn btn--outline btn--small"><i class="fa-solid fa-pen"></i> Edit</button>
+                                <button id="savePersonalBtn" class="btn btn--primary btn--small hidden"><i class="fa-solid fa-check"></i> Save</button>
+                                <button id="cancelPersonalBtn" class="btn btn--outline btn--small hidden"><i class="fa-solid fa-xmark"></i> Cancel</button>
+                            </div>
+                        </div>
+
+                        <div style="display:flex;gap:2rem;align-items:start;margin-bottom:2rem;flex-wrap:wrap;">
+                            <div id="profileAvatarWrap" style="position:relative;width:100px;height:100px;display:flex;align-items:center;justify-content:center;border:2px solid var(--gold-primary);border-radius:50%;background:rgba(197,160,89,0.1);overflow:hidden;">
+                                <% if (user.image) { %>
+                                <img id="profileAvatarImg" src="<%= user.image %>" alt="<%= user.name %>" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
+                                <% } else { %>
+                                <i id="profileAvatarIcon" class="fas fa-user-circle" style="font-size:5rem;color:var(--gold-primary);"></i>
+                                <% } %>
+                            </div>
+                            <div style="flex:1;min-width:200px;">
+                                <h3 id="userNameDisplay" style="margin-bottom:0.5rem;"><%= user.name %></h3>
+                                <p id="userEmailDisplay" class="text-secondary" style="font-size:var(--text-sm);margin-bottom:1rem;"><%= user.email %></p>
+                                <input type="file" id="profilePhotoInput" class="hidden" accept="image/*">
+                                <button type="button" id="uploadPhotoBtn" class="btn btn--outline btn--small">
+                                    <i class="fa-solid fa-camera"></i> Upload Photo
+                                </button>
+                            </div>
+                        </div>
+
+                        <form id="personalInfoForm" novalidate>
+                            <label>Full Name
+                                <input type="text" id="fullName" value="<%= user.name %>" disabled required minlength="2">
+                                <small class="error-msg"></small>
+                            </label>
+                            <label>Email Address
+                                <input type="email" id="email" value="<%= user.email %>" disabled required>
+                                <small class="error-msg"></small>
+                            </label>
+                            <label>Contact Number
+                                <input type="tel" id="phoneNumber" value="<%= user.phone || '' %>" disabled>
+                                <small class="error-msg"></small>
+                            </label>
+                            <label>Date of Birth
+                                <input type="date" id="dob" value="<%= user.dob ? new Date(user.dob).toISOString().split('T')[0] : '' %>" disabled>
+                                <small class="error-msg"></small>
+                            </label>
+                            <label>Nationality
+                                <select id="nationality" disabled>
+                                    <option value="">Select nationality</option>
+                                    <option>Afghanistan</option><option>Albania</option><option>Algeria</option><option>Argentina</option><option>Australia</option><option>Austria</option><option>Bangladesh</option><option>Belgium</option><option>Brazil</option><option>Canada</option><option>China</option><option>Denmark</option><option>Egypt</option><option>Finland</option><option>France</option><option>Germany</option><option>Greece</option><option>India</option><option>Indonesia</option><option>Iran</option><option>Iraq</option><option>Ireland</option><option>Italy</option><option>Japan</option><option>Jordan</option><option>Kenya</option><option>Kuwait</option><option>Lebanon</option><option>Malaysia</option><option>Mexico</option><option>Morocco</option><option>Netherlands</option><option>Nigeria</option><option>Norway</option><option>Pakistan</option><option>Philippines</option><option>Poland</option><option>Portugal</option><option>Qatar</option><option>Russia</option><option>Saudi Arabia</option><option>Singapore</option><option>South Africa</option><option>South Korea</option><option>Spain</option><option>Sweden</option><option>Switzerland</option><option>Thailand</option><option>Tunisia</option><option>Turkey</option><option>UAE</option><option>United Kingdom</option><option>United States</option><option>Vietnam</option><option>Yemen</option>
+                                </select>
+                                <small class="error-msg"></small>
+                            </label>
+                        </form>
+                    </section>
+
+                    <section class="glass-card workspace-card tab-panel hidden" id="tab-security">
+                        <div class="section-title-row">
+                            <h2>Security &amp; Verification</h2>
+                        </div>
+                        <form id="securityForm" novalidate>
+                            <label>Current Password
+                                <div class="pass-wrapper">
+                                    <input type="password" id="currPassword" placeholder="Enter your current password" required>
+                                    <span class="eye-icon" onclick="toggleProfilePassword('currPassword')"><i class="fas fa-eye" id="eye-currPassword"></i></span>
+                                </div>
+                                <small class="error-msg"></small>
+                            </label>
+                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+                                <label>New Password
+                                    <div class="pass-wrapper">
+                                        <input type="password" id="newPassword" required minlength="6">
+                                        <span class="eye-icon" onclick="toggleProfilePassword('newPassword')"><i class="fas fa-eye" id="eye-newPassword"></i></span>
+                                    </div>
+                                    <small class="error-msg"></small>
+                                </label>
+                                <label>Confirm Password
+                                    <div class="pass-wrapper">
+                                        <input type="password" id="confirmPassword" required>
+                                        <span class="eye-icon" onclick="toggleProfilePassword('confirmPassword')"><i class="fas fa-eye" id="eye-confirmPassword"></i></span>
+                                    </div>
+                                    <small class="error-msg"></small>
+                                </label>
+                            </div>
+                            <button type="button" id="updatePasswordBtn" class="btn btn--primary" style="margin-top:1rem;">Update Password</button>
+                        </form>
+                        <hr style="margin:2rem 0;opacity:0.1;">
+                        <div class="danger-zone">
+                            <h3 style="color:var(--color-danger);font-size:var(--text-sm);margin-bottom:0.5rem;">Danger Zone</h3>
+                            <p class="text-secondary" style="font-size:var(--text-xs);margin-bottom:1rem;">Once you delete your account, there is no going back. Please be certain.</p>
+                            <button id="deleteAccountBtn" class="btn btn--outline btn--small" style="color:var(--color-danger);border-color:var(--color-danger);">Delete Account</button>
+                        </div>
+                    </section>
+
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="modal-overlay hidden" id="deleteModal">
+        <div class="glass-card modal-box">
+            <h3>Relinquish Account?</h3>
+            <p class="text-secondary" style="margin-bottom:2rem;">Are you certain you wish to remove your presence from our sanctuary? This action is permanent.</p>
+            <div style="display:flex;flex-direction:column;gap:1rem;">
+                <button id="confirmDeleteBtn" class="btn btn--primary" style="background:var(--color-danger);">Yes, Delete Forever</button>
+                <button id="cancelDeleteBtn" class="btn btn--outline">Reclaim My Sanctuary</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SERVER_DATA = {
+            user: <%- JSON.stringify(user) %>,
+            bookings: <%- JSON.stringify(bookings) %>
+        };
+        window.SERVER_USER = SERVER_DATA.user;
+
+        function toggleProfilePassword(id) {
+            const field = document.getElementById(id);
+            const icon  = document.getElementById('eye-' + id);
+            if (!field || !icon) return;
+            if (field.type === 'password') { field.type = 'text';     icon.className = 'fas fa-eye-slash'; }
+            else                           { field.type = 'password'; icon.className = 'fas fa-eye'; }
+        }
+
+        // Tab switching
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+                btn.classList.add('active');
+                document.getElementById('tab-' + btn.dataset.tab).classList.remove('hidden');
+            });
+        });
+
+        // Edit/Save/Cancel personal info
+        const editBtn = document.getElementById('editPersonalBtn');
+        const saveBtn = document.getElementById('savePersonalBtn');
+        const cancelBtn = document.getElementById('cancelPersonalBtn');
+        const formInputs = document.querySelectorAll('#personalInfoForm input:not(#email), #personalInfoForm select');
+
+        editBtn.addEventListener('click', () => {
+            formInputs.forEach(i => i.disabled = false);
+            editBtn.classList.add('hidden');
+            saveBtn.classList.remove('hidden');
+            cancelBtn.classList.remove('hidden');
+        });
+
+        cancelBtn.addEventListener('click', () => {
+            formInputs.forEach(i => i.disabled = true);
+            editBtn.classList.remove('hidden');
+            saveBtn.classList.add('hidden');
+            cancelBtn.classList.add('hidden');
+        });
+
+        saveBtn.addEventListener('click', async () => {
+            try {
+                const res = await fetch('/api/users/profile', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: document.getElementById('fullName').value,
+                        phone: document.getElementById('phoneNumber').value,
+                        nationality: document.getElementById('nationality').value,
+                        dob: document.getElementById('dob').value
+                    })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.message);
+                formInputs.forEach(i => i.disabled = true);
+                editBtn.classList.remove('hidden');
+                saveBtn.classList.add('hidden');
+                cancelBtn.classList.add('hidden');
+                document.getElementById('userNameDisplay').textContent = document.getElementById('fullName').value;
+            } catch (err) {
+                alert(err.message || 'Failed to save changes.');
+            }
+        });
+
+
+        // Delete account
+        document.getElementById('deleteAccountBtn').addEventListener('click', () => {
+            document.getElementById('deleteModal').classList.remove('hidden');
+        });
+        document.getElementById('cancelDeleteBtn').addEventListener('click', () => {
+            document.getElementById('deleteModal').classList.add('hidden');
+        });
+        document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
+            try {
+                const res = await fetch('/api/users/me', { method: 'DELETE' });
+                if (res.ok) {
+                    window.location.href = '/';
+                }
+            } catch (err) { alert('Failed to delete account.'); }
+        });
+
+</script>
+    <script src="/js/global.js"></script>
+    <script src="/js/userProfile.js"></script>
+</body>
+
+</html>

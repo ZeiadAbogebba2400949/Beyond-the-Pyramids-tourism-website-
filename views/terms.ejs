@@ -1,70 +1,65 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terms & Conditions - Beyond the Pyramids</title>
+    <title>Terms &amp; Conditions - Beyond the Pyramids</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Montserrat:wght@300;400;500;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Montserrat:wght@300;400;500;700&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="../global.css">
-    <link rel="stylesheet" href="../LandingPage/css/style.css">
-    <link rel="stylesheet" href="../LandingPage/css/info-page-overrides.css">
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/public.css">
+    <link rel="stylesheet" href="/css/terms.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 
 <body class="info-page">
     <div class="noise-overlay"></div>
 
-    
     <nav class="navbar" id="main-nav">
         <div class="nav-container">
             <div class="logo">
-                <a href="../index.html">
-                    <img src="../WebsiteBanner.png" alt="Beyond the Pyramids Logo">
-                </a>
+                <a href="/"><img src="/images/WebsiteBanner.png" alt="Beyond the Pyramids Logo"></a>
             </div>
-
             <ul class="nav-menu">
-                <li><a href="../index.html" class="nav-link">Home</a></li>
-                <li><a href="../DayPackages/dayPackages.html" class="nav-link">Day Packages</a></li>
-                <li><a href="../WeeklyPackagePage/week-packages.html" class="nav-link">Week Packages</a></li>
-                <li><a href="../SingleLocationPage/SingleLocation.html" class="nav-link">Single Locations</a></li>
-                <li><a href="../CustomTripBuilderPage/CustomTripBuilderPage.html" class="nav-link">Custom Trip</a></li>
-                <li id="nav-dashboard-link"><a href="../UserDashboardPage/dashboard.html" class="nav-link">Dashboard</a>
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/packages/day" class="nav-link">Day Packages</a></li>
+                <li><a href="/packages/week" class="nav-link">Week Packages</a></li>
+                <li><a href="/packages/single" class="nav-link">Single Locations</a></li>
+                <li><a href="/custom-trip" class="nav-link">Custom Trip</a></li>
+                <li id="nav-dashboard-link" <% if (!user) { %>style="display:none"<% } %>>
+                    <a href="/dashboard" class="nav-link">Dashboard</a>
                 </li>
             </ul>
-
             <div class="nav-actions">
                 <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
                     <i class="fas fa-sun sun-icon"></i>
                     <i class="fas fa-moon moon-icon"></i>
                 </button>
                 <div class="nav-buttons">
-                    <a href="../LoginPage/login.html" class="btn btn--outline">Log In</a>
-                    <a href="../RegistrationPage/registration_form.html" class="btn btn--primary">Sign Up</a>
+                    <% if (user) { %>
+                    <a href="/dashboard" class="btn btn--outline"><i class="fas fa-user"></i> <%= user.name.split(' ')[0] %></a>
+                    <a href="#" id="logout-btn" class="btn btn--primary">Logout</a>
+                    <% } else { %>
+                    <a href="/login" class="btn btn--outline">Log In</a>
+                    <a href="/register" class="btn btn--primary">Sign Up</a>
+                    <% } %>
                 </div>
             </div>
         </div>
     </nav>
 
-    
     <div class="page-title reveal-up">
-        <h1 class="hero-title">Terms & <span class="text-gold">Conditions</span></h1>
+        <h1 class="hero-title">Terms &amp; <span class="text-gold">Conditions</span></h1>
         <p class="hero-description">Honoring the legal legacy of our partnership. Last Updated: March 15, 2026</p>
     </div>
 
-    
     <main class="main-container">
         <div class="legal-layout">
-            
-            
+
             <aside class="legal-sidebar">
                 <div class="glass-card toc-container reveal-up">
                     <div class="toc-header">
@@ -81,7 +76,7 @@
                             <li><a href="#section-1" class="toc-link"> Acceptance of Terms</a></li>
                             <li><a href="#section-2" class="toc-link"> Definitions</a></li>
                             <li><a href="#section-3" class="toc-link"> User Accounts</a></li>
-                            <li><a href="#section-4" class="toc-link"> Booking & Payment</a></li>
+                            <li><a href="#section-4" class="toc-link"> Booking &amp; Payment</a></li>
                             <li><a href="#section-5" class="toc-link"> Cancellations</a></li>
                             <li><a href="#section-6" class="toc-link"> Responsibilities</a></li>
                             <li><a href="#section-7" class="toc-link"> Package Terms</a></li>
@@ -100,9 +95,9 @@
                 </div>
             </aside>
 
-            
             <div class="legal-content-pane">
                 <main class="content-main reveal-up" id="main-content">
+
                     <section id="section-1" class="legal-section">
                         <h2>1. Acceptance of Terms</h2>
                         <p>Welcome to Beyond the Pyramids. By accessing or using our platform, you agree to comply with and be bound by these Terms and Conditions. This forms a legally binding agreement between you and Beyond the Pyramids.</p>
@@ -125,7 +120,7 @@
                     </section>
 
                     <section id="section-3" class="legal-section">
-                        <h2>3. User Accounts & Registration</h2>
+                        <h2>3. User Accounts &amp; Registration</h2>
                         <p>To access certain features, you must register for an account. You agree to provide accurate, current, and complete information during the registration process.</p>
                         <div class="highlight-box glass-card">
                             <strong>Note:</strong> You are responsible for safeguarding your password. We reserve the right to suspend or terminate your account if we suspect any breach of security or violation of these terms.
@@ -133,7 +128,7 @@
                     </section>
 
                     <section id="section-4" class="legal-section">
-                        <h2>4. Booking & Payment Terms</h2>
+                        <h2>4. Booking &amp; Payment Terms</h2>
                         <p>All bookings are subject to availability and formal confirmation via email. Displayed pricing is in USD unless otherwise specified.</p>
                         <ul>
                             <li>We accept major credit cards and verified electronic transfer methods.</li>
@@ -143,7 +138,7 @@
                     </section>
 
                     <section id="section-5" class="legal-section">
-                        <h2>5. Cancellation & Refund Policy</h2>
+                        <h2>5. Cancellation &amp; Refund Policy</h2>
                         <p>Cancellations must be made by contacting our support team. Refunds are processed based on the notice period given prior to the scheduled start date:</p>
                         <table class="policy-table">
                             <thead>
@@ -153,26 +148,11 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>30+ days</td>
-                                    <td>100% Refund</td>
-                                </tr>
-                                <tr>
-                                    <td>15 to 29 days</td>
-                                    <td>75% Refund</td>
-                                </tr>
-                                <tr>
-                                    <td>7 to 14 days</td>
-                                    <td>50% Refund</td>
-                                </tr>
-                                <tr>
-                                    <td>3 to 6 days</td>
-                                    <td>25% Refund</td>
-                                </tr>
-                                <tr>
-                                    <td>Less than 48 hours</td>
-                                    <td>0% (No Refund)</td>
-                                </tr>
+                                <tr><td>30+ days</td><td>100% Refund</td></tr>
+                                <tr><td>15 to 29 days</td><td>75% Refund</td></tr>
+                                <tr><td>7 to 14 days</td><td>50% Refund</td></tr>
+                                <tr><td>3 to 6 days</td><td>25% Refund</td></tr>
+                                <tr><td>Less than 48 hours</td><td>0% (No Refund)</td></tr>
                             </tbody>
                         </table>
                     </section>
@@ -187,7 +167,7 @@
                     </section>
 
                     <section id="section-7" class="legal-section">
-                        <h2>7. Travel Packages & Custom Trips</h2>
+                        <h2>7. Travel Packages &amp; Custom Trips</h2>
                         <p>We offer single location excursions, day packages, and multi-week tours. Custom Trips are subject to structural limitations to ensure quality of service:</p>
                         <ul>
                             <li>Maximum of 5 destinations per Custom Trip.</li>
@@ -197,7 +177,7 @@
                     </section>
 
                     <section id="section-8" class="legal-section">
-                        <h2>8. Accommodation & Transportation</h2>
+                        <h2>8. Accommodation &amp; Transportation</h2>
                         <p>Hotels and transport services are operated by independent third parties. Standard global check-in time is 14:00 and check-out is 12:00, subject to venue rules.</p>
                         <div class="highlight-box glass-card">
                             Users will be held financially responsible for any damages inflicted on properties or vehicles during their trip. Luggage is restricted strictly to carrier allowances.
@@ -211,12 +191,12 @@
                     </section>
 
                     <section id="section-10" class="legal-section">
-                        <h2>10. Reviews & Feedback</h2>
+                        <h2>10. Reviews &amp; Feedback</h2>
                         <p>All reviews left on our platform must reflect a genuine user experience. We reserve the full right to moderate, hide, or delete reviews containing hate speech, profanity, or defamatory content.</p>
                     </section>
 
                     <section id="section-11" class="legal-section">
-                        <h2>11. Privacy & Data Protection</h2>
+                        <h2>11. Privacy &amp; Data Protection</h2>
                         <p>We collect essential data solely to provide and improve our services. You have the right to request the deletion of your personal data at any time.</p>
                     </section>
 
@@ -255,7 +235,7 @@
                     </section>
 
                     <div class="acknowledgment-section glass-card">
-                        <h3>Agreement & Acknowledgment</h3>
+                        <h3>Agreement &amp; Acknowledgment</h3>
                         <div class="checkbox-group">
                             <input type="checkbox" id="terms-checkbox">
                             <label for="terms-checkbox">I have read and agree to the Terms and Conditions.</label>
@@ -265,69 +245,60 @@
                             <label for="privacy-checkbox">I agree to the Privacy Policy.</label>
                         </div>
                         <button type="button" id="acceptBtn" class="btn btn--primary btn--full" disabled>Accept Terms</button>
+                        <p id="terms-login-error" class="terms-login-error"></p>
                         <div id="success-message" class="success-message">You have accepted the terms. Thank you.</div>
                     </div>
+
                 </main>
             </div>
 
         </div>
     </main>
 
-    
+    <button id="scrollToTopBtn" class="scroll-to-top" title="Go to top"><i class="fas fa-chevron-up"></i></button>
+
     <footer class="main-footer reveal-up">
         <div class="container footer-grid">
             <div class="footer-brand">
                 <h3 class="footer-logo">Beyond the Pyramids</h3>
                 <p>Curating the eternal legacy of Egypt since 2012.</p>
             </div>
-
             <nav class="footer-nav">
                 <div class="footer-group">
                     <h4>Explore</h4>
                     <ul>
-                        <li><a href="../index.html#destinations">Destinations</a></li>
-                        <li><a href="../index.html#packages">Tour Packages</a></li>
-                        <li><a href="../CustomTripBuilderPage/CustomTripBuilderPage.html">Custom Trips</a></li>
+                        <li><a href="/#destinations">Destinations</a></li>
+                        <li><a href="/#packages">Tour Packages</a></li>
+                        <li><a href="/custom-trip">Custom Trips</a></li>
                     </ul>
                 </div>
                 <div class="footer-group">
                     <h4>Company</h4>
                     <ul>
-                        <li><a href="../AboutUsPage/AboutUs.html">Our Story</a></li>
-                        <li><a href="../FAQpage/FAQpage.html">Common Questions</a></li>
+                        <li><a href="/about">Our Story</a></li>
+                        <li><a href="/faq">Common Questions</a></li>
                     </ul>
                 </div>
                 <div class="footer-group">
                     <h4>Legal</h4>
                     <ul>
-                        <li><a href="TermsAndConditionsPage.html">Terms of Service</a></li>
+                        <li><a href="/terms">Terms of Service</a></li>
                     </ul>
                 </div>
             </nav>
-
-            <div class="footer-newsletter">
-                <h4>Join the Inner Circle</h4>
-                <p>Receive exclusive travel insights and early access to new tours.</p>
-                <form class="newsletter-form">
-                    <input type="email" placeholder="Your email address" required>
-                    <button type="submit" class="btn btn--primary">Join</button>
-                </form>
-            </div>
         </div>
-
         <div class="footer-bottom container">
             <p>&copy; 2026 Beyond the Pyramids. All rights reserved.</p>
             <div class="credit">Designed for the modern explorer.</div>
         </div>
     </footer>
 
-    <button id="scrollToTopBtn" class="scroll-to-top" title="Go to top"><i class="fas fa-chevron-up"></i></button>
-
-    <script src="js/TermsAndConditionsPage.js"></script>
-    <script src="../mockData.js"></script>
-    <script src="../storage.js"></script>
-    <script src="../global.js"></script>
+    <script>
+        const SERVER_DATA = { user: <%- JSON.stringify(user) %> };
+        window.SERVER_USER = SERVER_DATA.user;
+</script>
+    <script src="/js/terms.js"></script>
+    <script src="/js/global.js"></script>
 </body>
 
 </html>
-
