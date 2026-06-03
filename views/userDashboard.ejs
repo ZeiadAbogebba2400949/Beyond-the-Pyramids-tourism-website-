@@ -1,0 +1,163 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Sanctuary | Beyond the Pyramids</title>
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/userDashboard.css">
+</head>
+<body>
+    <div class="noise-overlay"></div>
+    <div class="dashboard-shell">
+
+        <aside class="dashboard-sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <a href="/"><img src="/images/WebsiteBanner.png" alt="Beyond the Pyramids"></a>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-group">
+                    <span class="group-label">Discovery</span>
+                    <ul>
+                        <li><a href="/"><i class="fas fa-home"></i> Home Sanctuary</a></li>
+                        <li><a href="/packages/day"><i class="fas fa-sun"></i> Day Packages</a></li>
+                        <li><a href="/packages/week"><i class="fas fa-calendar-week"></i> Week Packages</a></li>
+                        <li><a href="/packages/single"><i class="fas fa-location-dot"></i> Single Locations</a></li>
+                        <li><a href="/custom-trip"><i class="fas fa-compass"></i> Trip Architect</a></li>
+                    </ul>
+                </div>
+                <div class="nav-group">
+                    <span class="group-label">Personal Desk</span>
+                    <ul>
+                        <li class="active"><a href="/dashboard"><i class="fas fa-columns"></i> Dashboard</a></li>
+                        <li><a href="/my-bookings"><i class="fas fa-suitcase-rolling"></i> My Journeys</a></li>
+                        <li><a href="/profile"><i class="fas fa-user-circle"></i> Profile Settings</a></li>
+                    </ul>
+                </div>
+                <div class="nav-group">
+                    <span class="group-label">Concierge</span>
+                    <ul>
+                        <li><a href="/faq"><i class="fas fa-question-circle"></i> Help & FAQ</a></li>
+                        <li><a href="/contact"><i class="fas fa-envelope"></i> Contact Us</a></li>
+                        <li><a href="/reviews/write"><i class="fas fa-star"></i> Reviews</a></li>
+                    </ul>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <button id="theme-toggle" class="theme-toggle-btn"><i class="fas fa-moon"></i> <span>Dark Mode</span></button>
+                <a href="#" id="logout-link" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+        </aside>
+
+        <main class="dashboard-main">
+            <header class="dash-topbar" id="dash-topbar">
+                <div class="topbar-left">
+                    <div class="greeting-stack">
+                        <span class="greeting-label" id="timeGreeting">Good day</span>
+                        <h1 class="greeting-name" id="userGreeting"><%= user.name.split(' ')[0] %></h1>
+                    </div>
+                </div>
+                <div class="topbar-right">
+                    <div class="account-chip" style="display:flex;align-items:center;gap:10px;">
+                        <div class="account-chip__avatar">
+                            <img src="<%= user.image %>" alt="<%= user.name %>" style="width:36px;height:36px;border-radius:50%;object-fit:cover;">
+                        </div>
+                        <div>
+                            <span class="account-chip__label">Signed in as</span>
+                            <strong class="account-chip__name"><%= user.name %></strong>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="dash-scroll-area">
+                <div class="stat-ribbon" id="stat-ribbon">
+                    <div class="stat-pill">
+                        <div class="pill-icon"><i class="fas fa-landmark"></i></div>
+                        <div class="pill-data">
+                            <span class="pill-value" id="stat-monuments" data-target="<%= totalBookings * 3 %>">0</span>
+                            <span class="pill-label">Sites Explored</span>
+                        </div>
+                    </div>
+                    <div class="stat-pill">
+                        <div class="pill-icon"><i class="fas fa-map-marked-alt"></i></div>
+                        <div class="pill-data">
+                            <span class="pill-value" id="stat-cities" data-target="<%= Math.min(totalBookings * 2, 12) %>">0</span>
+                            <span class="pill-label">Cities Visited</span>
+                        </div>
+                    </div>
+                    <div class="stat-pill">
+                        <div class="pill-icon"><i class="fas fa-route"></i></div>
+                        <div class="pill-data">
+                            <span class="pill-value" id="stat-trips" data-target="<%= totalBookings %>">0</span>
+                            <span class="pill-label">Journeys Taken</span>
+                        </div>
+                    </div>
+                    <div class="stat-pill stat-pill--accent">
+                        <div class="pill-icon"><i class="fas fa-award"></i></div>
+                        <div class="pill-data">
+                            <span class="pill-value pill-value--text" id="stat-level"><%= totalBookings >= 5 ? 'Elite' : totalBookings >= 2 ? 'Adventurer' : 'Explorer' %></span>
+                            <span class="pill-label">Journey Level</span>
+                        </div>
+                    </div>
+                </div>
+
+                <% if (recentBooking) { %>
+                <section class="hero-journey" id="hero-journey">
+                    <div class="next-trip-card">
+                        <% if (recentBooking.packageId && recentBooking.packageId.image) { %>
+                        <div class="next-trip-card__bg" style="background-image:url('<%= recentBooking.packageId.image %>')"></div>
+                        <% } %>
+                        <div class="next-trip-card__overlay"></div>
+                        <div class="next-trip-card__content">
+                            <span class="next-trip-card__label">Next Journey</span>
+                            <h2 class="next-trip-card__title"><%= recentBooking.packageName %></h2>
+                            <p class="next-trip-card__meta"><i class="fas fa-calendar"></i> <%= recentBooking.date || new Date(recentBooking.createdAt).toLocaleDateString() %></p>
+                            <p class="next-trip-card__meta"><i class="fas fa-users"></i> <%= recentBooking.travelers %> Traveler<%= recentBooking.travelers > 1 ? 's' : '' %></p>
+                            <div class="next-trip-card__actions">
+                                <a href="/booking/<%= recentBooking._id %>" class="btn btn--primary">View Details</a>
+                                <span class="next-trip-card__price">EGP <%= recentBooking.totalPrice.toLocaleString() %></span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <% } %>
+
+                <div class="bento-grid">
+                    <section class="bento-cell bento-actions" id="bento-actions">
+                        <h3 class="bento-title">Quick Actions</h3>
+                        <div class="action-tiles">
+                            <a href="/packages/day" class="action-tile"><div class="tile-icon"><i class="fas fa-sun"></i></div><span class="tile-label">Day Trips</span></a>
+                            <a href="/packages/week" class="action-tile"><div class="tile-icon"><i class="fas fa-calendar-week"></i></div><span class="tile-label">Week Packages</span></a>
+                            <a href="/custom-trip" class="action-tile"><div class="tile-icon"><i class="fas fa-compass"></i></div><span class="tile-label">Build a Trip</span></a>
+                            <a href="/my-bookings" class="action-tile"><div class="tile-icon"><i class="fas fa-suitcase-rolling"></i></div><span class="tile-label">My Journeys</span></a>
+                        </div>
+                    </section>
+
+                    <section class="bento-cell bento-inspire" id="bento-inspire">
+                        <div class="inspire-bg" <% if (featuredPackage && featuredPackage.image) { %>style="background-image:url('<%= featuredPackage.image %>')"<% } %>></div>
+                        <div class="inspire-content">
+                            <span class="inspire-tag">Featured</span>
+                            <h3 class="inspire-title"><%= featuredPackage ? featuredPackage.name : 'Explore Egypt' %></h3>
+                            <p class="inspire-text"><%= featuredPackage ? featuredPackage.city : '' %></p>
+                            <a href="<%= featuredPackage ? '/packages/' + featuredPackage._id : '/packages/single' %>" class="inspire-cta">Explore <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const SERVER_DATA = {
+            user: <%- JSON.stringify(user) %>,
+            recentBooking: <%- JSON.stringify(recentBooking) %>,
+            totalBookings: <%= totalBookings %>
+        };
+        window.SERVER_USER = SERVER_DATA.user;
+    </script>
+    <script src="/js/global.js"></script>
+    <script src="/js/userDashboard.js"></script>
+</body>
+</html>
