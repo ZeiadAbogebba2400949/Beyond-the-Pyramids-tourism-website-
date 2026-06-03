@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= package.name %> - Beyond the Pyramids</title>
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/packageDetails.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="noise-overlay"></div>
+    <div class="page-shell">
+        <aside class="page-sidebar" id="sidebar">
+            <div class="sidebar-brand"><a href="/"><img src="/images/WebsiteLogo.png" alt="Beyond the Pyramids"></a></div>
+            <nav class="sidebar-nav">
+                <div class="nav-group"><span class="group-label">Discovery</span><ul>
+                    <li><a href="/"><i class="fas fa-home"></i> <span>Home</span></a></li>
+                    <li><a href="/packages/day"><i class="fas fa-sun"></i> <span>Day Packages</span></a></li>
+                    <li><a href="/packages/week"><i class="fas fa-calendar-week"></i> <span>Week Packages</span></a></li>
+                    <li><a href="/packages/single"><i class="fas fa-location-dot"></i> <span>Single Locations</span></a></li>
+                    <li><a href="/custom-trip"><i class="fas fa-compass"></i> <span>Trip Architect</span></a></li>
+                </ul></div>
+                <div class="nav-group"><span class="group-label">Personal Desk</span><ul>
+                    <li><a href="/dashboard"><i class="fas fa-columns"></i> <span>Dashboard</span></a></li>
+                    <li><a href="/my-bookings"><i class="fas fa-suitcase-rolling"></i> <span>My Journeys</span></a></li>
+                    <li><a href="/profile"><i class="fas fa-user-circle"></i> <span>Profile</span></a></li>
+                </ul></div>
+                <div class="nav-group"><span class="group-label">Concierge</span><ul>
+                    <li><a href="/faq"><i class="fas fa-question-circle"></i> <span>Help & FAQ</span></a></li>
+                    <li><a href="/contact"><i class="fas fa-envelope"></i> <span>Contact</span></a></li>
+                </ul></div>
+            </nav>
+            <div class="sidebar-footer">
+                <button id="theme-toggle" class="theme-toggle-btn"><i class="fas fa-moon"></i> <span>Dark Mode</span></button>
+                <% if (user) { %><a href="#" id="logout-link" class="logout-link"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a>
+                <% } else { %><a href="/login" class="logout-link"><i class="fas fa-sign-in-alt"></i> <span>Login</span></a><% } %>
+            </div>
+        </aside>
+
+        <div class="page-content">
+            <!-- packageDetails.js renders the full page into this element -->
+            <div id="pkg-root"></div>
+        </div>
+    </div>
+
+    <script>
+        const SERVER_DATA = {
+            user: <%- JSON.stringify(user) %>,
+            package: <%- JSON.stringify(package) %>,
+            reviews: <%- JSON.stringify(reviews) %>
+        };
+        window.SERVER_PACKAGE = SERVER_DATA.package;
+        window.SERVER_USER = SERVER_DATA.user;
+        window.SERVER_REVIEWS = SERVER_DATA.reviews;
+    </script>
+    <script src="/js/global.js"></script>
+    <script src="/js/packageDetails.js"></script>
+</body>
+</html>
