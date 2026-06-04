@@ -1,4 +1,4 @@
-const Contact = require('../models/Contact');
+const Contact = require('../models/contact');
 const { AppError } = require('../app');
 
 const createTicket = async (req, res, next) => {

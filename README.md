@@ -1,7 +1,32 @@
-# Beyond the Pyramids — Backend API
+# Beyond the Pyramids — Full-Stack Tourism Web App
 
-Node.js + Express.js + MongoDB backend for the Beyond the Pyramids tourism website.  
-Course: SWE230 — Web Application Programming | Spring 2026
+Node.js · Express.js · MongoDB · EJS | SWE230 Web Application Programming | Spring 2026
+
+---
+
+## Features
+
+**Tourist**
+- Browse day trips, week packages, and single-attraction tickets
+- 3-step booking flow: pick tier → add travellers → confirm
+- Custom Trip Architect to build a personalised itinerary
+- Booking history, cancellation, and post-trip reviews
+- Profile management with avatar upload
+- Live weather widget (per destination) and EGP → USD/EUR/GBP currency converter on the booking summary
+
+**Admin**
+- Dashboard KPIs: users, bookings, revenue, open tickets
+- Full CRUD for packages with image upload
+- User management: suspend, change role, delete
+- Booking status updates (confirmed → checked-in → checked-out)
+- Support ticket inbox with replies
+- Analytics & reports page
+
+**Security**
+- JWT in httpOnly cookie (7-day or 1-day depending on "remember me")
+- bcrypt password hashing
+- Helmet HTTP headers, MongoDB-injection sanitisation, rate limiting
+- Role-based access control: Tourist · Admin
 
 ---
 
@@ -9,81 +34,64 @@ Course: SWE230 — Web Application Programming | Spring 2026
 
 ### Prerequisites
 - Node.js v18+
-- MongoDB (running locally on port 27017)
+- A MongoDB connection (Atlas or local)
 
 ### 1. Install dependencies
 ```bash
-cd backend
 npm install
 ```
 
 ### 2. Configure environment
-Copy `.env.example` to `.env` — the defaults work for local development:
+Create `.env` in the project root:
 ```
-MONGO_URL=mongodb://localhost:27017/beyondpyramids
+NODE_ENV=development
 PORT=3000
-JWT_SECRET=...
+MONGO_URL=mongodb://localhost:27017/beyondpyramids
+JWT_SECRET=your_secret_here
 JWT_EXPIRES_IN=7d
+OPENWEATHER_API_KEY=your_key_here
 ```
+> Free OpenWeatherMap key at https://openweathermap.org/api — takes up to 2 hours to activate.  
+> The currency converter uses the public ExchangeRate API — no key required.  
+> Optional: `MAX_FILE_SIZE` (default `2097152` — 2 MB) to override the upload limit.
 
-### 3. Seed the database
+### 3. Start the server
 ```bash
-npm run seed
-```
-This creates 14 users, 9 packages, 8 bookings, 8 reviews, and 8 support tickets.
-
-### 4. Start the server
-```bash
-npm run dev      # development (nodemon auto-restart)
-npm start        # production
+npm run dev      # nodemon — auto-restart on file save
+npm start        # plain node
 ```
 
-Open **http://localhost:3000** — the full website loads with real data from MongoDB.
+Open **http://localhost:3000**
 
 ---
 
 ## Demo Credentials
 
-| Role | Email | Password |
-|------|-------|----------|
-| Tourist | user@egypt.com | user123 |
-| Admin | admin@egypt.com | admin123 |
-| Planner | planner@egypt.com | planner123 |
-| Booking Manager | booking@egypt.com | booking123 |
-| Customer Support | support@egypt.com | support123 |
+| Role    | Email            | Password  |
+|---------|------------------|-----------|
+| Tourist | user@egypt.com   | user123   |
+| Admin   | admin@egypt.com  | admin123  |
 
 ---
 
 ## Project Structure
 
 ```
-backend/
-├── app.js              # Express app setup (middleware + routes)
-├── server.js           # HTTP server + MongoDB connection
-├── config/
-│   └── db.js           # Mongoose connection
-├── controllers/        # Business logic
-│   ├── authController.js
-│   ├── userController.js
-│   ├── packageController.js
-│   ├── bookingController.js
-│   ├── reviewController.js
-│   ├── contactController.js
-│   ├── adminController.js
-│   └── pageController.js   # EJS page rendering
-├── middleware/
-│   ├── auth.js             # JWT protect middleware
-│   ├── authorize.js        # RBAC role check
-│   ├── errorHandler.js     # Global error handler (4-arg)
-│   ├── validate.js         # express-validator chains
-│   └── upload.js           # multer config
-├── models/
-│   ├── User.js
-│   ├── Package.js
-│   ├── Booking.js
-│   ├── Review.js
-│   ├── Contact.js
-│   └── CustomTrip.js
+/
+├── app.js                  Server entry point — middleware stack, route mounts,
+│                           inline /api/external/weather & /api/external/currency handlers
+├── .env                    Environment variables (see Quick Start)
+│
+├── controllers/
+│   ├── authController.js   register, login, logout, getMe, updatePassword
+│   ├── userController.js   Profile CRUD, avatar upload, admin user management
+│   ├── packageController.js Package CRUD, image upload, filtering & pagination
+│   ├── bookingController.js Draft → travellers → confirm flow, cancellation, admin ops
+│   ├── reviewController.js  Create/read/update/delete + rating recalc trigger
+│   ├── contactController.js Tickets: submit, list, status update, admin reply
+│   ├── adminController.js   Dashboard stats, recent activity, user list
+│   └── pageController.js    EJS render functions for all 29 pages
+│
 ├── routes/
 │   ├── authRoutes.js
 │   ├── userRoutes.js
@@ -93,24 +101,116 @@ backend/
 │   ├── contactRoutes.js
 │   ├── adminRoutes.js
 │   └── pageRoutes.js
-├── seeds/
-│   └── seed.js
-├── utils/
-│   ├── AppError.js
-│   ├── catchAsync.js
-│   ├── generateToken.js
-│   └── apiFeatures.js
-├── views/              # EJS templates (all HTML pages converted)
-│   ├── index.ejs
-│   ├── auth/
-│   ├── packages/
-│   ├── bookings/
-│   ├── user/
-│   ├── reviews/
-│   ├── admin/
-│   └── errors/
-└── uploads/            # Multer file storage
+│
+├── models/
+│   ├── User.js             bcrypt pre-save hook, correctPassword(), changedPasswordAfter()
+│   ├── Package.js          day / week / single types, itinerary arrays, auto rating
+│   ├── Booking.js          Draft → confirmed, auto booking number EG-YYYY-NNNNN
+│   ├── Review.js           Unique per user+package, calcAverageRating() static
+│   ├── Contact.js          Support tickets with status & admin reply
+│   └── TripOption.js       Destination / accommodation / room options for custom trips
+│
+├── middleware/
+│   ├── auth.js             protect, optionalAuth, authorize(role)
+│   ├── validate.js         express-validator chains for all write endpoints
+│   └── upload.js           multer — 2 MB limit, JPEG/PNG/WebP only
+│
+├── views/                  EJS templates
+│   ├── index.ejs           Landing page (hero, package previews, reviews carousel)
+│   ├── login.ejs / register.ejs
+│   ├── about.ejs / contact.ejs / faq.ejs / terms.ejs
+│   ├── dayPackages.ejs / weekPackages.ejs / singlePackages.ejs
+│   ├── packageDetails.ejs  Shell — JS builds the full page client-side
+│   ├── userDashboard.ejs / userProfile.ejs / myBookings.ejs
+│   ├── travellers.ejs / bookingSummary.ejs / bookingDetails.ejs
+│   ├── writeReview.ejs / customTrip.ejs
+│   ├── adminDashboard.ejs / adminBookings.ejs / adminPackages.ejs
+│   ├── adminContact.ejs / adminUsers.ejs / adminReports.ejs
+│   └── error403.ejs / error404.ejs / error500.ejs
+│
+├── public/
+│   ├── css/                Per-page stylesheets + global.css design system
+│   └── js/                 Per-page client scripts + global.js
+│
+└── uploads/                User avatars and package images (multer disk storage)
 ```
+
+---
+
+## Data Models
+
+### User
+| Field | Type | Notes |
+|-------|------|-------|
+| name | String | min 2 chars |
+| email | String | unique, lowercase |
+| password | String | bcrypt, excluded from default selects |
+| phone / nationality / dob | String / String / Date | optional profile fields |
+| image | String | avatar path |
+| role | Enum | `Tourist` · `Admin` |
+| status | Enum | `active` · `suspended` |
+
+### Package
+| Field | Type | Notes |
+|-------|------|-------|
+| name / city / description | String | required |
+| type | Enum | `single` · `day` · `week` |
+| price / discountedPrice | Number | min 0 |
+| status | Enum | `active` · `inactive` (soft delete) |
+| rating / reviewCount | Number | auto-calculated by Review model |
+| itinerary | Array | `{time, activity}` — single/day packages |
+| dailyItinerary | Array | `{day, title, activities}` — week packages |
+| openingHours / closingDays / guidedTour / languages | String | single/day extras |
+| durationDays / nights / hotelName | Number/String | week extras |
+
+### Booking
+| Field | Type | Notes |
+|-------|------|-------|
+| bookingNumber | String | auto-generated `EG-YYYY-RANDOM`, unique |
+| userId / userEmail | ObjectId / String | linked tourist |
+| packageId / packageName / packageType | ref / String / Enum | `day · week · single · custom` |
+| date / startDate / endDate | String / Date / Date | travel dates |
+| travelers | Number | 1–15 |
+| tier | Enum | `standard · deluxe · full · Architect Custom` |
+| totalPrice / basePrice | Number | |
+| status | Enum | `draft → confirmed → checked-in → checked-out → cancelled` |
+| paymentStatus | Enum | `pending · paid` |
+| additionalTravelers | Array | `{firstName, lastName, dob, nationality, phone}` |
+| specialRequests / cancellationReason | String | |
+
+### Review
+| Field | Type | Notes |
+|-------|------|-------|
+| packageId / userId | ObjectId | compound unique — one review per user per package |
+| rating | Number | 1–5, triggers `calcAverageRating()` on save/delete |
+| title / text | String | max 100 / 10–2000 chars |
+
+### Contact
+| Field | Type | Notes |
+|-------|------|-------|
+| subject / message | String | required |
+| email / customer | String | submitter identity |
+| customerId | ObjectId | optional, if logged in |
+| status | Enum | `open · resolved` |
+| adminReply | String | set on reply, auto-resolves ticket |
+
+### TripOption
+Lookup table for the Custom Trip Architect.  
+`type` ∈ `{destination, accommodation, room}` · `optId` · `name` · `price` · `mult` (pricing multiplier)
+
+---
+
+## Booking Flow
+
+```
+POST /api/bookings/draft          ← select package + tier + travelers + date
+        ↓
+PUT  /api/bookings/draft/:id       ← add additional traveller details + special requests
+        ↓
+PUT  /api/bookings/draft/:id/confirm  ← confirm → status: confirmed, paymentStatus: paid
+```
+
+A draft is visible on `/booking/travellers` and `/booking/summary`. Only confirmed bookings appear in `/my-bookings`.
 
 ---
 
@@ -120,22 +220,13 @@ backend/
 
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
-| POST | `/api/auth/register` | Public | Register new user |
-| POST | `/api/auth/login` | Public | Login |
-| POST | `/api/auth/logout` | Public | Logout (clears JWT cookie) |
+| POST | `/api/auth/register` | Public | Register new Tourist account |
+| POST | `/api/auth/login` | Public | Login — sets httpOnly JWT cookie |
+| POST | `/api/auth/logout` | Public | Clear JWT cookie |
 | GET | `/api/auth/me` | Protected | Get current user |
 | PUT | `/api/auth/update-password` | Protected | Change password |
 
-**Login response:**
-```json
-{
-  "status": "success",
-  "token": "eyJ...",
-  "data": {
-    "user": { "id": "...", "email": "...", "name": "...", "role": "Tourist" }
-  }
-}
-```
+> Rate-limited: 20 requests / 15 min on `/api/auth/register` and `/api/auth/login`.
 
 ---
 
@@ -143,55 +234,27 @@ backend/
 
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
-| GET | `/api/packages` | Public | List packages (filter: `?type=day\|week\|single`) |
-| GET | `/api/packages/:id` | Public | Get single package |
-| POST | `/api/packages` | Admin/Planner | Create package |
-| PUT | `/api/packages/:id` | Admin/Planner | Update package |
-| DELETE | `/api/packages/:id` | Admin | Soft-delete package |
-| POST | `/api/packages/:id/image` | Admin/Planner | Upload package image |
+| GET | `/api/packages` | Public | List packages (`?type=day\|week\|single`, sort, paginate) |
+| GET | `/api/packages/:id` | Public | Single package detail |
+| POST | `/api/packages` | Admin | Create package |
+| PUT | `/api/packages/:id` | Admin | Update package |
+| DELETE | `/api/packages/:id` | Admin | Soft-delete (status → inactive) |
+| POST | `/api/packages/:id/image` | Admin | Upload package image |
 
 ---
 
 ### Bookings — `/api/bookings`
 
-Two-phase booking flow: **draft → confirm**
-
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
-| POST | `/api/bookings/draft` | Tourist | Create draft booking |
-| GET | `/api/bookings/draft/:id` | Owner | Get draft booking |
-| PUT | `/api/bookings/draft/:id` | Owner | Add traveller details |
-| PUT | `/api/bookings/draft/:id/confirm` | Owner | Confirm & pay |
+| POST | `/api/bookings/draft` | Tourist | Create draft from package |
+| GET | `/api/bookings/draft/:id` | Owner | Get draft |
+| PUT | `/api/bookings/draft/:id` | Owner | Add traveller details + special requests |
+| PUT | `/api/bookings/draft/:id/confirm` | Owner | Confirm & mark paid |
+| GET | `/api/bookings/trip-options` | Tourist | Destinations / accommodation / room data |
 | GET | `/api/bookings` | Tourist | My confirmed bookings |
-| GET | `/api/bookings/:id` | Owner/Admin | Get booking details |
+| GET | `/api/bookings/:id` | Owner/Admin | Booking details |
 | PUT | `/api/bookings/:id/cancel` | Owner/Admin | Cancel booking |
-
----
-
-### Admin — `/api/admin`
-
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| GET | `/api/admin/stats` | Admin+ | Dashboard statistics |
-| GET | `/api/admin/activity` | Admin+ | Recent 10 bookings |
-| GET | `/api/admin/bookings` | Admin/BM | All bookings (paginated) |
-| PATCH | `/api/admin/bookings/:id/status` | Admin/BM | Update booking status |
-| GET | `/api/admin/users` | Admin | All users |
-
----
-
-### Users — `/api/users`
-
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| GET | `/api/users/profile` | Tourist | Get my profile |
-| PUT | `/api/users/profile` | Tourist | Update my profile |
-| PUT | `/api/users/avatar` | Tourist | Upload avatar |
-| DELETE | `/api/users/account` | Tourist | Delete my account |
-| GET | `/api/users` | Admin | All users |
-| PATCH | `/api/users/:id/status` | Admin | Suspend/activate user |
-| PATCH | `/api/users/:id/role` | Admin | Change user role |
-| DELETE | `/api/users/:id` | Admin | Delete user |
 
 ---
 
@@ -199,10 +262,27 @@ Two-phase booking flow: **draft → confirm**
 
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
-| POST | `/api/reviews` | Tourist | Submit review |
-| GET | `/api/reviews/package/:packageId` | Public | Reviews for a package |
+| POST | `/api/reviews` | Tourist | Submit review (triggers package rating recalc) |
+| GET | `/api/reviews/package/:packageId` | Public | All reviews for a package |
+| GET | `/api/reviews` | Admin | All reviews site-wide |
 | PUT | `/api/reviews/:id` | Owner | Edit review |
 | DELETE | `/api/reviews/:id` | Owner/Admin | Delete review |
+
+---
+
+### Users — `/api/users`
+
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| GET | `/api/users/profile` | Tourist | My profile |
+| PUT | `/api/users/profile` | Tourist | Update name, phone, nationality, dob |
+| PUT | `/api/users/avatar` | Tourist | Upload avatar |
+| DELETE | `/api/users/account` | Tourist | Delete own account |
+| GET | `/api/users` | Admin | All users (paginated, filter by role/status) |
+| PATCH | `/api/users/:id/status` | Admin | Suspend / activate |
+| PATCH | `/api/users/:id/role` | Admin | Change role |
+| PATCH | `/api/users/:id/profile` | Admin | Edit user details |
+| DELETE | `/api/users/:id` | Admin | Delete user |
 
 ---
 
@@ -211,44 +291,82 @@ Two-phase booking flow: **draft → confirm**
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
 | POST | `/api/contact` | Public | Submit support ticket |
-| GET | `/api/contact` | Admin/Support | List all tickets |
-| PATCH | `/api/contact/:id/status` | Admin/Support | Update ticket status |
+| GET | `/api/contact/my-tickets` | Tourist | My tickets |
+| GET | `/api/contact` | Admin | All tickets (filter by status/priority) |
+| PATCH | `/api/contact/:id/status` | Admin | Update ticket status |
+| POST | `/api/contact/:id/reply` | Admin | Reply and auto-resolve |
 
 ---
 
-## Page Routes (EJS)
+### Admin — `/api/admin`
 
-| URL | Page | Auth Required |
-|-----|------|---------------|
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| GET | `/api/admin/stats` | Admin | Dashboard KPIs (users, bookings, revenue, tickets) |
+| GET | `/api/admin/activity` | Admin | Last 10 bookings |
+| GET | `/api/admin/users` | Admin | Paginated user list |
+| GET | `/api/admin/bookings` | Admin | All bookings with filters |
+| PATCH | `/api/admin/bookings/:id/status` | Admin | Change booking status |
+
+---
+
+### External APIs — `/api/external`
+
+Inline handlers in `app.js`. Both fail silently — widget disappears, nothing breaks.
+
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| GET | `/api/external/weather?city=Cairo` | Public | Current weather via OpenWeatherMap (`OPENWEATHER_API_KEY` required) |
+| GET | `/api/external/currency?amount=4500&from=EGP` | Public | EGP → USD / EUR / GBP via open.exchangerate-api.com (no key) |
+
+**Where they appear:**
+- **Weather widget** — inside the booking rail on the Package Details page, between the tier selector and the date picker. Fetched by `initWeatherWidget()` in `packageDetails.js` using the package's `city` field.
+- **Currency widget** — below the EGP total on the Booking Summary page, shown as `≈ $XX USD · €XX EUR · £XX GBP`.
+
+---
+
+## Page Routes
+
+| URL | Page | Auth |
+|-----|------|------|
 | `/` | Landing page | No |
 | `/login` | Login | No |
 | `/register` | Register | No |
-| `/packages/day` | Day packages | No |
-| `/packages/week` | Week packages | No |
-| `/packages/single` | Single locations | No |
-| `/packages/:id` | Package details + booking | No |
-| `/dashboard` | User dashboard | Tourist |
-| `/profile` | User profile | Tourist |
-| `/my-bookings` | My bookings | Tourist |
-| `/booking/summary?draftId=` | Booking summary | Tourist |
-| `/booking/travellers?draftId=` | Traveller details | Tourist |
-| `/booking/:id` | Booking receipt | Tourist |
-| `/reviews/write` | Write review | Tourist |
-| `/custom-trip` | Custom trip builder | Tourist |
-| `/admin` | Admin dashboard | Admin+ |
-| `/admin/bookings` | Booking management | Admin/BM |
-| `/contact` | Contact form | No |
+| `/packages/day` | Day packages listing | No |
+| `/packages/week` | Week packages listing | No |
+| `/packages/single` | Single locations listing | No |
+| `/packages/:id` | Package detail + booking flow | No |
+| `/contact` | Contact / support form | No |
 | `/about` | About us | No |
 | `/faq` | FAQ | No |
 | `/terms` | Terms & Conditions | No |
+| `/dashboard` | User dashboard | Tourist |
+| `/profile` | Profile settings | Tourist |
+| `/my-bookings` | Booking history | Tourist |
+| `/booking/travellers?draftId=` | Add traveller details | Tourist |
+| `/booking/summary?draftId=` | Review booking before confirming | Tourist |
+| `/booking/:id` | Booking receipt | Tourist |
+| `/reviews/write` | Submit review | Tourist |
+| `/custom-trip` | Trip Architect | Tourist |
+| `/admin` | Admin dashboard | Admin |
+| `/admin/bookings` | Booking management | Admin |
+| `/admin/packages` | Package management | Admin |
+| `/admin/contact` | Support ticket management | Admin |
+| `/admin/users` | User management | Admin |
+| `/admin/reports` | Analytics & reports | Admin |
 
 ---
 
 ## Architecture
 
-- **MVC Pattern**: Models → Controllers → Views (EJS templates)
-- **JWT Auth**: Token stored in httpOnly cookie (server) + localStorage (client)
-- **RBAC**: Roles — Tourist, Admin, Planner, Booking Manager, Customer Support
-- **Error Handling**: Centralized 4-argument middleware (as per course lectures)
-- **Validation**: express-validator chains on all write endpoints
-- **File Uploads**: multer with disk storage (2MB limit, images only)
+- **Pattern**: MVC — Models → Controllers → Views (EJS server-side rendering)
+- **Auth**: JWT in httpOnly cookie; middleware chain: `protect` / `optionalAuth` / `authorize(role)`
+- **Roles**: Tourist · Admin
+- **Error handling**: Centralised `AppError` class + 4-argument error middleware; renders HTML error pages (`error403/404/500.ejs`) for page routes, JSON for `/api` routes. Automatically redirects 401s to `/login`.
+- **Validation**: `express-validator` chains in `middleware/validate.js` for all write endpoints
+- **File uploads**: multer with disk storage → `/uploads/`, 2 MB limit, JPEG/PNG/WebP only
+- **Security**: Helmet (CSP disabled for EJS inline scripts), express-mongo-sanitize, rate-limit (200 req / 15 min on `/api`)
+- **Soft deletes**: Packages use `status: inactive` rather than hard deletion
+- **Rating calculation**: `Review.calcAverageRating()` runs as a post-save and post-delete hook, keeping `Package.rating` and `Package.reviewCount` in sync automatically
+- **External integrations**: OpenWeatherMap (weather widget, free tier) · open.exchangerate-api.com (currency, keyless)
+- **Dependencies**: Only lecture-approved packages for SWE230 — see `package.json`

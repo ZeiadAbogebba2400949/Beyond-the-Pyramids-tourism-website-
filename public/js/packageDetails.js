@@ -601,7 +601,7 @@ async function initWeatherWidget(city) {
         const w = data.data;
         widget.innerHTML = `
             <div class="weather-content">
-                <img src="https://openweathermap.org/img/wn/${w.icon}.png" alt="${w.description}" class="weather-icon">
+                <img src="https://openweathermap.org/img/wn/${w.icon}@2x.png" alt="${w.description}" class="weather-icon">
                 <div class="weather-info">
                     <span class="weather-city"><i class="fas fa-map-pin"></i> ${w.city}</span>
                     <span class="weather-temp">${w.temp}&deg;C</span>
