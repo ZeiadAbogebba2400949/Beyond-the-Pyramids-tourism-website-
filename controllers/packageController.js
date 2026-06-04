@@ -88,13 +88,13 @@ const updatePackage = async (req, res, next) => {
 
 const deletePackage = async (req, res, next) => {
   try {
-    const pkg = await Package.findByIdAndUpdate(req.params.id, { status: 'inactive' }, { new: true });
+    const pkg = await Package.findByIdAndDelete(req.params.id);
     if (!pkg) return next(new AppError('Package not found.', 404));
 
     res.status(200).json({
       status: 'success',
-      message: 'Package deactivated successfully.',
-      data: { package: pkg },
+      message: 'Package deleted successfully.',
+      data: null,
     });
   } catch (err) {
     next(err);

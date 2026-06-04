@@ -1,8 +1,8 @@
 const User = require('../models/User');
 const Package = require('../models/Package');
 const Booking = require('../models/Booking');
-const Review = require('../models/Review');
-const Contact = require('../models/Contact');
+const Review = require('../models/review');
+const Contact = require('../models/contact');
 const { AppError } = require('../app');
 
 const getStats = async (req, res, next) => {

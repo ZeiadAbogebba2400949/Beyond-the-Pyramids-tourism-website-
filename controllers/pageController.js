@@ -1,8 +1,8 @@
 const Package = require('../models/Package');
 const Booking = require('../models/Booking');
-const Review  = require('../models/Review');
+const Review  = require('../models/review');
 const User    = require('../models/User');
-const Contact = require('../models/Contact');
+const Contact = require('../models/contact');
 const { AppError } = require('../app');
 
 function computeBookingStatus(date, status) {

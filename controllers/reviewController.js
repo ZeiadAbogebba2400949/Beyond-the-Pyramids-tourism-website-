@@ -1,4 +1,4 @@
-const Review = require('../models/Review');
+const Review = require('../models/review');
 const Package = require('../models/Package');
 const { AppError } = require('../app');
 
