@@ -149,7 +149,7 @@
                         <div id="form-error" style="display:none;color:var(--color-danger);margin-bottom:1rem;"></div>
 
                         <div class="td-actions">
-                            <button type="button" id="back-btn" class="btn-editorial secondary" onclick="history.back()">
+                            <button type="button" id="back-btn" class="btn-editorial secondary" onclick="window.location.href=BACK_URL">
                                 <i class="fas fa-arrow-left"></i> Go Back
                             </button>
                             <button type="submit" id="continue-btn" class="btn-editorial primary">
@@ -183,6 +183,7 @@
         };
         window.SERVER_USER = SERVER_DATA.user;
         const DRAFT_ID = '<%= booking._id %>';
+        const BACK_URL = '<%= booking.packageId ? "/packages/" + booking.packageId._id : "/custom-trip" %>';
         const TRAVELERS = <%= booking.travelers %>;
         window.TRAVELERS = TRAVELERS;
 

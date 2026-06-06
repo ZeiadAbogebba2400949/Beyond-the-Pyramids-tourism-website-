@@ -33,7 +33,7 @@
         <div class="sidebar-footer">
             <div class="account-chip account-chip--sidebar">
                 <div class="account-chip__avatar">
-                    <img src="<%= user.image %>" alt="<%= user.name %>" style="width:36px;height:36px;border-radius:50%;object-fit:cover;">
+                    <% if (user.image) { %><img src="<%= user.image %>" alt="<%= user.name %>" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"><% } else { %><i class="fas fa-user-circle" style="font-size:1.4rem;color:var(--gold-primary);"></i><% } %>
                 </div>
                 <div>
                     <span class="account-chip__label">Signed in as</span>
@@ -132,7 +132,10 @@
                     <div>
                         <label style="display:block;margin-bottom:0.4rem;">Profile Photo</label>
                         <input type="file" id="modalPhotoInput" accept="image/*" style="display:none;">
-                        <button type="button" id="modalUploadBtn" class="btn btn--outline btn--small"><i class="fas fa-camera"></i> Change Photo</button>
+                        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+                            <button type="button" id="modalUploadBtn" class="btn btn--outline btn--small"><i class="fas fa-camera"></i> Change Photo</button>
+                            <button type="button" id="modalRemovePhotoBtn" class="btn btn--outline btn--small" style="display:none;color:var(--color-danger);border-color:var(--color-danger);"><i class="fas fa-trash"></i> Remove Photo</button>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group">
@@ -298,12 +301,14 @@
 
     // ── Edit modal ─────────────────────────────────────────────────────────
     let pendingPhotoBase64 = null;
+    let pendingPhotoRemoved = false;
 
     window.openEditModal = function(id) {
         const u = users.find(x => x.id === id);
         if (!u) return;
         editingId = id;
-        pendingPhotoBase64 = null;
+        pendingPhotoBase64   = null;
+        pendingPhotoRemoved  = false;
         document.getElementById('modalTitle').textContent = 'Edit User';
         document.getElementById('userId').value          = u.id;
         document.getElementById('userName').value        = u.name || '';
@@ -315,12 +320,15 @@
         document.getElementById('formError').style.display = 'none';
         document.getElementById('modalPhotoInput').value = '';
 
-        const imgEl  = document.getElementById('modalAvatarImg');
-        const iconEl = document.getElementById('modalAvatarIcon');
+        const imgEl       = document.getElementById('modalAvatarImg');
+        const iconEl      = document.getElementById('modalAvatarIcon');
+        const removePhBtn = document.getElementById('modalRemovePhotoBtn');
         if (u.image) {
             imgEl.src = u.image; imgEl.style.display = 'block'; iconEl.style.display = 'none';
+            removePhBtn.style.display = 'inline-flex';
         } else {
             imgEl.style.display = 'none'; iconEl.style.display = 'block';
+            removePhBtn.style.display = 'none';
         }
         openModal('userModal');
     };
@@ -328,15 +336,28 @@
     document.getElementById('modalUploadBtn').addEventListener('click', () => {
         document.getElementById('modalPhotoInput').click();
     });
+
+    document.getElementById('modalRemovePhotoBtn').addEventListener('click', () => {
+        pendingPhotoBase64  = null;
+        pendingPhotoRemoved = true;
+        const imgEl  = document.getElementById('modalAvatarImg');
+        const iconEl = document.getElementById('modalAvatarIcon');
+        imgEl.src = ''; imgEl.style.display = 'none'; iconEl.style.display = 'block';
+        document.getElementById('modalRemovePhotoBtn').style.display = 'none';
+        document.getElementById('modalPhotoInput').value = '';
+    });
+
     document.getElementById('modalPhotoInput').addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (!file) return;
+        pendingPhotoRemoved = false;
         const reader = new FileReader();
         reader.onload = (ev) => {
             pendingPhotoBase64 = ev.target.result;
             const imgEl  = document.getElementById('modalAvatarImg');
             const iconEl = document.getElementById('modalAvatarIcon');
             imgEl.src = pendingPhotoBase64; imgEl.style.display = 'block'; iconEl.style.display = 'none';
+            document.getElementById('modalRemovePhotoBtn').style.display = 'inline-flex';
         };
         reader.readAsDataURL(file);
     });
@@ -364,7 +385,8 @@
 
             // Profile fields (name, phone, nationality, photo)
             const profileBody = { name, phone, nationality };
-            if (pendingPhotoBase64) profileBody.image = pendingPhotoBase64;
+            if (pendingPhotoRemoved)      profileBody.removeImage = true;
+            else if (pendingPhotoBase64)  profileBody.image = pendingPhotoBase64;
             const profileRes = await fetch('/api/users/' + id + '/profile', {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
@@ -445,6 +467,7 @@
     });
 
 </script>
+<script src="/js/global.js"></script>
 <script src="/js/admin-theme.js"></script>
 </body>
 </html>

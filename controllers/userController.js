@@ -26,16 +26,29 @@ const updateProfile = async (req, res, next) => {
 
 const uploadAvatar = async (req, res, next) => {
   try {
-    if (!req.file) return next(new AppError('Please upload an image file.', 400));
+    const { image } = req.body;
+    if (!image) return next(new AppError('Please provide an image.', 400));
 
-    const imageUrl = `/uploads/${req.file.filename}`;
     const updatedUser = await User.findByIdAndUpdate(
       req.user._id,
-      { image: imageUrl },
+      { image },
       { new: true }
     );
 
-    res.status(200).json({ status: 'success', data: { user: updatedUser, imageUrl } });
+    res.status(200).json({ status: 'success', data: { user: updatedUser, imageUrl: image } });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const removeAvatar = async (req, res, next) => {
+  try {
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user._id,
+      { image: null },
+      { new: true }
+    );
+    res.status(200).json({ status: 'success', data: { user: updatedUser } });
   } catch (err) {
     next(err);
   }
@@ -120,12 +133,13 @@ const updateUserRole = async (req, res, next) => {
 
 const adminUpdateUserProfile = async (req, res, next) => {
   try {
-    const { name, phone, nationality, image } = req.body;
+    const { name, phone, nationality, image, removeImage } = req.body;
     const update = {};
     if (name)        update.name        = name;
     if (phone)       update.phone       = phone;
     if (nationality) update.nationality = nationality;
-    if (image)       update.image       = image;
+    if (removeImage) update.image       = null;
+    else if (image)  update.image       = image;
 
     const user = await User.findByIdAndUpdate(req.params.id, update, { new: true, runValidators: true });
     if (!user) return next(new AppError('User not found.', 404));
@@ -140,6 +154,7 @@ module.exports = {
   getProfile,
   updateProfile,
   uploadAvatar,
+  removeAvatar,
   deleteAccount,
   getAllUsers,
   updateUserStatus,

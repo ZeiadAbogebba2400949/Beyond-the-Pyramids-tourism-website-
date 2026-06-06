@@ -28,7 +28,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const email      = document.getElementById('username').value.trim();
     const password   = document.getElementById('password').value;
-    const rememberMe = document.getElementById('rememberMe')?.checked || false;
     const submitBtn  = form.querySelector('button[type="submit"]');
     if (submitBtn) { submitBtn.textContent = 'Signing in...'; submitBtn.disabled = true; }
 
@@ -36,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, rememberMe }),
+        body: JSON.stringify({ email, password }),
         credentials: 'include',
       });
       const data = await res.json();

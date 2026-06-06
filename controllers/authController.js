@@ -13,11 +13,9 @@ const getDashboard = (role) => {
   return dashboards[role] || '/dashboard';
 };
 
-const sendTokenResponse = (user, statusCode, res, rememberMe = true) => {
-  const expiresIn   = rememberMe ? '7d' : '1d';
-  const token       = generateToken(user._id, user.email, user.role, expiresIn);
-  const cookieOpts  = { httpOnly: true, sameSite: 'lax' };
-  if (rememberMe) cookieOpts.maxAge = 7 * 24 * 60 * 60 * 1000;
+const sendTokenResponse = (user, statusCode, res) => {
+  const token       = generateToken(user._id, user.email, user.role, '7d');
+  const cookieOpts  = { httpOnly: true, sameSite: 'lax', maxAge: 7 * 24 * 60 * 60 * 1000 };
 
   res.cookie('jwt', token, cookieOpts);
 
@@ -66,7 +64,7 @@ const register = async (req, res, next) => {
 
 const login = async (req, res, next) => {
   try {
-    const { email, password, rememberMe } = req.body;
+    const { email, password } = req.body;
 
     const user = await User.findOne({ email: email.toLowerCase() }).select('+password');
     if (!user) {
@@ -82,7 +80,7 @@ const login = async (req, res, next) => {
       return next(new AppError('Your account has been suspended. Please contact support.', 403));
     }
 
-    sendTokenResponse(user, 200, res, rememberMe === true);
+    sendTokenResponse(user, 200, res);
   } catch (err) {
     next(err);
   }

@@ -216,7 +216,7 @@ h1, h2, h3, h4 {
     flex: 1 1 auto;
     justify-content: center;
     gap: 2rem;
-    min-width: 0;
+    min-width: max-content;
 }
 
 .navbar .nav-actions {
@@ -1000,14 +1000,85 @@ h1, h2, h3, h4 {
     .hero-title { font-size: 3.5rem; }
     .footer-grid { grid-template-columns: 1fr; }
 
-    .about-grid { grid-template-columns: 1fr; }
+    .about-grid { grid-template-columns: 1fr; gap: 2rem; }
 }
+
+/* ── Nav collapse: triggered by JS ResizeObserver (body.nav-collapsing) ── */
+body.nav-collapsing .nav-hamburger { display: flex !important; }
+
+body.nav-collapsing .nav-menu:not(.nav-menu--open) { display: none; }
+body.nav-collapsing .nav-buttons { display: none; }
+
+body.nav-collapsing.nav-open .nav-menu {
+    display: flex;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100vh;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    background: var(--bg-primary);
+    padding: 80px 2rem 2rem;
+    z-index: 1000;
+    overflow-y: auto;
+    border: none;
+}
+body.nav-collapsing.nav-open .nav-menu .nav-buttons {
+    display: flex !important;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+    margin-top: auto;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
+body.nav-collapsing .nav-menu li { width: 100%; }
+body.nav-collapsing .nav-link {
+    display: block;
+    font-size: 1rem;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border-color);
+    width: 100%;
+}
+body.nav-collapsing .nav-link::after { display: none !important; }
+body.nav-collapsing.nav-open .nav-menu .nav-buttons .btn {
+    width: 100%;
+    text-align: center;
+    padding: 0.75rem 1.5rem;
+}
+body.nav-collapsing .nav-actions { gap: 0.5rem; }
+body.nav-collapsing .nav-hamburger { margin-left: auto; }
 
 @media (max-width: 768px) {
     :root { --section-padding: 60px 0; }
-    .hero-title { font-size: 2.8rem; }
-    .nav-menu { display: none; }
-    .section-title { font-size: 2.5rem; }
+    .hero-title { font-size: 2.5rem; }
+    .section-title { font-size: 2.2rem; }
     .trust-indicators { flex-direction: column; gap: 2rem; }
-    .container { padding: 0 2rem; }
+    .container { padding: 0 1.25rem; }
+
+    .btn { padding: 0.75rem 1.75rem; font-size: 0.85rem; }
+    .btn--large { padding: 0.85rem 2rem; font-size: 0.9rem; }
+    .hero-cta { flex-direction: column; align-items: center; gap: 1rem; }
+    .hero-cta .btn { width: 100%; max-width: 320px; }
+
+    /* About/Legacy section */
+    .about-section { padding: 60px 0; }
+    .about-visual { display: none; }
+    .about-stats { grid-template-columns: repeat(3,1fr); gap: 1rem; margin-top: 2rem; padding-top: 2rem; }
+    .stat-value { font-size: 2rem; }
+    .about-content h2 { font-size: 2rem; }
+
+    /* Reviews section */
+    .testimonial-card { padding: 1.5rem; }
+
+}
+
+/* Footer — same breakpoint as hamburger (nav-collapsing is JS-driven so use a generous fallback) */
+@media (max-width: 992px) {
+    .main-footer { padding: 50px 0 30px; }
+    .footer-grid { grid-template-columns: 1fr !important; gap: 2rem; margin-bottom: 40px; }
+    .footer-logo { font-size: 1.6rem; margin-bottom: 1rem; }
+    .footer-nav { grid-template-columns: repeat(2,1fr) !important; gap: 1.5rem; }
+    .footer-group h4 { font-size: 1rem; margin-bottom: 1rem; }
+    .footer-bottom { flex-direction: column; gap: 0.5rem; text-align: center; padding-top: 20px; }
 }

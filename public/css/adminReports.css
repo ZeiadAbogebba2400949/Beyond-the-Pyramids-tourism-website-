@@ -516,15 +516,39 @@ tr:hover td {
 
 @media (max-width: 992px) {
     .stats-grid { grid-template-columns: 1fr 1fr; }
+    .dashboard-shell { overflow: hidden; }
+    .dashboard-sidebar {
+        position: fixed;
+        left: -280px;
+        top: 0;
+        height: 100vh;
+        width: 260px;
+        z-index: 1000;
+        transition: left 0.3s cubic-bezier(0.4,0,0.2,1);
+        overflow-y: auto;
+    }
+    .dashboard-sidebar.sidebar--open { left: 0; }
+    .dashboard-main {
+        display: block;
+        height: 100vh;
+        overflow-y: auto;
+        padding-top: 58px;
+        max-width: 100%;
+    }
 }
 
 @media (max-width: 768px) {
-    .dashboard-main { padding: 20px; }
+    .dashboard-main { display: block; padding: 58px 16px 16px; max-width: 100%; }
     .kpi-row { grid-template-columns: 1fr 1fr; }
-    .section-header { flex-direction: column; align-items: flex-start; gap: 15px; }
+    .section-header { flex-direction: column; align-items: flex-start; gap: 12px; }
     .section-filters { flex-wrap: wrap; }
     .stats-grid { grid-template-columns: 1fr; }
     .highlight-grid { grid-template-columns: 1fr; }
+    .two-col { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+    .kpi-row { grid-template-columns: 1fr; }
 }
 
 /* ═══════════════════════════════════════════════════════
