@@ -320,6 +320,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     populateDashboardAvatar();
     initGlobalThemeToggle();
+    initHamburgerMenus();
 });
 
 
@@ -428,4 +429,125 @@ function updateAuthUI() {
     });
 
     if (window.LoginGate) LoginGate.updateSidebarAuth();
+}
+
+function initHamburgerMenus() {
+    // ── Sidebar hamburger (user + admin pages) ──────────────────────
+    const sidebar = document.querySelector('.dashboard-sidebar, .page-sidebar');
+    const mainContent = document.querySelector('.dashboard-main, .page-content');
+
+    if (sidebar && mainContent) {
+        const overlay = document.createElement('div');
+        overlay.id = 'sidebar-overlay';
+        overlay.className = 'sidebar-overlay';
+        document.body.appendChild(overlay);
+
+        const mobileBar = document.createElement('div');
+        mobileBar.className = 'mobile-topbar';
+        mobileBar.innerHTML = `
+            <button class="hamburger-btn" id="sidebar-hamburger" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+            <a href="/" class="mobile-topbar__brand">
+                <img src="/images/WebsiteBanner.png" alt="Beyond the Pyramids">
+            </a>`;
+        if (sidebar.classList.contains('page-sidebar')) {
+            const user = window.SERVER_USER;
+            if (user) {
+                const chipEl = document.createElement('div');
+                chipEl.className = 'mobile-account-chip';
+                const name = user.name ? user.name.split(' ')[0] : (user.email || '').split('@')[0];
+                const avatarHtml = user.image
+                    ? `<img src="${user.image}" alt="${name}" onerror="this.style.display='none'">`
+                    : `<i class="fas fa-user"></i>`;
+                chipEl.innerHTML = `
+                    <div class="mobile-account-chip__avatar">${avatarHtml}</div>
+                    <div class="mobile-account-chip__info">
+                        <span class="mobile-account-chip__label">Signed in as</span>
+                        <strong class="mobile-account-chip__name">${name}</strong>
+                    </div>`;
+                mobileBar.appendChild(chipEl);
+            }
+        }
+
+        mainContent.insertBefore(mobileBar, mainContent.firstChild);
+
+        document.getElementById('sidebar-hamburger').addEventListener('click', () => {
+            const open = sidebar.classList.toggle('sidebar--open');
+            overlay.classList.toggle('active', open);
+        });
+
+        overlay.addEventListener('click', () => {
+            sidebar.classList.remove('sidebar--open');
+            overlay.classList.remove('active');
+        });
+
+        sidebar.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                sidebar.classList.remove('sidebar--open');
+                overlay.classList.remove('active');
+            });
+        });
+    }
+
+    // ── Landing page nav hamburger with overflow detection ──────────
+    const navContainer = document.querySelector('.nav-container');
+    const navMenu = document.querySelector('.nav-menu');
+    if (!navContainer || !navMenu) return;
+
+    const navHamburger = document.createElement('button');
+    navHamburger.className = 'hamburger-btn nav-hamburger';
+    navHamburger.id = 'nav-hamburger';
+    navHamburger.setAttribute('aria-label', 'Toggle navigation');
+    navHamburger.innerHTML = '<span></span><span></span><span></span>';
+    navContainer.appendChild(navHamburger);
+
+    const navOverlay = document.createElement('div');
+    navOverlay.id = 'mobile-nav-overlay';
+    navOverlay.className = 'mobile-nav-overlay';
+    document.body.appendChild(navOverlay);
+
+    // Measure natural widths once at init (before any collapsing state exists)
+    navHamburger.style.display = 'none';
+    const _logoW = (navContainer.querySelector('.logo') || {}).offsetWidth || 0;
+    const _actionsW = (navContainer.querySelector('.nav-actions') || {}).offsetWidth || 0;
+    const _menuW = navMenu.scrollWidth;
+    navHamburger.style.display = '';
+    const _neededWidth = _logoW + _menuW + _actionsW + 80;
+
+    function checkNavCollapse() {
+        document.body.classList.toggle('nav-collapsing', _neededWidth > navContainer.offsetWidth);
+    }
+
+    const navRO = new ResizeObserver(checkNavCollapse);
+    navRO.observe(document.querySelector('.navbar') || navContainer);
+    checkNavCollapse();
+
+    const navActions = navContainer.querySelector('.nav-actions');
+
+    function openNav() {
+        document.body.classList.add('nav-open');
+        navHamburger.classList.add('hamburger--open');
+        navOverlay.classList.add('active');
+        const navButtons = navContainer.querySelector('.nav-buttons');
+        if (navButtons) navMenu.appendChild(navButtons);
+    }
+
+    function closeNav() {
+        document.body.classList.remove('nav-open');
+        navHamburger.classList.remove('hamburger--open');
+        navOverlay.classList.remove('active');
+        const navButtons = navMenu.querySelector('.nav-buttons');
+        if (navButtons && navActions) navActions.appendChild(navButtons);
+    }
+
+    navHamburger.addEventListener('click', () => {
+        document.body.classList.contains('nav-open') ? closeNav() : openNav();
+    });
+
+    navOverlay.addEventListener('click', closeNav);
+
+    document.querySelectorAll('.nav-menu .nav-link').forEach(link => {
+        link.addEventListener('click', closeNav);
+    });
 }

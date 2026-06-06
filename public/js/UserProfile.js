@@ -197,14 +197,31 @@ function initPersonalInfo(session) {
 }
 
 function initProfilePhotoUpload(session) {
-    const uploadBtn = document.getElementById('uploadPhotoBtn');
-    const fileInput = document.getElementById('profilePhotoInput');
-    const imgEl = document.getElementById('profileAvatarImg');
-    const iconEl = document.getElementById('profileAvatarIcon');
+    const uploadBtn  = document.getElementById('uploadPhotoBtn');
+    const removeBtn  = document.getElementById('removePhotoBtn');
+    const fileInput  = document.getElementById('profilePhotoInput');
+    const imgEl      = document.getElementById('profileAvatarImg');
+    const iconEl     = document.getElementById('profileAvatarIcon');
 
     if (!uploadBtn || !fileInput) return;
 
     uploadBtn.addEventListener('click', () => fileInput.click());
+
+    if (removeBtn) {
+        removeBtn.addEventListener('click', async () => {
+            if (!confirm('Remove your profile photo?')) return;
+            try {
+                const res = await fetch('/api/users/avatar', { method: 'DELETE', credentials: 'include' });
+                if (!res.ok) throw new Error();
+                if (imgEl) { imgEl.src = ''; imgEl.style.display = 'none'; }
+                if (iconEl) iconEl.style.display = 'block';
+                removeBtn.classList.add('hidden');
+                showAlert('Profile photo removed.', 'success');
+            } catch {
+                showAlert('Failed to remove photo.', 'error');
+            }
+        });
+    }
 
     fileInput.addEventListener('change', () => {
         const file = fileInput.files && fileInput.files[0];
@@ -224,24 +241,28 @@ function initProfilePhotoUpload(session) {
 
         const reader = new FileReader();
         reader.onload = () => {
+            const base64 = reader.result;
             if (imgEl) {
-                imgEl.src = reader.result;
+                imgEl.src = base64;
                 imgEl.alt = document.getElementById('fullName')?.value || 'Profile photo';
                 imgEl.style.display = 'block';
             }
             if (iconEl) iconEl.style.display = 'none';
-        };
-        reader.readAsDataURL(file);
 
-        const formData = new FormData();
-        formData.append('avatar', file);
-        fetch('/api/users/avatar', { method: 'PUT', credentials: 'include', body: formData })
+            fetch('/api/users/avatar', {
+                method: 'PUT',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ image: base64 })
+            })
             .then(r => r.json())
             .then(data => {
-                if (data.status === 'success' && imgEl) imgEl.src = data.data.imageUrl;
+                if (removeBtn) removeBtn.classList.remove('hidden');
                 showAlert('Profile photo updated successfully!', 'success');
             })
             .catch(() => showAlert('Failed to upload photo.', 'error'));
+        };
+        reader.readAsDataURL(file);
 
         fileInput.value = '';
     });

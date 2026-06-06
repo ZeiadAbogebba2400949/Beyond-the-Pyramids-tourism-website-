@@ -65,7 +65,6 @@
             <header class="profile-header reveal-up" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
                 <div>
                     <div style="display:flex;align-items:center;gap:1rem;margin-bottom:0.5rem;">
-                        <button id="mobileSidebarToggle" class="btn btn--outline btn--small" style="display:none;"><i class="fa-solid fa-bars"></i></button>
                         <h1>Profile Settings</h1>
                     </div>
                     <p class="text-secondary">Manage your personal information and account security.</p>
@@ -102,9 +101,14 @@
                                 <h3 id="userNameDisplay" style="margin-bottom:0.5rem;"><%= user.name %></h3>
                                 <p id="userEmailDisplay" class="text-secondary" style="font-size:var(--text-sm);margin-bottom:1rem;"><%= user.email %></p>
                                 <input type="file" id="profilePhotoInput" class="hidden" accept="image/*">
-                                <button type="button" id="uploadPhotoBtn" class="btn btn--outline btn--small">
-                                    <i class="fa-solid fa-camera"></i> Upload Photo
-                                </button>
+                                <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+                                    <button type="button" id="uploadPhotoBtn" class="btn btn--outline btn--small">
+                                        <i class="fa-solid fa-camera"></i> Upload Photo
+                                    </button>
+                                    <button type="button" id="removePhotoBtn" class="btn btn--outline btn--small <%= user.image ? '' : 'hidden' %>" style="color:var(--color-danger);border-color:var(--color-danger);">
+                                        <i class="fa-solid fa-trash"></i> Remove Photo
+                                    </button>
+                                </div>
                             </div>
                         </div>
 

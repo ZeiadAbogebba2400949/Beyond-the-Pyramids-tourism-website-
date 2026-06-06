@@ -4,10 +4,12 @@
 
 
 
+body { overflow: hidden; }
 
 .dashboard-shell {
     display: flex;
     height: 100vh;
+    overflow: hidden;
     background-color: var(--color-bg);
     font-family: var(--font-body);
 }
@@ -126,6 +128,7 @@
     flex-direction: column;
     min-width: 0;
     overflow-y: auto;
+    height: 100vh;
 }
 
 .dashboard-header {
@@ -408,11 +411,13 @@
 }
 
 .modal-container {
-    background: #FFFFFF; 
+    background: #FFFFFF;
     width: 100%;
     max-width: 680px;
-    max-height: 90vh; 
-    overflow-y: auto; 
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow-2xl);
     animation: modalSlideUp 0.35s cubic-bezier(0.23, 1, 0.32, 1);
@@ -432,9 +437,8 @@
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid var(--color-border-light);
-    position: sticky;
-    top: 0;
-    z-index: 10;
+    flex-shrink: 0;
+    margin: 0;
 }
 
 .modal-header h3 {
@@ -456,6 +460,9 @@
 
 .modal-body {
     padding: var(--space-2xl);
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0;
 }
 
 .modal-footer {
@@ -465,9 +472,8 @@
     justify-content: flex-end;
     gap: var(--space-md);
     border-top: 1px solid var(--color-border-light);
-    position: sticky;
-    bottom: 0;
-    z-index: 10;
+    flex-shrink: 0;
+    margin: 0;
 }
 
 
@@ -568,7 +574,7 @@ fieldset legend {
 }
 
 .btn-primary:hover {
-    background: var(--gold-dark);
+    background: #b8883d;
     box-shadow: var(--shadow-md);
 }
 
@@ -708,4 +714,50 @@ fieldset legend {
     background: #1A1A1A;
     border-color: rgba(255,255,255,0.12);
     color: #F2F2F2;
+}
+
+@media (max-width: 992px) {
+    .dashboard-shell { overflow: hidden; }
+    .dashboard-sidebar {
+        position: fixed;
+        left: -280px;
+        top: 0;
+        height: 100vh;
+        width: 260px;
+        z-index: 1000;
+        transition: left 0.3s cubic-bezier(0.4,0,0.2,1);
+        overflow-y: auto;
+    }
+    .dashboard-sidebar.sidebar--open { left: 0; }
+    .dashboard-main {
+        display: block;
+        height: 100vh;
+        overflow-y: auto;
+        padding-top: 58px;
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-main { display: block; padding: 58px 12px 12px; }
+    .dashboard-header {
+        flex-direction: row;
+        align-items: center;
+        flex-wrap: wrap;
+        min-height: unset;
+        gap: 8px;
+        padding: 10px 12px;
+    }
+    .top-bar-left { flex: 1; min-width: 0; }
+    .top-bar-left h1 { font-size: var(--text-lg); margin: 0; }
+    .top-bar-left p { display: none; }
+    .toolbar { padding: 10px 12px; flex-wrap: wrap; gap: 8px; }
+    .toolbar-left { flex-wrap: wrap; gap: 8px; width: 100%; }
+    .search-container { width: 100%; }
+    .tab-navigation { padding: 0 12px; gap: 16px; margin-bottom: 8px; }
+    .tab-link { padding: 8px 0; font-size: var(--text-xs); }
+    .packages-grid { grid-template-columns: 1fr; gap: 12px; padding: 0 12px 16px; }
+    .stat-card { padding: 10px 12px; gap: 10px; }
+    .stat-icon { width: 38px; height: 38px; font-size: 1rem; border-radius: 10px; }
+    .stat-info h3 { font-size: 0.68rem; margin-bottom: 2px; }
+    .stat-value, .stat-number { font-size: 1.25rem; }
 }
