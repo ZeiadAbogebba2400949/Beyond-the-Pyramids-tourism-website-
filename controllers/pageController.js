@@ -346,6 +346,7 @@ const getAdminReportsPage = async (req, res, next) => {
         rating: r.rating || 5,
         review: r.text || r.title || '',
         date: r.createdAt ? r.createdAt.toISOString().split('T')[0] : '',
+        photos: r.photos || [],
       })),
       totalRevenue: revenueResult.length > 0 ? revenueResult[0].total : 0,
       openTickets,

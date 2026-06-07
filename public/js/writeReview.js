@@ -1,5 +1,3 @@
-
-
 document.addEventListener('DOMContentLoaded', function () {
     if (window.LoginGate && !LoginGate.requireLogin({ message: 'You must be logged in to write reviews.' })) {
         return;
@@ -232,6 +230,16 @@ function setupFormSubmission() {
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.message || 'Review submission failed');
 
+                if (selectedFiles.length > 0 && data.data?.review?._id) {
+                    const formData = new FormData();
+                    selectedFiles.forEach(file => formData.append('photos', file));
+                    await fetch('/api/reviews/' + data.data.review._id + '/photos', {
+                        method: 'POST',
+                        credentials: 'include',
+                        body: formData,
+                    });
+                }
+
                 showFeedback('Review submitted.', 'success');
                 document.getElementById('success-modal').style.display = 'flex';
             } catch (err) {
@@ -247,8 +255,6 @@ function setupFormSubmission() {
 function closeModal() {
     window.location.href = '/dashboard';
 }
-
-
 
 function initAnimations() {
     const observer = new IntersectionObserver((entries) => {

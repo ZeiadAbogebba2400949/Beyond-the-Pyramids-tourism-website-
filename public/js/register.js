@@ -65,7 +65,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initAtmosphericReveal();
   initGlowInputs();
 
-  // Live validation listeners
   document.getElementById('firstname')?.addEventListener('input', validateFirstname);
   document.getElementById('lastname')?.addEventListener('input', validateLastname);
   document.getElementById('dob')?.addEventListener('change', validateDob);

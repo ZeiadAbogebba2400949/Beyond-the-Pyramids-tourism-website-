@@ -102,4 +102,19 @@ const updateReview = async (req, res, next) => {
   }
 };
 
-module.exports = { createReview, getPackageReviews, getAllReviews, deleteReview, updateReview };
+const uploadReviewPhotos = async (req, res, next) => {
+  try {
+    const photos = req.files ? req.files.map(f => f.path) : [];
+    const review = await Review.findByIdAndUpdate(
+      req.params.id,
+      { photos, photosCount: photos.length },
+      { new: true }
+    );
+    if (!review) return next(new AppError('Review not found.', 404));
+    res.status(200).json({ status: 'success', data: { review } });
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports = { createReview, getPackageReviews, getAllReviews, deleteReview, updateReview, uploadReviewPhotos };
