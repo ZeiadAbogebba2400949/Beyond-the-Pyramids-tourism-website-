@@ -1,5 +1,3 @@
-
-
 document.addEventListener('DOMContentLoaded', function () {
     if (window.LoginGate && !LoginGate.requireLogin({ message: 'You must be logged in to write reviews.' })) {
         return;
@@ -12,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
     setupFormSubmission();
 
     initAnimations();
+    loadMyReviews();
 });
 
 function displayUserName() {
@@ -118,6 +117,7 @@ function setupStarRating() {
 }
 
 let selectedFiles = [];
+let editingReviewId = null;
 
 function setupPhotoUpload() {
     const uploadArea = document.getElementById('upload-area');
@@ -217,6 +217,22 @@ function setupFormSubmission() {
             if (!reviewTitle) { showFeedback('Please enter a review title.'); submitBtn.disabled = false; submitBtn.textContent = 'Submit Review'; return; }
 
             try {
+                if (editingReviewId) {
+                    const res = await fetch('/api/reviews/' + editingReviewId, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include',
+                        body: JSON.stringify({ rating, title: reviewTitle, text: reviewText }),
+                    });
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.message || 'Update failed');
+                    editingReviewId = null;
+                    submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Review';
+                    showFeedback('Review updated.', 'success');
+                    loadMyReviews();
+                    return;
+                }
+
                 const res = await fetch('/api/reviews', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -231,6 +247,16 @@ function setupFormSubmission() {
                 });
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.message || 'Review submission failed');
+
+                if (selectedFiles.length > 0 && data.data?.review?._id) {
+                    const formData = new FormData();
+                    selectedFiles.forEach(file => formData.append('photos', file));
+                    await fetch('/api/reviews/' + data.data.review._id + '/photos', {
+                        method: 'POST',
+                        credentials: 'include',
+                        body: formData,
+                    });
+                }
 
                 showFeedback('Review submitted.', 'success');
                 document.getElementById('success-modal').style.display = 'flex';
@@ -248,7 +274,62 @@ function closeModal() {
     window.location.href = '/dashboard';
 }
 
+async function loadMyReviews() {
+    try {
+        const res = await fetch('/api/reviews/mine', { credentials: 'include' });
+        const data = await res.json();
+        renderMyReviews(data.data?.reviews || []);
+    } catch (e) {}
+}
 
+function renderMyReviews(reviews) {
+    const list = document.getElementById('my-reviews-list');
+    if (!list) return;
+    if (!reviews.length) {
+        list.innerHTML = '<p style="color:var(--color-text-muted);padding:1rem 0;">You have not submitted any reviews yet.</p>';
+        return;
+    }
+    list.innerHTML = reviews.map(r => `
+        <div class="review-item" id="my-review-${r._id}">
+            <div class="review-header">
+                <strong>${r.packageId?.name || 'Package'}</strong>
+                <span style="color:#F1C40F;">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</span>
+                <span class="review-date">${r.date ? r.date.slice(0, 10) : ''}</span>
+            </div>
+            <p class="review-text">"${r.title}" — ${r.text}</p>
+            <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
+                <button class="btn btn--sm"
+                    data-id="${r._id}" data-pkgid="${r.packageId?._id || ''}"
+                    data-type="${r.packageId?.type || ''}" data-rating="${r.rating}"
+                    data-title="${(r.title || '').replace(/"/g, '&quot;')}"
+                    data-text="${(r.text || '').replace(/"/g, '&quot;')}"
+                    onclick="startEditReview(this)">Edit</button>
+                <button class="btn btn--sm" style="color:#dc3545" onclick="deleteMyReview('${r._id}')">Delete</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function startEditReview(btn) {
+    editingReviewId = btn.dataset.id;
+    const radio = document.querySelector(`input[name="packageType"][value="${btn.dataset.type}"]`);
+    if (radio) { radio.checked = true; radio.dispatchEvent(new Event('change')); }
+    setTimeout(() => { const s = document.getElementById('package-select'); if (s) s.value = btn.dataset.pkgid; }, 150);
+    document.querySelectorAll('.stars-glamour i').forEach((s, i) => {
+        s.className = i < parseInt(btn.dataset.rating) ? 'fas fa-star' : 'far fa-star';
+    });
+    document.getElementById('review-title').value = btn.dataset.title;
+    document.getElementById('review-text').value = btn.dataset.text;
+    const submitBtn = document.getElementById('submit-review');
+    if (submitBtn) submitBtn.innerHTML = '<i class="fas fa-save"></i> Save Changes';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+async function deleteMyReview(id) {
+    if (!confirm('Delete this review?')) return;
+    const res = await fetch('/api/reviews/' + id, { method: 'DELETE', credentials: 'include' });
+    if (res.ok || res.status === 204) document.getElementById('my-review-' + id)?.remove();
+}
 
 function initAnimations() {
     const observer = new IntersectionObserver((entries) => {
