@@ -70,7 +70,7 @@ const getAdminUsers = async (req, res, next) => {
     if (req.query.role) filter.role = req.query.role;
     if (req.query.status) filter.status = req.query.status;
 
-    const users = await User.find(filter).skip(skip).limit(limit).sort('-joinDate');
+    const users = await User.find(filter).sort('-joinDate');
     const total = await User.countDocuments(filter);
 
     res.status(200).json({
